@@ -1,0 +1,66 @@
+package creators
+
+import (
+	"database/sql"
+)
+
+func CreatePostTables(DB *sql.DB) error {
+	TableStatements := []string{
+		`CREATE TABLE IF NOT EXISTS posts (
+            post_id               VARCHAR NOT NULL PRIMARY KEY,
+            user_id               VARCHAR NOT NULL,
+            creation_date         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            post_content          VARCHAR(150) NOT NULL,
+            post_image_path       VARCHAR(150),
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )`,
+		`CREATE TABLE IF NOT EXISTS category (
+            cat_id               INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            category             CHAR NOT NULL
+        )`,
+		`CREATE TABLE IF NOT EXISTS threads (
+            ID                    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            post_id               VARCHAR NOT NULL,
+            cat_id                INTEGER NOT NULL DEFAULT 1,
+            FOREIGN KEY (post_id) REFERENCES posts(post_id),
+            FOREIGN KEY (cat_id)  REFERENCES category(cat_id)
+        )`,
+		`CREATE TABLE IF NOT EXISTS post_history (
+            id                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            post_id              INTEGER NOT NULL,
+            post_details         VARCHAR(255) NOT NULL,
+            edit_date            DATE DEFAULT CURRENT_DATE,
+            FOREIGN KEY (post_id) REFERENCES posts(post_id)
+        )`,
+		`CREATE TABLE IF NOT EXISTS posts_interaction (
+            act_id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            post_id               VARCHAR NOT NULL,
+            user_id               VARCHAR NOT NULL,
+            actions_type          BOOLEAN NOT NULL,
+            action_date           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (post_id) REFERENCES posts(post_id),
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )`,
+	}
+
+	for _, stmt := range TableStatements {
+		if _, err := DB.Exec(stmt); err != nil {
+			return err
+		}
+	}
+
+	stmt, err := DB.Prepare("INSERT INTO category (category) VALUES (?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	categories := []string{"General", "Engineering", "Travel", "Technology", "Mathematics"}
+	for _, category := range categories {
+		if _, err := stmt.Exec(category); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

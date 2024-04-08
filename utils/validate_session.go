@@ -2,8 +2,8 @@ package utils
 
 import (
 	"net/http"
-
-	types "RTF/models"
+	 
+	"RTF/types"
 )
 
 // Validates Session Based on cookie from client

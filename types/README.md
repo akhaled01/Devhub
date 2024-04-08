@@ -1,9 +1,8 @@
-package types
+# About the `Types` directory
 
-import (
-	"github.com/gofrs/uuid"
-)
+Each file here houses non-DB entity specific methods and structs. For example, the `user.go` file contains the main user entity (struct) which is:
 
+```go
 type User struct {
 	ID        uuid.UUID `json:"uuid"`
 	Username  string    `json:"username"`
@@ -15,12 +14,6 @@ type User struct {
 	Age       int       `json:"age"`
 	Avatar    string    `json:"avatar"`
 }
+```
 
-func UserHasSession(userID uuid.UUID) (string, bool) {
-	for token, session := range Sessions {
-		if session.User.ID == userID {
-			return token, true
-		}
-	}
-	return "", false
-}
+Structs in this directory are also the main interface between the `vite.js` frontend and the backend

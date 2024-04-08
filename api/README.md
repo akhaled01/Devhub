@@ -1,4 +1,4 @@
-# About the API folder
+# About the `API` folder
 
 This folder is where interfacing with the Database Occurs
 

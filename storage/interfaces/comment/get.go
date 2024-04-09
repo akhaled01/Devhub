@@ -21,6 +21,7 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 	if err != nil {
 		return nil, errors.Join(errors.New("error preparing GetPostCommentsByID query"), err)
 	}
+	defer stmt.Close()
 
 	rows, err := stmt.Query(postid.String())
 	if err != nil {

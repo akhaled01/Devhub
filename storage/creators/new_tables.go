@@ -3,7 +3,6 @@ package creators
 import (
 	"database/sql"
 	"errors"
-	"log"
 )
 
 var Tables = []func(db *sql.DB) error{
@@ -15,9 +14,9 @@ var Tables = []func(db *sql.DB) error{
 func CreateNewDB() error {
 	DB, err := sql.Open("sqlite3", "RTF.db")
 	if err != nil {
-		log.Fatal(err)
+		return errors.Join(errors.New("DB creation failed"), err)
 	}
-	
+
 	// create tables from the given functions
 	for _, table := range Tables {
 		if err := table(DB); err != nil {

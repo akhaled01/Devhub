@@ -6,6 +6,7 @@ import (
 
 	"RTF/storage"
 	"RTF/storage/interfaces/comment"
+	"RTF/storage/interfaces/likes"
 	"RTF/storage/interfaces/user"
 	"RTF/types"
 
@@ -40,7 +41,7 @@ func GetPostByID(id uuid.UUID) (*types.Post, error) {
 	}
 
 	// get post likes
-	if p.Likes, err = GetPostLikes(id); err != nil {
+	if p.Likes, err = likes.GetPostLikes(id); err != nil {
 		return nil, err
 	}
 
@@ -51,21 +52,4 @@ func GetPostByID(id uuid.UUID) (*types.Post, error) {
 
 	p.User = *creator
 	return p, nil
-}
-
-//function gets post likes by id
-func GetPostLikes(postID uuid.UUID) (int64, error) {
-	query := "SELECT COUNT(*) FROM post_interactions WHERE post_id = ?"
-
-	row := storage.DB_Conn.QueryRow(query, postID)
-	var count int64
-	err := row.Scan(&count)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, nil
-		}
-		return 0, errors.Join(errors.New("error getting post likes"), err)
-	}
-
-	return count, nil
 }

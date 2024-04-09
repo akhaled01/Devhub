@@ -6,7 +6,7 @@ The `creators` directory has methods to initialize a new Database with the requi
 
 The `interfaces` directory is responsible for any interface between the database and the backend Each subdirectory contains methods to create and get different entities from the DB. Each function is documented well.
 
-> Each directory in the `interfaces` directory has a `get.go` file to house methods tha concern with returning the entity (user for example) from the databae and a `create.go` file that has methods to save entities to a database
+> Each directory in the `interfaces` directory has a `get.go` file to house methods tha concern with returning the entity (user for example) from the database and a `create.go` file that has methods to save entities to a database
 
 The `init.go` file contains the `Init()` method that is called to initialize the Database before running the server.
 

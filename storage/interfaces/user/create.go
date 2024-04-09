@@ -19,16 +19,17 @@ returns nil if no errors
 func SaveUserInDB(u types.User) error {
 	hashedPass, err := utils.HashPassword(u.Password)
 	if err != nil {
-		return errors.Join(errors.New("ERROR Hashing user password"), err)
+		return errors.Join(errors.New("error Hashing user password"), err)
 	}
 
 	stmt, err := storage.DB_Conn.Prepare(NEWUSERQUERY)
 	if err != nil {
-		return errors.Join(errors.New("ERROR preparing saveUserInDB query"), err)
+		return errors.Join(errors.New("error preparing saveUserInDB query"), err)
 	}
+	defer stmt.Close()
 
 	if _, err := stmt.Exec(u.Email, u.Username, u.FirstName, u.LastName, u.Avatar, hashedPass); err != nil {
-		return errors.Join(errors.New("ERROR executing SaveUserInDB QUERY"), err)
+		return errors.Join(errors.New("error executing SaveUserInDB query"), err)
 	}
 
 	return nil

@@ -17,10 +17,11 @@ func CreateNewDB() error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	
 	// create tables from the given functions
 	for _, table := range Tables {
 		if err := table(DB); err != nil {
-			return errors.New("FAILED TO CREATE DATABASE TABLE! " + err.Error())
+			return errors.Join(errors.New("table creation failed"), err)
 		}
 	}
 

@@ -5,17 +5,16 @@ import (
 	"errors"
 
 	"RTF/storage"
-	"RTF/types"
 
 	"github.com/gofrs/uuid"
 )
 
-const GETINTERACTIONSQUERY = `SELECT action_type FROM posts_interactions 
+const GETINTERACTIONSQUERY = `SELECT actions_type FROM posts_interaction
 	WHERE post_id = ? AND user_id = ?
 `
 
 // Takes in a user's id and a post's id and checks if the user liked the post
-func CheckUserPostLike(postid uuid.UUID, userid uuid.UUID, like int) (bool, error) {
+func CheckUserPostLike(postid uuid.UUID, userid uuid.UUID) (bool, error) {
 	stmt, err := storage.DB_Conn.Prepare(GETINTERACTIONSQUERY)
 	if err != nil {
 		return false, errors.Join(errors.New("error preparing CheckUserPostLike query"), err)
@@ -33,7 +32,7 @@ func CheckUserPostLike(postid uuid.UUID, userid uuid.UUID, like int) (bool, erro
 
 // function that gets post likes by id
 func GetPostLikes(postID uuid.UUID) (int64, error) {
-	query := "SELECT COUNT(*) FROM post_interactions WHERE post_id = ?"
+	query := "SELECT COUNT(*) FROM post_interactions WHERE post_id = ? AND actions_type = 1"
 
 	row := storage.DB_Conn.QueryRow(query, postID)
 	var count int64
@@ -46,12 +45,4 @@ func GetPostLikes(postID uuid.UUID) (int64, error) {
 	}
 
 	return count, nil
-}
-
-// function that gets posts that are liked by a specific user
-//
-// takes in a user id
-func GetUserLikedPosts(id uuid.UUID) ([]types.Post, error) {
-	posts := []types.Post{}
-	return posts, nil
 }

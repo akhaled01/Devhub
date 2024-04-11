@@ -16,7 +16,6 @@ const QueryPostComments = "SELECT comm_id, user_id, comment_date, comment FROM c
 
 // function to return an array of post comments by id
 func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
-	var comments []types.Comment
 	stmt, err := storage.DB_Conn.Prepare(QueryPostComments)
 	if err != nil {
 		return nil, errors.Join(errors.New("error preparing GetPostCommentsByID query"), err)
@@ -28,7 +27,8 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 		return nil, errors.Join(errors.New("error executing GetPostCommentsByID query"), err)
 	}
 
-	// map every row to a comment struct
+	var comments []types.Comment
+
 	for rows.Next() {
 		c := &types.Comment{}
 		var comment_id string
@@ -44,12 +44,12 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 			return nil, errors.Join(errors.New("error getting comment creator"), err)
 		}
 
-		//! MIGHT BE BUGGY
+		//! MIGHT BE BUGGY FROM HERE ON OUT
 		if c.Likes, err = GetCommentLikes(uuid.FromStringOrNil(comment_id)); err != nil {
 			return nil, errors.Join(errors.New("error getting comment creator"), err)
 		}
 
-		c.ID = uuid.FromStringOrNil(comment_id) //! MIGHT BE BUGGY
+		c.ID = uuid.FromStringOrNil(comment_id)
 		c.Post_ID = postid
 		c.User = *u
 		if c.CreationDate, err = time.Parse("YYYY-MM-DD", comment_date); err != nil {

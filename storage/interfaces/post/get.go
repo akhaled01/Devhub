@@ -13,9 +13,11 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-const PostByIDQuery = "SELECT user_id, creation_date, post_content, post_image_path FROM posts WHERE post_id = ?"
+const PostByIDQuery = `SELECT user_id, creation_date, post_content, post_image_path FROM posts WHERE post_id = ?`
 
-// returns a post by inputting its ID
+const GETUSERLIKEDPOSTSQUERY = `SELECT post_id FROM posts_interaction WHERE user_id = ? AND actions_type = 1`
+
+// Function that Gets a post from a DB by its ID
 func GetPostByID(id uuid.UUID) (*types.Post, error) {
 	stmt, err := storage.DB_Conn.Prepare(PostByIDQuery)
 	if err != nil {
@@ -52,4 +54,36 @@ func GetPostByID(id uuid.UUID) (*types.Post, error) {
 
 	p.User = *creator
 	return p, nil
+}
+
+// function that gets posts that are liked by a specific user.
+// takes in a user id
+func GetUserLikedPosts(userid uuid.UUID) ([]types.Post, error) {
+	stmt, err := storage.DB_Conn.Prepare(GETUSERLIKEDPOSTSQUERY)
+	if err != nil {
+		return nil, errors.Join(errors.New("error preparing GetUserLikedPosts query"), err)
+	}
+	defer stmt.Close()
+
+	posts := []types.Post{}
+	rows, err := stmt.Query(userid.String())
+	if err != nil {
+		return nil, errors.Join(errors.New("error executing GetUserLikedPosts query"), err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post_id string
+		if err := rows.Scan(&post_id); err != nil {
+			return nil, errors.Join(errors.New("error scanning to post_id"), err)
+		}
+
+		p := &types.Post{}
+		if p, err = GetPostByID(uuid.FromStringOrNil(post_id)); err != nil {
+			return nil, errors.Join(errors.New("error getting post"), err)
+		}
+		posts = append(posts, *p)
+	}
+
+	return posts, nil
 }

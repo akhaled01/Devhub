@@ -12,7 +12,8 @@ func CreateUserTables(DB *sql.DB) error {
 			last_name               VARCHAR(50),
 			user_pwd                VARCHAR NOT NULL,
 			CURRENT_DATE            TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
-			CONSTRAINT unq_emails UNIQUE ( user_email )
+			CONSTRAINT unq_emails   UNIQUE ( user_email ),
+			CONSTRAINT unq_username UNIQUE ( user_name )
 		 )`); err != nil {
 		return err
 	}

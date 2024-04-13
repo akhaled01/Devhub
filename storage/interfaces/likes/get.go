@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	IS_LIKED_QUERY = `SELECT EXISTS(SELECT 1 FROM posts_interaction 
+	IS_LIKED_QUERY = `SELECT EXISTS(SELECT 1 FROM post_likes 
 		WHERE post_id = ? AND user_id = ?) `
 	POST_LIKES_QUERY = `SELECT COUNT(*) FROM post_interactions WHERE post_id = ?`
 )

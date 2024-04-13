@@ -18,21 +18,14 @@ func CreatePostTables(DB *sql.DB) error {
             cat_id               INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             category             CHAR NOT NULL
         )`,
-		`CREATE TABLE IF NOT EXISTS threads (
+		`CREATE TABLE IF NOT EXISTS post_categories (
             ID                    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             post_id               VARCHAR NOT NULL,
             cat_id                INTEGER NOT NULL DEFAULT 1,
             FOREIGN KEY (post_id) REFERENCES posts(post_id),
             FOREIGN KEY (cat_id)  REFERENCES category(cat_id)
         )`,
-		`CREATE TABLE IF NOT EXISTS post_history (
-            id                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            post_id              INTEGER NOT NULL,
-            post_details         VARCHAR(255) NOT NULL,
-            edit_date            DATE DEFAULT CURRENT_DATE,
-            FOREIGN KEY (post_id) REFERENCES posts(post_id)
-        )`,
-		`CREATE TABLE IF NOT EXISTS posts_interaction (
+		`CREATE TABLE IF NOT EXISTS post_likes (
             act_id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             post_id               VARCHAR NOT NULL,
             user_id               VARCHAR NOT NULL,

@@ -16,7 +16,7 @@ func CreateCommentTables(DB *sql.DB) error {
             FOREIGN KEY (post_id) REFERENCES posts(post_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,
-		`CREATE TABLE IF NOT EXISTS comments_interactions (
+		`CREATE TABLE IF NOT EXISTS comment_likes (
             action_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             comment_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
@@ -24,9 +24,6 @@ func CreateCommentTables(DB *sql.DB) error {
             action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (comment_id) REFERENCES comments(comm_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
-        )`,
-		`CREATE TABLE IF NOT EXISTS likes_dislikes (
-            act_id INTEGER
         )`,
 	}
 

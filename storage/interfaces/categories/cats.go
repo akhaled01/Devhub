@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	GET_POST_CATEGORY = `SELECT cat_id FROM threads WHERE post_id = ?`
+	GET_POST_CATEGORY = `SELECT cat_id FROM post_categories WHERE post_id = ?`
 	GET_CATEGORY      = `SELECT * FROM category WHERE cat_id = ?`
-	ADD_THREAD        = `INSERT INTO threads (post_id, cat_id) VALUES (?, ?)`
+	ADD_THREAD        = `INSERT INTO post_categories (post_id, cat_id) VALUES (?, ?)`
 	CHECK_CAT_EXISTS  = `SELECT EXISTS(SELECT 1 FROM category WHERE cat_id = ?)`
 )
 
@@ -53,7 +53,7 @@ func GetPostCategories(postid uuid.UUID) (*types.Category, error) {
 	return cat, nil
 }
 
-// invokes ADD_THREAD that adds a new category-post mapping record into the threads table.
+// invokes ADD_THREAD that adds a new category-post mapping record into the post_categories table.
 func AssignPostCategory(postid uuid.UUID, catid int) error {
 	stmt, err := storage.DB_Conn.Prepare(ADD_THREAD)
 	if err != nil {

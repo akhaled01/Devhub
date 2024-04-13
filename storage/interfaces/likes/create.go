@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	CREATE_LIKE_RECORD = `INSERT INTO posts_interaction (post_id, user_id) 
+	CREATE_LIKE_RECORD = `INSERT INTO post_likes (post_id, user_id) 
 	VALUES (?, ?)`
-	DELETE_LIKE_RECORD = `DELETE FROM posts_interaction WHERE post_id = ? 
+	DELETE_LIKE_RECORD = `DELETE FROM post_likes WHERE post_id = ? 
 	AND user_id = ?
 `
 )

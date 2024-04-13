@@ -10,11 +10,12 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-const NEWUSERQUERY = "INSERT INTO users (user_id, user_email, user_name, first_name, last_name, avatar_path, user_pwd) VALUES (?, ?, ?, ?, ?, ?, ?)"
+const NEWUSERQUERY = `INSERT INTO users (user_id, user_email, user_name, 
+	first_name, last_name, avatar_path, user_pwd) VALUES (?, ?, ?, ?, ?, ?, ?)`
 
 /*
-This function takes in a user struct and saves
-the instance in the Database.
+This function takes in a signup request and creates a 
+new user in the DB
 
 returns nil if no errors
 */

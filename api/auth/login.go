@@ -1,14 +1,12 @@
 package auth
 
 import (
-	"encoding/json"
-	"errors"
-	"net/http"
-
-	"RTF/log"
 	"RTF/storage/interfaces/user"
 	"RTF/types"
 	"RTF/utils"
+	"encoding/json"
+	"errors"
+	"net/http"
 )
 
 /*
@@ -39,7 +37,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	req := types.LoginRequest{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.ErrorConsoleLog("error decoding json -> %s", err.Error())
+		utils.ErrorConsoleLog("error decoding json -> %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -50,21 +48,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		// check if user not found or incorrect password
 		// if neither, its an 500 server error
 		if errors.Is(err, user.ErrUserNotFound) {
-			log.WarnConsoleLog("user Not found")
+			utils.WarnConsoleLog("user Not found")
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else if errors.Is(err, user.ErrIncorrectPassword) {
-			log.WarnConsoleLog("uauthorized -> Incorrect Password")
+			utils.WarnConsoleLog("uauthorized -> Incorrect Password")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		} else {
-			log.ErrorConsoleLog("error authenticating user")
-			log.PrintErrorTrace(err)
+			utils.ErrorConsoleLog("error authenticating user")
+			utils.PrintErrorTrace(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else if authenticated_user == (types.User{}) {
-		log.WarnConsoleLog("unauthorized Access attempted")
+		utils.WarnConsoleLog("unauthorized Access attempted")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -78,8 +76,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	encoded_avatar, err := utils.EncodeImage(authenticated_user.Avatar)
 	if err != nil {
-		log.ErrorConsoleLog("error getting user's avatar")
-		log.PrintErrorTrace(err)
+		utils.ErrorConsoleLog("error getting user's avatar")
+		utils.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -95,8 +93,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Email:      authenticated_user.Email,
 		Avatar:     encoded_avatar,
 	}); err != nil {
-		log.ErrorConsoleLog("error encoding json")
-		log.PrintErrorTrace(err)
+		utils.ErrorConsoleLog("error encoding json")
+		utils.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

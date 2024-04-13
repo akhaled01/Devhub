@@ -1,12 +1,11 @@
 package types
 
 import (
+	"RTF/utils"
 	"errors"
 	"fmt"
 	"net/http"
 	"time"
-
-	"RTF/log"
 
 	"github.com/gofrs/uuid"
 )
@@ -43,7 +42,7 @@ func (s Session) GetUserID() uuid.UUID {
 func (s *Session) CheckExpired() {
 	for !s.IsExpired() {
 	}
-	log.WarnConsoleLog("session token has expired", "username" ,s.User.Username)
+	utils.WarnConsoleLog("session token has expired", "username", s.User.Username)
 	delete(Sessions, s.SessionID)
 }
 
@@ -52,7 +51,7 @@ func (s *Session) CheckExpired() {
 func GenSession(u User) *Session {
 	session_id, err := uuid.NewV7()
 	if err != nil {
-		log.ErrorConsoleLog("error generating session -> %s", err)
+		utils.ErrorConsoleLog("error generating session -> %s", err)
 	}
 
 	fmt.Println(session_id)

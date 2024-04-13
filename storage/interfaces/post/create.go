@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"RTF/storage"
+	"RTF/storage/interfaces/categories"
 	"RTF/types"
 )
 
@@ -32,6 +33,10 @@ func SavePostInDB(p types.Post) error {
 		},
 	); err != nil {
 		return errors.Join(errors.New("error executing SavePostInDB query"), err)
+	}
+
+	if err = categories.AssignPostCategory(p.ID, p.Category.Id); err != nil {
+		return errors.Join(errors.New("error assigning categories to post"), err)
 	}
 
 	return nil

@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	red = "\033[31;1m"
-	reset       = "\033[0m"
+	red   = "\033[31;1m"
+	reset = "\033[0m"
 )
 
 // starts the server after registering all the endpoints

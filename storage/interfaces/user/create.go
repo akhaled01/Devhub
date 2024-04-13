@@ -30,7 +30,7 @@ func SaveUserInDB(u types.SignupRequest) error {
 	}
 	defer stmt.Close()
 
-	new_user_id, err := uuid.NewV1()
+	new_user_id, err := uuid.NewV7()
 	if err != nil {
 		return errors.Join(errors.New("error creating uuid"), err)
 	}

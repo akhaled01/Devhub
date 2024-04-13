@@ -51,7 +51,7 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 
 		c.ID = uuid.FromStringOrNil(comment_id)
 		c.Post_ID = postid
-		c.User = *u
+		c.User = u
 		if c.CreationDate, err = time.Parse("YYYY-MM-DD", comment_date); err != nil {
 			return nil, errors.Join(errors.New("error getting comment creation date"), err)
 		}

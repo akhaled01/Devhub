@@ -11,6 +11,10 @@ var Tables = []func(db *sql.DB) error{
 	CreateCommentTables,
 }
 
+// In the case the database is not found, 
+// this function will run to create a new 
+// sqlite3 DB file and initialize the
+// DB schema of the project.
 func CreateNewDB() error {
 	DB, err := sql.Open("sqlite3", "RTF.db")
 	if err != nil {

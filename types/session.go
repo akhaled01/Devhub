@@ -2,6 +2,8 @@ package types
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
 	"time"
 
 	"RTF/log"
@@ -19,7 +21,7 @@ var Sessions = make(map[uuid.UUID]Session, 0)
 
 // checks if a session is expired or not
 func (s Session) IsExpired() bool {
-	return s.Expiry.Before(time.Now())
+	return !time.Now().Before(s.Expiry)
 }
 
 // gets valid session based on id
@@ -41,7 +43,7 @@ func (s Session) GetUserID() uuid.UUID {
 func (s *Session) CheckExpired() {
 	for !s.IsExpired() {
 	}
-	log.InfoConsoleLog("%s's session token has expired", s.User.Username)
+	log.InfoConsoleLog("session token has expired", "username" ,s.User.Username)
 	delete(Sessions, s.SessionID)
 }
 
@@ -53,9 +55,36 @@ func GenSession(u User) *Session {
 		log.ErrorConsoleLog("error generating session -> %s", err)
 	}
 
+	fmt.Println(session_id)
+
 	return &Session{
 		SessionID: session_id,
 		User:      u,
-		Expiry:    <-time.After(time.Second * 3600),
+		Expiry:    time.Now().Add(time.Second * 3600),
 	}
+}
+
+// expires current user session
+func LogOutBySessionToken(w http.ResponseWriter, sessionToken uuid.UUID) {
+	// Get the session from the Sessions map
+	if _, ok := Sessions[sessionToken]; ok {
+		delete(Sessions, sessionToken)
+		cookie := &http.Cookie{
+			Name:    "session_token",
+			Value:   "",
+			Expires: time.Now().Add(-time.Hour),
+		}
+		http.SetCookie(w, cookie)
+		w.Header().Add("Set-Cookie", "session_token=; Max-Age=0; HttpOnly")
+	}
+}
+
+// checks if a user has a current session
+func UserHasSessions(user_id uuid.UUID) (Session, bool) {
+	for _, s := range Sessions {
+		if s.User.ID == user_id {
+			return s, true
+		}
+	}
+	return (Session{}), false
 }

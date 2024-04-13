@@ -13,26 +13,19 @@ import (
 
 /*
 This is the handler for a user to login to the DevHub.
-It creates the session
+It creates the session. credential can be username / email
 
 # The Request URI for this handler
 
 	`POST /auth/login`
 
-# JSON Examples
+# JSON Example
 
 	{
 		credential: "akhaled",
 		password: "azt@345"
 	}
 
-	OR
-
-	{
-		credential: "akhaledlarus@gmail.com",
-		password: "azt@345"
-	}
-	
 EXAMPLE SUCCESSFUL RESPONSE (200 OK)
 
 	{
@@ -43,7 +36,7 @@ EXAMPLE SUCCESSFUL RESPONSE (200 OK)
 	}
 */
 func Login(w http.ResponseWriter, r *http.Request) {
-	req := &types.LoginRequest{}
+	req := types.LoginRequest{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.ErrorConsoleLog("error decoding json -> %s", err.Error())
@@ -54,23 +47,35 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	authenticated_user, err := user.Authenticate(req.Credential, req.Password)
 	// check for authentication twice
 	if err != nil {
-		if errors.Is(err, errors.New("user not found")) {
-			log.WarnConsoleLog("unauthorized Access attempted")
+		// check if user not found
+		// then check if incorrect password
+		// if neither, its an 500 server error
+		if errors.Is(err, user.ErrUserNotFound) {
+			log.WarnConsoleLog("user Not found")
+			w.WriteHeader(http.StatusNotFound)
+			return
+		} else if errors.Is(err, user.ErrIncorrectPassword) {
+			log.WarnConsoleLog("uauthorized -> Incorrect Password")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		} else {
-			log.ErrorConsoleLog("error authenticating user -> %s", err.Error())
+			log.ErrorConsoleLog("error authenticating user")
+			log.PrintErrorTrace(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-	} else if authenticated_user == nil {
+	} else if authenticated_user == (types.User{}) {
 		log.WarnConsoleLog("unauthorized Access attempted")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	session := types.GenSession(*authenticated_user)
-	go session.CheckExpired()
+	// check if a session with this user exists. logout if thats the case
+	if s, has_sessions := types.UserHasSessions(authenticated_user.ID); has_sessions {
+		types.LogOutBySessionToken(w, s.SessionID)
+	}
+
+	session := types.GenSession(authenticated_user)
 
 	encoded_avatar, err := utils.EncodeImage(authenticated_user.Avatar)
 	if err != nil {
@@ -91,8 +96,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Email:      authenticated_user.Email,
 		Avatar:     encoded_avatar,
 	}); err != nil {
-		log.WarnConsoleLog("error encoding json")
+		log.ErrorConsoleLog("error encoding json")
+		log.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	go session.CheckExpired()
 }

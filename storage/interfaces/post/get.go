@@ -53,7 +53,7 @@ func GetPostByID(id uuid.UUID) (*types.Post, error) {
 		return nil, err
 	}
 
-	p.User = *creator
+	p.User = creator
 	return p, nil
 }
 

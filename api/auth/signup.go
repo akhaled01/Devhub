@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"RTF/log"
@@ -36,38 +37,17 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	signup_data := types.SignupRequest{}
 
 	if err := json.NewDecoder(r.Body).Decode(&signup_data); err != nil {
-		log.ErrorConsoleLog("error decoding json on signup! %s", err.Error())
+		log.ErrorConsoleLog("error decoding json on signup!")
+		log.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	does_username_exist, err := user.CheckUsernameExist(signup_data.Username)
-	if err != nil {
-		log.ErrorConsoleLog("error checking username exist")
-		log.PrintErrorTrace(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	does_email_exist, err := user.CheckEmailExist(signup_data.Email)
-	if err != nil {
-		log.ErrorConsoleLog("error checking email exist")
-		log.PrintErrorTrace(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// check if the username or email exist
-	if does_username_exist || does_email_exist {
-		log.WarnConsoleLog("user tried to signup with existing credentials")
-		w.WriteHeader(http.StatusConflict)
 		return
 	}
 
 	// save avatar image
 	img_path, err := utils.SaveImage(signup_data.Avatar, "avatar")
 	if err != nil {
-		log.ErrorConsoleLog("error saving avatar -> %s", err.Error())
+		log.ErrorConsoleLog("error saving avatar")
+		log.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -75,6 +55,11 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	signup_data.Avatar = img_path
 
 	if err = user.SaveUserInDB(signup_data); err != nil {
+		if errors.Is(err, user.ErrUserExist) {
+			log.WarnConsoleLog("a user with either this username / email exist")
+			w.WriteHeader(http.StatusConflict)
+			return
+		}
 		log.ErrorConsoleLog("error saving user in DB")
 		log.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)

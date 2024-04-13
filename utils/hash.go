@@ -1,6 +1,8 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 // This function hashes a given password
 func HashPassword(password string) (string, error) {
@@ -8,7 +10,7 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-// This function takes in a plaintext string, 
+// This function takes in a plaintext string,
 // then compares it with a hash to check if the
 // hash === plaintext
 func CheckPasswordHash(password, hash string) bool {

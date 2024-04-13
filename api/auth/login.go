@@ -47,8 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	authenticated_user, err := user.Authenticate(req.Credential, req.Password)
 	// check for authentication twice
 	if err != nil {
-		// check if user not found
-		// then check if incorrect password
+		// check if user not found or incorrect password
 		// if neither, its an 500 server error
 		if errors.Is(err, user.ErrUserNotFound) {
 			log.WarnConsoleLog("user Not found")

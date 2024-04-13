@@ -43,7 +43,7 @@ func (s Session) GetUserID() uuid.UUID {
 func (s *Session) CheckExpired() {
 	for !s.IsExpired() {
 	}
-	log.InfoConsoleLog("session token has expired", "username" ,s.User.Username)
+	log.WarnConsoleLog("session token has expired", "username" ,s.User.Username)
 	delete(Sessions, s.SessionID)
 }
 

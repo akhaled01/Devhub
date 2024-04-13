@@ -13,7 +13,7 @@ import (
 /*
 This is the handler for a user to signup on the DevHub.
 
-# The Request URI for this handler
+# The Request URI for this handler (returns 201 Created is successful)
 
 	`POST /auth/signup`
 

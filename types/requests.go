@@ -11,3 +11,8 @@ type SignupRequest struct {
 	Gender    string `json:"gender"`
 	Avatar    string `json:"image"`
 }
+
+type LoginRequest struct {
+	Credential string `json:"credential"`
+	Password   string `json:"password"`  
+}

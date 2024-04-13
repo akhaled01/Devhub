@@ -13,9 +13,10 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-const PostByIDQuery = `SELECT user_id, creation_date, post_content, post_image_path FROM posts WHERE post_id = ?`
+const PostByIDQuery = `SELECT user_id, creation_date, post_content, post_image_path 
+	FROM posts WHERE post_id = ?`
 
-const GETUSERLIKEDPOSTSQUERY = `SELECT post_id FROM post_likes WHERE user_id = ? AND actions_type = 1`
+const GETUSERLIKEDPOSTSQUERY = `SELECT post_id FROM post_likes WHERE user_id = ?`
 
 // Function that Gets a post from a DB by its ID
 func GetPostByID(id uuid.UUID) (*types.Post, error) {

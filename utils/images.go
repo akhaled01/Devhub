@@ -33,3 +33,17 @@ func SaveImage(encode string, img_type string) (string, error) {
 
 	return filename, nil
 }
+
+// EncodeImageToBase64 reads an image file and returns its base64 encoded content
+func EncodeImage(imagePath string) (string, error) {
+	// Read image file
+	imageBytes, err := os.ReadFile(imagePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read image file: %w", err)
+	}
+
+	// Encode to base64 string
+	base64Str := base64.StdEncoding.EncodeToString(imageBytes)
+
+	return base64Str, nil
+}

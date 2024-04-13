@@ -26,11 +26,11 @@ func CreatePostTables(DB *sql.DB) error {
             FOREIGN KEY (cat_id)  REFERENCES category(cat_id)
         )`,
 		`CREATE TABLE IF NOT EXISTS post_likes (
-            act_id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            post_id               VARCHAR NOT NULL,
-            user_id               VARCHAR NOT NULL,
-            FOREIGN KEY (post_id) REFERENCES posts(post_id),
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
+            like_id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            post_id                VARCHAR NOT NULL,
+            user_id                VARCHAR NOT NULL,
+            FOREIGN KEY (post_id)  REFERENCES posts(post_id),
+            FOREIGN KEY (user_id)  REFERENCES users(user_id)
         )`,
 	}
 

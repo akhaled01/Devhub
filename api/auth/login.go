@@ -52,7 +52,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else if errors.Is(err, user.ErrIncorrectPassword) {
-			utils.WarnConsoleLog("uauthorized -> Incorrect Password")
+			utils.WarnConsoleLog("unauthorized -> Incorrect Password")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		} else {

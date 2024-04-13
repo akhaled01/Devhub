@@ -1,14 +1,15 @@
 package user
 
 import (
+	"database/sql"
 	"errors"
 
 	"RTF/storage"
 	"RTF/types"
 	"RTF/utils"
-
-	"github.com/mattn/go-sqlite3"
 )
+
+const QUERY_USER = `SELECT * FROM users WHERE ? = ?`
 
 /*
 This Function recieves a field, and a wanted value and interfaces with the database to get
@@ -21,13 +22,13 @@ Params:
 */
 func GetSingleUser(field, val string) (*types.User, error) {
 	user := &types.User{}
-	stmt, err := storage.DB_Conn.Prepare("SELECT * FROM users WHERE ? = ?")
+	stmt, err := storage.DB_Conn.Prepare(QUERY_USER)
 	if err != nil {
 		return nil, errors.Join(errors.New("ERROR PREPARING SELECT STATEMENT"), err)
 	}
 
 	if err := stmt.QueryRow(field, val).Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.Avatar, &user.LastName, &user.Password); err != nil {
-		if err == sqlite3.ErrNotFound {
+		if err == sql.ErrNoRows {
 			return nil, errors.New("user not found")
 		}
 		return nil, errors.Join(errors.New("ERROR SCANNING SELECT RESULT"), err)
@@ -75,4 +76,16 @@ func Authenticate(credential string, password string) (*types.User, error) {
 	}
 
 	return authorized_user, nil
+}
+
+func CheckUsernameExist(username string) (bool, error) {
+	user, _ := GetSingleUser("user_name", username)
+
+	return user != nil, nil
+}
+
+func CheckEmailExist(email string) (bool, error) {
+	user, _ := GetSingleUser("user_email", email)
+
+	return user != nil, nil
 }

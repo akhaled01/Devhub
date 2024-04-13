@@ -6,9 +6,11 @@ import (
 	"RTF/storage"
 	"RTF/types"
 	"RTF/utils"
+
+	"github.com/gofrs/uuid"
 )
 
-const NEWUSERQUERY = "INSERT INTO users VALUE (user_email, user_name, first_name, last_name, avatar_path, user_pwd) VALUES (?, ?, ?, ?, ?, ?)"
+const NEWUSERQUERY = "INSERT INTO users (user_id, user_email, user_name, first_name, last_name, avatar_path, user_pwd) VALUES (?, ?, ?, ?, ?, ?, ?)"
 
 /*
 This function takes in a user struct and saves
@@ -16,7 +18,7 @@ the instance in the Database.
 
 returns nil if no errors
 */
-func SaveUserInDB(u types.User) error {
+func SaveUserInDB(u types.SignupRequest) error {
 	hashedPass, err := utils.HashPassword(u.Password)
 	if err != nil {
 		return errors.Join(errors.New("error Hashing user password"), err)
@@ -28,7 +30,12 @@ func SaveUserInDB(u types.User) error {
 	}
 	defer stmt.Close()
 
-	if _, err := stmt.Exec(u.Email, u.Username, u.FirstName, u.LastName, u.Avatar, hashedPass); err != nil {
+	new_user_id, err := uuid.NewV1()
+	if err != nil {
+		return errors.Join(errors.New("error creating uuid"), err)
+	}
+
+	if _, err := stmt.Exec(new_user_id.String(), u.Email, u.Username, u.FirstName, u.LastName, u.Avatar, hashedPass); err != nil {
 		return errors.Join(errors.New("error executing SaveUserInDB query"), err)
 	}
 

@@ -11,8 +11,7 @@ func CreateCommentTables(DB *sql.DB) error {
             post_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             comment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            comment VARCHAR(150) NOT NULL,
-            edited BOOLEAN NOT NULL DEFAULT FALSE,
+            comment VARCHAR(255) NOT NULL,
             FOREIGN KEY (post_id) REFERENCES posts(post_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,
@@ -20,8 +19,6 @@ func CreateCommentTables(DB *sql.DB) error {
             action_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             comment_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
-            actions_type BOOLEAN NOT NULL,
-            action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (comment_id) REFERENCES comments(comm_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,

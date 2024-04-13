@@ -29,8 +29,6 @@ func CreatePostTables(DB *sql.DB) error {
             act_id                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             post_id               VARCHAR NOT NULL,
             user_id               VARCHAR NOT NULL,
-            actions_type          BOOLEAN NOT NULL,
-            action_date           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (post_id) REFERENCES posts(post_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,

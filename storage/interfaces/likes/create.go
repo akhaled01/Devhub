@@ -19,7 +19,7 @@ const (
 /*
 Invokes a query that inserts a new like into the DB
 */
-func CreateLikeRecord(postid uuid.UUID, userid uuid.UUID) error {
+func CreateLikeRecordPost(postid uuid.UUID, userid uuid.UUID) error {
 	stmt, err := storage.DB_Conn.Prepare(CREATE_LIKE_RECORD)
 	if err != nil {
 		return errors.Join(errors.New("error preparing CreateLikeRecord query"), err)
@@ -35,7 +35,7 @@ func CreateLikeRecord(postid uuid.UUID, userid uuid.UUID) error {
 /*
 Invokes a query that deletes a like from the DB
 */
-func DeleteLikeRecord(postid uuid.UUID, userid uuid.UUID) error {
+func DeleteLikeRecordPost(postid uuid.UUID, userid uuid.UUID) error {
 	stmt, err := storage.DB_Conn.Prepare(DELETE_LIKE_RECORD)
 	if err != nil {
 		return errors.Join(errors.New("error preparing DeleteLikeRecord query"), err)

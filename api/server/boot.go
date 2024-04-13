@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,10 +9,11 @@ import (
 	"RTF/api/auth"
 	"RTF/api/posts"
 	"RTF/storage"
+	"RTF/utils"
 )
 
 const (
-	brightGreen = "\033[32;1m"
+	red = "\033[31;1m"
 	reset       = "\033[0m"
 )
 
@@ -31,6 +31,6 @@ func (d *DevServer) Boot() error {
 	signal.Notify(shutdownSignal, syscall.SIGTERM)
 	go d.GracefulShutdown(shutdownSignal)
 
-	fmt.Println(brightGreen + "DevHub API is Live on http://127.0.0.1:7000" + reset)
+	utils.InfoConsoleLog(red + "DevHub API is Live on http://127.0.0.1:7000" + reset)
 	return http.ListenAndServe(":7000", d.Router)
 }

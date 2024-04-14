@@ -25,10 +25,11 @@ func PrintErrorTrace(err error) {
 		Cause() error
 	}
 
-	fmt.Println("Error Trace:")
+	ErrorConsoleLog("---------------- Error Trace -----------")
 
 	for err != nil {
-		fmt.Printf("- %v\n", err)
+		fmt.Println(err.Error())
+		fmt.Println("↓")
 
 		// Check if the error implements causer interface
 		if c, ok := err.(causer); ok {
@@ -37,4 +38,6 @@ func PrintErrorTrace(err error) {
 			break
 		}
 	}
+
+	ErrorConsoleLog("----------------End Of Error Trace -----------")
 }

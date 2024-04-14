@@ -18,13 +18,13 @@ const QueryPostComments = "SELECT comm_id, user_id, comment_date, comment FROM c
 func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 	stmt, err := storage.DB_Conn.Prepare(QueryPostComments)
 	if err != nil {
-		return nil, errors.Join(errors.New("error preparing GetPostCommentsByID query"), err)
+		return nil, errors.Join(types.ErrPrepare, err)
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(postid.String())
 	if err != nil {
-		return nil, errors.Join(errors.New("error executing GetPostCommentsByID query"), err)
+		return nil, errors.Join(types.ErrExec, err)
 	}
 
 	var comments []types.Comment
@@ -36,24 +36,24 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 		var comment_date string
 
 		if err := rows.Scan(&comment_id, &user_id, &comment_date, &c.Content); err != nil {
-			return nil, errors.Join(errors.New("error mapping to comment struct"), err)
+			return nil, errors.Join(types.ErrScan, err)
 		}
 
 		u, err := user.GetSingleUser("user_id", user_id)
 		if err != nil {
-			return nil, errors.Join(errors.New("error getting comment creator"), err)
+			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
 
 		//! MIGHT BE BUGGY FROM HERE ON OUT
 		if c.Likes, err = GetCommentLikes(uuid.FromStringOrNil(comment_id)); err != nil {
-			return nil, errors.Join(errors.New("error getting comment creator"), err)
+			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
 
 		c.ID = uuid.FromStringOrNil(comment_id)
 		c.Post_ID = postid
 		c.User = u
 		if c.CreationDate, err = time.Parse("YYYY-MM-DD", comment_date); err != nil {
-			return nil, errors.Join(errors.New("error getting comment creation date"), err)
+			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
 		comments = append(comments, *c)
 	}
@@ -72,7 +72,7 @@ func GetCommentLikes(commentID uuid.UUID) (int64, error) {
 		if err == sql.ErrNoRows {
 			return 0, nil
 		}
-		return 0, errors.Join(errors.New("error querying commment likes"), err)
+		return 0, errors.Join(types.ErrGetLikes, err)
 	}
 
 	return count, nil

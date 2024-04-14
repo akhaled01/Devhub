@@ -12,6 +12,7 @@ func CreatePostTables(DB *sql.DB) error {
             creation_date         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             post_content          VARCHAR(150) NOT NULL,
             post_image_path       VARCHAR(150),
+						like_count            INTEGER,
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,
 		`CREATE TABLE IF NOT EXISTS category (
@@ -67,6 +68,6 @@ func CreatePostTables(DB *sql.DB) error {
 			return err
 		}
 	}
-	
+
 	return nil
 }

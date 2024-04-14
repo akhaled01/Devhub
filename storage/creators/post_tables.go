@@ -32,6 +32,21 @@ func CreatePostTables(DB *sql.DB) error {
             FOREIGN KEY (post_id)  REFERENCES posts(post_id),
             FOREIGN KEY (user_id)  REFERENCES users(user_id)
         )`,
+		`CREATE TABLE sessions ( 
+						id                           INTEGER      NOT NULL PRIMARY KEY AUTOINCREMENT,
+						session_key                  VARCHAR(250) NOT NULL,
+						created_at                   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+						expiry_time                  TIMESTAMP    NOT NULL,
+						user_id                      VARCHAR(255) NOT NULL,
+						FOREIGN KEY ( user_id ) REFERENCES users( user_id )  
+				)`,
+		`CREATE TABLE logs ( 
+						id                                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+						user_id              		          VARCHAR(255) NOT NULL,
+						event_id                          VARCHAR(250) NOT NULL,
+						event_type                        VARCHAR(250),
+						FOREIGN KEY ( user_id ) REFERENCES users( user_id )  
+				)`,
 	}
 
 	for _, stmt := range TableStatements {
@@ -52,6 +67,6 @@ func CreatePostTables(DB *sql.DB) error {
 			return err
 		}
 	}
-
+	
 	return nil
 }

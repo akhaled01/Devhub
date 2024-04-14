@@ -24,14 +24,14 @@ func (s Session) IsExpired() bool {
 }
 
 // gets valid session based on id
-func ValidateSession(session_id uuid.UUID) (*Session, error) {
+func ValidateSession(session_id uuid.UUID) (Session, error) {
 	s := Sessions[session_id]
 
 	if (Session{}) == s || s.IsExpired() {
-		return &Session{}, errors.New("invalid session")
+		return Session{}, errors.New("invalid session")
 	}
 
-	return &s, nil
+	return s, nil
 }
 
 // Returns the user ID of the user in the current session

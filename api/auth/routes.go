@@ -1,6 +1,8 @@
 package auth
 
-import "net/http"
+import (
+	"net/http"
+)
 
 var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"POST /auth/signup": Signup,

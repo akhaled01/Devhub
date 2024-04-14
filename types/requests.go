@@ -14,5 +14,11 @@ type SignupRequest struct {
 
 type LoginRequest struct {
 	Credential string `json:"credential"`
-	Password   string `json:"password"`  
+	Password   string `json:"password"`
+}
+
+type PostCreationRequest struct {
+	Session_id        string `json:"session_id"` // use to extract user who created the post
+	Post_text         string `json:"post_text"`
+	Post_image_encode string `json:"post_image"`
 }

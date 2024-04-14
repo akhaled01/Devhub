@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	utils.ErrorConsoleLog(server.NewDevServer(":7000").Boot().Error())
+	utils.ErrorConsoleLog(server.NewDevServer(":8080").Boot().Error())
 }

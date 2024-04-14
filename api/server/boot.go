@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"RTF/api/auth"
+	"RTF/api/chat"
 	"RTF/api/comments"
 	"RTF/api/posts"
 	"RTF/storage"
@@ -28,11 +29,12 @@ func (d *DevServer) Boot() error {
 	posts.RegisterPostRoutes(d.Router)
 	auth.RegisterAuthRoutes(d.Router)
 	comments.RegisterCommentRoutes(d.Router)
+	chat.RegisterChatRoutes(d.Router)
 
 	shutdownSignal := make(chan os.Signal, 1)
 	signal.Notify(shutdownSignal, syscall.SIGTERM)
 	go d.GracefulShutdown(shutdownSignal)
 
 	utils.InfoConsoleLog(red + "DevHub API is Live on http://127.0.0.1:7000" + reset)
-	return http.ListenAndServe(":7000", d.Router)
+	return http.ListenAndServe(d.ListenAddr, d.Router)
 }

@@ -12,13 +12,6 @@ import (
 
 const QUERY_USER = `SELECT * FROM users WHERE %s = ?`
 
-var (
-	ErrUserNotFound      = errors.New("user not found")
-	ErrIncorrectPassword = errors.New("incorrect password")
-	ErrPrepare           = errors.New("error preparing statment")
-	ErrScan              = errors.New("error scanning results")
-)
-
 /*
 This Function recieves a field, and a wanted value and interfaces with the database to get
 a SINGLE USER by that field.
@@ -27,16 +20,16 @@ func GetSingleUser(field, val string) (types.User, error) {
 	query := fmt.Sprintf(QUERY_USER, field)
 	stmt, err := storage.DB_Conn.Prepare(query)
 	if err != nil {
-		return (types.User{}), errors.Join(ErrPrepare, err)
+		return (types.User{}), errors.Join(types.ErrPrepare, err)
 	}
 
 	user := types.User{}
 
 	if err := stmt.QueryRow(val).Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password); err != nil {
 		if err == sql.ErrNoRows {
-			return (types.User{}), ErrUserNotFound
+			return (types.User{}), types.ErrUserNotFound
 		}
-		return (types.User{}), errors.Join(ErrScan, err)
+		return (types.User{}), errors.Join(types.ErrScan, err)
 	}
 
 	return user, nil
@@ -58,14 +51,14 @@ func Authenticate(credential string, password string) (types.User, error) {
 	}
 
 	if err != nil {
-		if errors.Is(err, ErrUserNotFound) {
-			return types.User{}, ErrUserNotFound
+		if errors.Is(err, types.ErrUserNotFound) {
+			return types.User{}, types.ErrUserNotFound
 		}
 		return types.User{}, err
 	}
 
 	if !utils.CheckPasswordHash(password, authorized_user.Password) {
-		return (types.User{}), ErrIncorrectPassword
+		return (types.User{}), types.ErrIncorrectPassword
 	}
 
 	return authorized_user, nil

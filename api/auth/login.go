@@ -1,12 +1,13 @@
 package auth
 
 import (
-	"RTF/storage/interfaces/user"
-	"RTF/types"
-	"RTF/utils"
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"RTF/storage/interfaces/user"
+	"RTF/types"
+	"RTF/utils"
 )
 
 /*
@@ -47,11 +48,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// check if user not found or incorrect password
 		// if neither, its an 500 server error
-		if errors.Is(err, user.ErrUserNotFound) {
+		if errors.Is(err, types.ErrUserNotFound) {
 			utils.WarnConsoleLog("user Not found")
 			w.WriteHeader(http.StatusNotFound)
 			return
-		} else if errors.Is(err, user.ErrIncorrectPassword) {
+		} else if errors.Is(err, types.ErrIncorrectPassword) {
 			utils.WarnConsoleLog("unauthorized -> Incorrect Password")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -81,6 +82,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "session_id",
+		Value:   session.SessionID.String(),
+		Expires: session.Expiry,
+	})
 
 	if err := json.NewEncoder(w).Encode(struct {
 		Session_id string `json:"session_id"`

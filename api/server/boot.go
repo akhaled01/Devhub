@@ -8,7 +8,6 @@ import (
 
 	"RTF/api/auth"
 	"RTF/api/chat"
-	"RTF/api/comments"
 	"RTF/api/posts"
 	"RTF/storage"
 	"RTF/utils"
@@ -28,7 +27,6 @@ func (d *DevServer) Boot() error {
 
 	posts.RegisterPostRoutes(d.Router)
 	auth.RegisterAuthRoutes(d.Router)
-	comments.RegisterCommentRoutes(d.Router)
 	chat.RegisterChatRoutes(d.Router)
 
 	shutdownSignal := make(chan os.Signal, 1)

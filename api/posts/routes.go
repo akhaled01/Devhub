@@ -7,9 +7,10 @@ import (
 )
 
 var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
-	"GET /post/all":     GetAllPosts,
-	"GET /post/{id}":    GetPostByID,
-	"POST /post/create": CreatePost,
+	"GET /post/all":        GetAllPosts,
+	"GET /post/{id}":       GetPostByID,
+	"POST /post/create":    CreatePost,
+	"POST /comment/create": CreateComment,
 }
 
 // Register Post Routes with middleware validation

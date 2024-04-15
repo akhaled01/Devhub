@@ -1,5 +1,7 @@
 package types
 
+import "github.com/gofrs/uuid"
+
 // to be decoded from a signup request
 type SignupRequest struct {
 	Username  string `json:"username"`
@@ -22,4 +24,10 @@ type PostCreationRequest struct {
 	Post_text         string `json:"post_text"`
 	Post_image_base64 string `json:"post_image"`
 	Post_category     int    `json:"post_category"`
+}
+
+type CommentCreationRequest struct {
+	Session_id   string    `json:"session_id"`
+	Post_id      uuid.UUID `json:"post_id"`
+	Comment_text string    `json:"post_text"`
 }

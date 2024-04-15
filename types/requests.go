@@ -20,5 +20,6 @@ type LoginRequest struct {
 type PostCreationRequest struct {
 	Session_id        string `json:"session_id"` // use to extract user who created the post
 	Post_text         string `json:"post_text"`
-	Post_image_encode string `json:"post_image"`
+	Post_image_base64 string `json:"post_image"`
+	Post_category     int    `json:"post_category"`
 }

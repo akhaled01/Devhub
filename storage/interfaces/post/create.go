@@ -2,10 +2,14 @@ package post
 
 import (
 	"errors"
+	"time"
 
 	"RTF/storage"
 	"RTF/storage/interfaces/categories"
 	"RTF/types"
+	"RTF/utils"
+
+	"github.com/gofrs/uuid"
 )
 
 const NEWPOSTQUERY = `
@@ -13,10 +17,7 @@ const NEWPOSTQUERY = `
     VALUES (:UserID, :CreationDate, :Content, :Image_Path)
   `
 
-// This function saves a entire post to the database.
-//
-// Interfaces are used to map bind values to queries
-// in any desired order.
+// This function saves a post object to the DB
 func SavePostInDB(p types.Post) error {
 	stmt, err := storage.DB_Conn.Prepare(NEWPOSTQUERY)
 	if err != nil {
@@ -40,4 +41,39 @@ func SavePostInDB(p types.Post) error {
 	}
 
 	return nil
+}
+
+// This function construct a new post with default stats in
+// in order to facilitate communication with the DB.
+func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error) {
+	new_pid, err := uuid.NewV7()
+	if err != nil {
+		return (types.Post{}), errors.Join(types.ErrUUID, err)
+	}
+
+	post_author := types.Sessions[uuid.FromStringOrNil(r.Session_id)].User
+	category, err := categories.GetFullCategory(r.Post_category)
+	if err != nil {
+		return (types.Post{}), errors.Join(types.ErrCats, err)
+	}
+
+	var image_path string
+
+	if r.Post_image_base64 == "" {
+		image_path = ""
+	} else {
+		image_path, err = utils.SaveImage(r.Post_image_base64, "post")
+		if err != nil {
+			return (types.Post{}), errors.Join(types.ErrImage, err)
+		}
+	}
+
+	return types.Post{
+		ID:           new_pid,
+		User:         post_author,
+		Content:      r.Post_text,
+		CreationDate: time.Now(),
+		Image_Path:   image_path,
+		Category:     *category,
+	}, nil
 }

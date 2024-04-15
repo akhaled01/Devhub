@@ -20,13 +20,13 @@ const (
 func GetFullCategory(categoryid int) (*types.Category, error) {
 	stmt, err := storage.DB_Conn.Prepare(GET_POST_CATEGORY)
 	if err != nil {
-		return nil, errors.Join(errors.New("error preparing GetCategory query"), err)
+		return nil, errors.Join(types.ErrPrepare, err)
 	}
 	defer stmt.Close()
 	var category types.Category
 
 	if err := stmt.QueryRow(categoryid).Scan(&category.Id, &category.Name); err != nil {
-		return nil, errors.Join(errors.New("error executing GetCategory query"), err)
+		return nil, errors.Join(types.ErrScan, err)
 	}
 
 	return &category, nil

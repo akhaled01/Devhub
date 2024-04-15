@@ -11,5 +11,8 @@ var (
 	ErrUserNotFound      = errors.New("user not found")
 	ErrIncorrectPassword = errors.New("incorrect password")
 	ErrGetLikes          = errors.New("error getting likes")
+	ErrUUID              = errors.New("error dealing with uuid")
 	ErrGetCommentDetails = errors.New("error getting comment details")
+	ErrCats              = errors.New("error getting full category details")
+	ErrImage             = errors.New("error dealing with images correctly")
 )

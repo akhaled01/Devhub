@@ -23,6 +23,7 @@ func SessionValidationMiddleware(next http.Handler) http.Handler {
 			utils.ErrorConsoleLog("error extracting session_id cookie")
 			utils.PrintErrorTrace(err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		is_session_valid, err := types.ValidateSession(uuid.FromStringOrNil(cookie.Value))
@@ -30,11 +31,13 @@ func SessionValidationMiddleware(next http.Handler) http.Handler {
 			utils.ErrorConsoleLog("error extracting session_id cookie")
 			utils.PrintErrorTrace(err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		if is_session_valid == (types.Session{}) {
 			utils.WarnConsoleLog("Authentication expired for %s", is_session_valid.User.Username)
 			http.Redirect(w, r, "/login", http.StatusPermanentRedirect)
+			return
 		}
 
 		// if no errs, and its valid, launch handler

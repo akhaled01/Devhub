@@ -7,7 +7,7 @@ import (
 )
 
 type Post struct {
-	ID           uuid.UUID `json:"uuid"`
+	ID           uuid.UUID `json:"id"`
 	User         User      `json:"user"`
 	Image_Path   string    `json:"image"`
 	Likes        int64     `json:"likes"`

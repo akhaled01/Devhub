@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+// Saves the image to the filesystem and returns the path
+// img_type refers to the purpose of the image (avatar / post)
 func SaveImage(encode string, img_type string) (string, error) {
 	decoded, err := base64.StdEncoding.DecodeString(encode)
 	if err != nil {

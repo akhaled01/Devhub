@@ -1,19 +1,22 @@
 package types
 
 import (
-	"RTF/utils"
 	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
+	"RTF/utils"
+
 	"github.com/gofrs/uuid"
+	"github.com/gorilla/websocket"
 )
 
 type Session struct {
 	SessionID uuid.UUID
 	User      User
 	Expiry    time.Time
+	Conn      *websocket.Conn
 }
 
 var Sessions = make(map[uuid.UUID]Session, 0)

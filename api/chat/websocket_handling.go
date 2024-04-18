@@ -33,16 +33,17 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 	go ws_server.HandleWS(conn, ws_routes)
 }
 
-func Send_Message(ws *websocket.Conn, request *ser.WS_Request) {
-	json_msg, _ := json.Marshal(&ser.Message{
-		Msg_Content: "did you send a message?",
-	})
-	fmt.Println(request)
+func Send_Message(ws *websocket.Conn, request string) {
+	message_contents := &ser.Message{}
+	json.Unmarshal([]byte(request), message_contents)
+	json_msg, _ := json.Marshal(message_contents)
+
+	fmt.Println(string(json_msg))
 	ws.WriteMessage(websocket.TextMessage, json_msg)
 
 }
 
-func Open_chat(ws *websocket.Conn, request *ser.WS_Request) {
+func Open_chat(ws *websocket.Conn, request string) {
 	json_msg, _ := json.Marshal(&ser.Message{
 		Msg_Content: "Open_chat",
 	})

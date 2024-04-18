@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"sync"
@@ -8,6 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	ser "RTF/types/serializers"
+	"RTF/utils"
 )
 
 var mutex sync.Mutex
@@ -27,10 +29,9 @@ func NewServer() *Chat_Server {
 /* Do what you want to do with the connection */
 func (s *Chat_Server) HandleWS(
 	ws *websocket.Conn,
-	ws_routes map[string]func(ws *websocket.Conn, request *ser.WS_Request),
+	ws_routes map[string]func(ws *websocket.Conn, request string),
 ) {
-	fmt.Println("new connection from client: ", ws.RemoteAddr())
-
+	utils.InfoConsoleLog(fmt.Sprint("New connection from client: ", ws.RemoteAddr()))
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -48,7 +49,8 @@ func (s *Chat_Server) HandleWS(
 		}
 
 		// After reading the message, you can choose where to direct it
-		ws_routes[msg.Type](ws, msg)
+		passed_content_as_string, _ := json.Marshal(msg.Content)
+		ws_routes[msg.Type](ws, string(passed_content_as_string))
 	}
 
 }

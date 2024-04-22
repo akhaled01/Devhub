@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"RTF/utils"
-
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
+
+	"RTF/utils"
 )
 
 type Session struct {
@@ -19,7 +19,9 @@ type Session struct {
 	Conn      *websocket.Conn
 }
 
-var Sessions = make(map[uuid.UUID]Session, 0)
+var (
+	Sessions = make(map[uuid.UUID]*Session, 0)
+)
 
 // checks if a session is expired or not
 func (s Session) IsExpired() bool {
@@ -27,11 +29,11 @@ func (s Session) IsExpired() bool {
 }
 
 // gets valid session based on id
-func ValidateSession(session_id uuid.UUID) (Session, error) {
-	s := Sessions[session_id]
+func ValidateSession(user_id uuid.UUID) (*Session, error) {
+	s := Sessions[user_id]
 
-	if (Session{}) == s || s.IsExpired() {
-		return Session{}, errors.New("invalid session")
+	if (Session{}) == *s || s.IsExpired() {
+		return &Session{}, errors.New("invalid session")
 	}
 
 	return s, nil
@@ -57,7 +59,7 @@ func GenSession(u User) *Session {
 		utils.ErrorConsoleLog("error generating session -> %s", err)
 	}
 
-	fmt.Println(session_id)
+	fmt.Println(uuid.FromStringOrNil(session_id.String()))
 
 	return &Session{
 		SessionID: session_id,
@@ -82,11 +84,11 @@ func LogOutBySessionToken(w http.ResponseWriter, sessionToken uuid.UUID) {
 }
 
 // checks if a user has a current session
-func UserHasSessions(user_id uuid.UUID) (Session, bool) {
+func UserHasSessions(user_id uuid.UUID) (*Session, bool) {
 	for _, s := range Sessions {
 		if s.User.ID == user_id {
 			return s, true
 		}
 	}
-	return (Session{}), false
+	return (&Session{}), false
 }

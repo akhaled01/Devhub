@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"RTF/storage/interfaces/user"
@@ -74,6 +75,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session := types.GenSession(authenticated_user)
+	types.Sessions[authenticated_user.ID] = session
+	fmt.Println(types.Sessions[authenticated_user.ID])
 
 	encoded_avatar, err := utils.EncodeImage(authenticated_user.Avatar)
 	if err != nil {

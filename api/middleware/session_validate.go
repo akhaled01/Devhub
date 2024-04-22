@@ -34,7 +34,7 @@ func SessionValidationMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if is_session_valid == (types.Session{}) {
+		if is_session_valid == (&types.Session{}) {
 			utils.WarnConsoleLog("Authentication expired for %s", is_session_valid.User.Username)
 			http.Redirect(w, r, "/login", http.StatusPermanentRedirect)
 			return

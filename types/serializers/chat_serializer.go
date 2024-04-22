@@ -1,10 +1,14 @@
 package serializers
 
-import "time"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 type Message struct {
 	Sender      string    `json:"sender"`
-	Recipient   string    `json:"recipient"`
+	Recipient   uuid.UUID `json:"recipient"`
 	Timestamp   time.Time `json:"timestamp"`
 	Msg_Content string    `json:"msg_content"`
 }

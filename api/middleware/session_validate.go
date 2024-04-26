@@ -4,19 +4,20 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gofrs/uuid"
+
 	"RTF/types"
 	"RTF/utils"
-
-	"github.com/gofrs/uuid"
 )
 
 // A middleware that validates sessions
 // for any handlers that require any sort of session validation
 func SessionValidationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("session_token")
+		cookie, err := r.Cookie("session_id")
 		if err != nil {
 			if errors.Is(err, http.ErrNoCookie) {
+				utils.ErrorConsoleLog("ErrNoCookie found")
 				http.Redirect(w, r, "/signup", http.StatusPermanentRedirect)
 				return
 			}

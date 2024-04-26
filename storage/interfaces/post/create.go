@@ -4,17 +4,17 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gofrs/uuid"
+
 	"RTF/storage"
 	"RTF/storage/interfaces/categories"
 	"RTF/types"
 	"RTF/utils"
-
-	"github.com/gofrs/uuid"
 )
 
 const NEWPOSTQUERY = `
-    INSERT INTO posts (user_id, creation_date, post_content, post_image_path)
-    VALUES (:UserID, :CreationDate, :Content, :Image_Path)
+    INSERT INTO posts (post_id, user_id, creation_date, post_content, post_image_path)
+  VALUES ($1, $2, $3, $4, $5)
   `
 
 // This function saves a post object to the DB
@@ -26,12 +26,11 @@ func SavePostInDB(p types.Post) error {
 	defer stmt.Close()
 
 	if _, err = stmt.Exec(
-		map[string]interface{}{
-			":UserID":       p.User.ID.String(),
-			":CreationDate": p.CreationDate,
-			":Content":      p.Content,
-			":Image_Path":   p.Image_Path,
-		},
+		p.ID,
+		p.User.ID.String(),
+		p.CreationDate,
+		p.Content,
+		p.Image_Path,
 	); err != nil {
 		return errors.Join(errors.New("error executing SavePostInDB query"), err)
 	}
@@ -51,7 +50,7 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 		return (types.Post{}), errors.Join(types.ErrUUID, err)
 	}
 
-	post_author := types.Sessions[uuid.FromStringOrNil(r.Session_id)].User
+	post_author := types.Sessions[uuid.FromStringOrNil(r.Session_id)].User // Need to handle errors, PANICS when session_id is not in sessions
 	category, err := categories.GetFullCategory(r.Post_category)
 	if err != nil {
 		return (types.Post{}), errors.Join(types.ErrCats, err)

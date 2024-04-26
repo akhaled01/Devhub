@@ -26,7 +26,6 @@ returns 201 on success, 500 on error and 400 on bad request
 */
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	post_creation_request := types.PostCreationRequest{}
-
 	if err := json.NewDecoder(r.Body).Decode(&post_creation_request); err != nil {
 		utils.ErrorConsoleLog("error decoding json")
 		utils.PrintErrorTrace(err)
@@ -35,6 +34,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	new_post_object, err := post.ConstructNewPostFromRequest(post_creation_request)
+
 	if err != nil {
 		utils.ErrorConsoleLog("error constructing a new post")
 		utils.PrintErrorTrace(err)

@@ -3,10 +3,10 @@ package categories
 import (
 	"errors"
 
+	"github.com/gofrs/uuid"
+
 	"RTF/storage"
 	"RTF/types"
-
-	"github.com/gofrs/uuid"
 )
 
 const (
@@ -18,7 +18,7 @@ const (
 
 // Invokes GET_CATEGORY query that returns a full category struct (name and id)
 func GetFullCategory(categoryid int) (*types.Category, error) {
-	stmt, err := storage.DB_Conn.Prepare(GET_POST_CATEGORY)
+	stmt, err := storage.DB_Conn.Prepare(GET_CATEGORY)
 	if err != nil {
 		return nil, errors.Join(types.ErrPrepare, err)
 	}

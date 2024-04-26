@@ -19,6 +19,7 @@ type Session struct {
 	Conn      *websocket.Conn
 }
 
+// Map sessionID to session
 var (
 	Sessions = make(map[uuid.UUID]*Session, 0)
 )
@@ -29,8 +30,11 @@ func (s Session) IsExpired() bool {
 }
 
 // gets valid session based on id
-func ValidateSession(user_id uuid.UUID) (*Session, error) {
-	s := Sessions[user_id]
+func ValidateSession(session_id uuid.UUID) (*Session, error) {
+	s, ok := Sessions[session_id]
+	if !ok {
+		return &Session{}, errors.New("invalid session")
+	}
 
 	if (Session{}) == *s || s.IsExpired() {
 		return &Session{}, errors.New("invalid session")
@@ -60,6 +64,12 @@ func GenSession(u User) *Session {
 	}
 
 	fmt.Println(uuid.FromStringOrNil(session_id.String()))
+
+	Sessions[session_id] = &Session{
+		SessionID: session_id,
+		User:      u,
+		Expiry:    time.Now().Add(time.Second * 3600),
+	}
 
 	return &Session{
 		SessionID: session_id,

@@ -15,4 +15,5 @@ var (
 	ErrGetCommentDetails = errors.New("error getting comment details")
 	ErrCats              = errors.New("error getting full category details")
 	ErrImage             = errors.New("error dealing with images correctly")
+	ErrSessionNotFound   = errors.New("Session not found!")
 )

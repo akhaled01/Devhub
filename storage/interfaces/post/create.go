@@ -2,6 +2,7 @@ package post
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -39,6 +40,7 @@ func SavePostInDB(p types.Post) error {
 		return errors.Join(errors.New("error assigning categories to post"), err)
 	}
 
+	utils.InfoConsoleLog(fmt.Sprintf("New post created with ID: %s", p.ID))
 	return nil
 }
 
@@ -50,7 +52,12 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 		return (types.Post{}), errors.Join(types.ErrUUID, err)
 	}
 
-	post_author := types.Sessions[uuid.FromStringOrNil(r.Session_id)].User // Need to handle errors, PANICS when session_id is not in sessions
+	author_session, ok := types.Sessions[uuid.FromStringOrNil(r.Session_id)]
+	if !ok {
+		return (types.Post{}), errors.Join(types.ErrSessionNotFound, err)
+	}
+
+	post_author := author_session.User
 	category, err := categories.GetFullCategory(r.Post_category)
 	if err != nil {
 		return (types.Post{}), errors.Join(types.ErrCats, err)

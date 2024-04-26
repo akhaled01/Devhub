@@ -34,14 +34,15 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract session ID from query parameters
-	user_uuid := r.URL.Query().Get("user_uuid")
-	fmt.Printf("WebSocket connection established with session ID: %s\n", user_uuid)
+	session_id := r.URL.Query().Get("session_id")
+	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id)
 
 	// Inserting the connection into session (A hub of connected clients)
-	user_session, err := types.ValidateSession(uuid.FromStringOrNil(user_uuid))
+	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id))
 	fmt.Println(user_session)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
+		conn.Close()
 		return
 	}
 	user_session.Conn = conn

@@ -75,8 +75,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session := types.GenSession(authenticated_user)
-	types.Sessions[authenticated_user.ID] = session
-	fmt.Println(types.Sessions[authenticated_user.ID])
+	fmt.Println(types.Sessions[session.SessionID])
 
 	encoded_avatar, err := utils.EncodeImage(authenticated_user.Avatar)
 	if err != nil {
@@ -88,6 +87,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",
+		Path:    "/",
 		Value:   session.SessionID.String(),
 		Expires: session.Expiry,
 	})

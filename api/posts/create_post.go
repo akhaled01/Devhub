@@ -26,6 +26,15 @@ returns 201 on success, 500 on error and 400 on bad request
 */
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	post_creation_request := types.PostCreationRequest{}
+	session_id, err := r.Cookie("session_id")
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+
+	}
+
+	post_creation_request.Session_id = session_id.Value
 	if err := json.NewDecoder(r.Body).Decode(&post_creation_request); err != nil {
 		utils.ErrorConsoleLog("error decoding json")
 		utils.PrintErrorTrace(err)

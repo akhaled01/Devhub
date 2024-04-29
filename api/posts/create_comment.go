@@ -17,7 +17,6 @@ This is the handler for comment creation
 json body it accepts
 
 	{
-		session_id : "xxxxxxxxxxxxx-xxxxxxxxxxx-xxxxx",
 		post_id : "xxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxx",
 		comment_text : "bla bla bla whatever",
 	}

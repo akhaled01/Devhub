@@ -17,7 +17,6 @@ This is the handler for post creation
 json body it accepts
 
 	{
-		session_id : "xxxxxxxxxxxxx-xxxxxxxxxxx-xxxxx",
 		post_text : "bla bla bla whatever",
 		post_image : "INSERT BASE64 ENCODING OF AN IMAGE HERE"
 	}

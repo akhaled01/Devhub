@@ -25,14 +25,11 @@ Parameters:
 func SaveCommentInDB(r types.Comment) error {
 	stmt, err := storage.DB_Conn.Prepare(SaveCommentInDBQuery)
 	if err != nil {
+		utils.ErrorConsoleLog("Comment creation fail!")
 		return errors.Join(types.ErrPrepare, err)
 	}
 	defer stmt.Close()
 
-	if err != nil {
-		utils.ErrorConsoleLog("Comment creation fail!")
-		return err
-	}
 	if _, err := stmt.Exec(r.ID, r.Post_ID, r.User.ID.String(), time.Now().Format("YYYY-MM-DD"), r.Content); err != nil {
 		return errors.Join(types.ErrExec, err)
 	}
@@ -55,7 +52,7 @@ func ConstructNewCommentFromRequest(r types.CommentCreationRequest) (types.Comme
 
 	return types.Comment{
 		ID:           new_pid,
-		User:         comment_author,
+		User:         *comment_author,
 		Post_ID:      new_pid,
 		CreationDate: time.Now(),
 		Content:      r.Comment_text,

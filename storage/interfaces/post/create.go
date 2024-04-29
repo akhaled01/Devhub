@@ -76,7 +76,7 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 
 	return types.Post{
 		ID:           new_pid,
-		User:         post_author,
+		User:         *post_author,
 		Content:      r.Post_text,
 		CreationDate: time.Now(),
 		Image_Path:   image_path,

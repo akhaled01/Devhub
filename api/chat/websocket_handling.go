@@ -27,27 +27,32 @@ var (
 func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 	// other_user_id := types.Sessions[uuid.FromStringOrNil(r.PathValue("uid"))]
 
+	session_id, err := r.Cookie("session_id")
+	if err != nil {
+		utils.ErrorConsoleLog("Invalid session")
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	// Extract session ID from query parameters
-	session_id := r.URL.Query().Get("session_id")
-	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id)
+	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id.Value)
 
 	// Inserting the connection into session (A hub of connected clients)
-	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id))
+	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id.Value))
 	fmt.Println(user_session)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
 		conn.Close()
 		return
 	}
-	user_session.Conn = conn
+	user_session.User.Conn = conn
 
-	ws_server.HandleWS(conn, ws_routes)
+	ws_server.HandleWS(user_session.User, ws_routes)
 }
 
 /*
@@ -62,9 +67,17 @@ func Send_Message(ws *websocket.Conn, request string) {
 	json.Unmarshal([]byte(request), message_contents)
 	json_msg, _ := json.Marshal(message_contents)
 
-	session_rec := types.Sessions[message_contents.Recipient]
+	var send_to_conn *websocket.Conn
+	for user := range ws_server.conns {
+		if user.Username == message_contents.Recipient {
+			send_to_conn = user.Conn
+			break
+		}
+		utils.InfoConsoleLog("username wasn't found!")
+		return
+	}
 
-	err := session_rec.Conn.WriteMessage(websocket.TextMessage, json_msg)
+	err := send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
 	if err != nil {
 		utils.ErrorConsoleLog("Connection closed!")
 		return

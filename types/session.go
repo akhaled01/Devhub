@@ -14,7 +14,7 @@ import (
 
 type Session struct {
 	SessionID uuid.UUID
-	User      User
+	User      *User
 	Expiry    time.Time
 	Conn      *websocket.Conn
 }
@@ -67,13 +67,13 @@ func GenSession(u User) *Session {
 
 	Sessions[session_id] = &Session{
 		SessionID: session_id,
-		User:      u,
+		User:      &u,
 		Expiry:    time.Now().Add(time.Second * 3600),
 	}
 
 	return &Session{
 		SessionID: session_id,
-		User:      u,
+		User:      &u,
 		Expiry:    time.Now().Add(time.Second * 3600),
 	}
 }

@@ -25,8 +25,6 @@ var (
 
 /* Handles the request to connect to chat socket */
 func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
-	// other_user_id := types.Sessions[uuid.FromStringOrNil(r.PathValue("uid"))]
-
 	session_id, err := r.Cookie("session_id")
 	if err != nil {
 		utils.ErrorConsoleLog("Invalid session")
@@ -42,7 +40,7 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id.Value)
 
-	// Inserting the connection into session (A hub of connected clients)
+	// Validating the session to extract the user
 	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id.Value))
 	fmt.Println(user_session)
 	if err != nil {
@@ -50,6 +48,8 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 		return
 	}
+
+	// Give the user its connection
 	user_session.User.Conn = conn
 
 	ws_server.HandleWS(user_session.User, ws_routes)

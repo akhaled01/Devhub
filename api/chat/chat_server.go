@@ -6,8 +6,6 @@ import (
 	"io"
 	"sync"
 
-	"github.com/gorilla/websocket"
-
 	"RTF/types"
 	ser "RTF/types/serializers"
 	"RTF/utils"
@@ -30,7 +28,7 @@ func NewServer() *Chat_Server {
 /* Do what you want to do with the connection */
 func (s *Chat_Server) HandleWS(
 	user *types.User,
-	ws_routes map[string]func(ws *websocket.Conn, request string),
+	ws_routes map[string]func(user *types.User, request string),
 ) {
 	utils.InfoConsoleLog(fmt.Sprint("New connection from client: ", user.Conn.RemoteAddr()))
 	mutex.Lock()
@@ -61,7 +59,7 @@ func (s *Chat_Server) HandleWS(
 			passed_content_as_string, _ := json.Marshal(msg.Content)
 
 			if handler, ok := ws_routes[msg.Type]; ok {
-				handler(user.Conn, string(passed_content_as_string))
+				handler(user, string(passed_content_as_string))
 			} else {
 				utils.ErrorConsoleLog("Handler not found!")
 			}

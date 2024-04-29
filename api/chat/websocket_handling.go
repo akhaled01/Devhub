@@ -62,19 +62,27 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 		ws: connection to send the message to
 		request: the message
 */
-func Send_Message(ws *websocket.Conn, request string) {
+func Send_Message(sender_user *types.User, request string) {
 	message_contents := &ser.Message{}
 	json.Unmarshal([]byte(request), message_contents)
+	message_contents.Sender = sender_user.Username // Put the username in the message capsul
+
 	json_msg, _ := json.Marshal(message_contents)
 
 	var send_to_conn *websocket.Conn
+
+	user_idx := 0 // counter for the below loop
 	for user := range ws_server.conns {
 		if user.Username == message_contents.Recipient {
 			send_to_conn = user.Conn
 			break
 		}
-		utils.InfoConsoleLog("username wasn't found!")
-		return
+		// End of the loop and user wasn't found
+		if user_idx == len(ws_server.conns)-1 {
+			utils.InfoConsoleLog("username wasn't found!")
+			return
+		}
+		user_idx++
 	}
 
 	err := send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
@@ -82,15 +90,15 @@ func Send_Message(ws *websocket.Conn, request string) {
 		utils.ErrorConsoleLog("Connection closed!")
 		return
 	}
-	ws.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
+	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 
 }
 
-func Open_chat(ws *websocket.Conn, request string) {
+func Open_chat(user *types.User, request string) {
 	json_msg, _ := json.Marshal(&ser.Message{
 		Msg_Content: "Open_chat",
 	})
 
 	fmt.Println(request)
-	ws.WriteMessage(websocket.TextMessage, json_msg)
+	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
 }

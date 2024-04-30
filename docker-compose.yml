@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: 
+      dockerfile: Dockerfile
+    ports:
+      - "7000:7000"  
+    volumes:
+      - .:/app  
+  frontend:
+    build:
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    

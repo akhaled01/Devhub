@@ -1,9 +1,9 @@
-import { LoadNav } from "../funcs/navbar"
-import noheart from "../images/unliked.svg"
-import heart from "../images/liked.svg"
-import comment from "../images/comment.svg"
-import imgupload from "../images/imageupload.svg"
-import hashtag from "../images/hashtag.svg"
+import { LoadNav } from "../funcs/navbar";
+import noheart from "../images/unliked.svg";
+import heart from "../images/liked.svg";
+import comment from "../images/comment.svg";
+import imgupload from "../images/imageupload.svg";
+import hashtag from "../images/hashtag.svg";
 
 export const Home = () => {
   document.getElementById("app").innerHTML = /*html*/ `
@@ -42,7 +42,7 @@ export const Home = () => {
     </div>
     <div id="posts"></div>
 </main>
-  `
+  `;
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");
@@ -51,33 +51,32 @@ export const Home = () => {
   // When the user clicks the button, open the modal
   modalOpenBtn.onclick = function () {
     modal.style.display = "block";
-  }
+  };
 
   // When user clicks outside window, remove modal
   window.onclick = function (event) {
     if (event.target == modal) {
       modal.style.display = "none";
     }
-  }
+  };
 
   // add event listener for category button
-  let toggled = false
+  let toggled = false;
 
   document.getElementById("cat-choose-Btn").addEventListener("click", () => {
-    toggled = !toggled
+    toggled = !toggled;
     if (toggled) {
-      document.getElementById("c-post-cats").style.display = "block"
+      document.getElementById("c-post-cats").style.display = "block";
     } else {
-      document.getElementById("c-post-cats").style.display = "none"
+      document.getElementById("c-post-cats").style.display = "none";
     }
-  })
+  });
 
   // add event listener to hidden file upload
 
   document.getElementById("c-img-upload").addEventListener("click", () => {
-    document.getElementById("img-upload").click()
-  })
-
+    document.getElementById("img-upload").click();
+  });
 
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
@@ -98,8 +97,7 @@ export const Home = () => {
       }
     });
   });
-
-}
+};
 
 export async function fetchPost() {
   const response = await fetch(`/post/all`);
@@ -108,7 +106,7 @@ export async function fetchPost() {
   const postDiv = document.getElementById("post");
   if (data.image) {
     postDiv.innerHTML = `
-          <div class="f-post">
+        <div class="f-post" ${!data.Image_Path ? "noimage" : ""}>
               <div class="p-header">
                   <div class="p-profileInfo">
                       <div class="p-profile-pic"></div>
@@ -119,9 +117,13 @@ export async function fetchPost() {
               <div class="p-main">
                   <div class="p-content">
                       ${data.content}
-                      <div class="p-image">
-                          <img src="${data.image}" alt="post image">
-                      </div>
+                      ${
+                        data.Image_Path
+                          ? `<div class="p-image">
+                          <img src=${data.Image_Path} alt="post image">
+                      </div>`
+                          : ""
+                      }
                   </div>
                   <div class="p-stats">
                       <div class="p-likeCount">
@@ -138,37 +140,6 @@ export async function fetchPost() {
               </div>
           </div>
       `;
-  } else {
-    postDiv = document.getElementById("post");
-    postDiv.innerHTML = `
-        < -- categories should be connected to the backend when it's done.  -- >
-        <div class="f-post noimage">
-            <div class="p-header">
-                <div class="p-profileInfo">
-                    <div class="p-profile-pic"></div>
-                    <div class="p-nickname">${data.author}</div>
-                </div>
-                <div class="p-creationDate">${data.creationDate}</div>
-            </div>
-            <div class="p-main">
-                <div class="p-content">
-                    ${data.content}
-                </div>
-                <div class="p-stats">
-                    <div class="p-likeCount">
-                        <div class="p-likeBtn">
-                            <img src="${noheart}" alt="like" />
-                        </div>
-                        <div class="p-likeStat">${data.likes}</div>
-                    </div>
-                    <div class="p-commentCount">
-                        <img src="${comment}" alt="comment" />
-                        <div class="p-comment-Stat">${data.comments}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
   }
 }
 // categories for later.

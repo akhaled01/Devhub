@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 
+	"RTF/storage/interfaces/chat"
 	"RTF/types"
 	ser "RTF/types/serializers"
 	"RTF/utils"
@@ -66,11 +68,13 @@ func Send_Message(sender_user *types.User, request string) {
 	message_contents := &ser.Message{}
 	json.Unmarshal([]byte(request), message_contents)
 	message_contents.Sender = sender_user.Username // Put the username in the message capsul
+	message_contents.Timestamp = time.Now()
 
 	json_msg, _ := json.Marshal(message_contents)
 
 	var send_to_conn *websocket.Conn
 
+	// Find the user within the connections
 	user_idx := 0 // counter for the below loop
 	for user := range ws_server.conns {
 		if user.Username == message_contents.Recipient {
@@ -89,6 +93,11 @@ func Send_Message(sender_user *types.User, request string) {
 	if err != nil {
 		utils.ErrorConsoleLog("Connection closed!")
 		return
+	}
+
+	err = chat.SaveChatInDB(*message_contents)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
 	}
 	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 

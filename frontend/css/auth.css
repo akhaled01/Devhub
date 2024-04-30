@@ -1,0 +1,182 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200&family=Noto+Sans&display=swap");
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  background-color: #0c0f0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form,
+.logo {
+  width: 40vw;
+  height: 100vh;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.form form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  background-color: hsla(0, 0%, 100%, 0.008);
+  padding: 20px 20px;
+  border-radius: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 0.5px solid grey;
+  padding-bottom: 0.2em;
+  font-size: large;
+  color: white;
+  font-family: "Noto Sans", sans-serif;
+  transition-duration: 0.5s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus {
+  background-color: transparent;
+  border-bottom: 0.8px solid #d876ff;
+  padding-bottom: 0.5em;
+  outline: 0;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder {
+  font-size: large;
+  font-weight: 200;
+  font-family: "IBM Plex Mono", sans-serif;
+}
+
+button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f712ff;
+  border: none;
+  color: #0c0f0a;
+  text-align: center;
+  font-size: 17px;
+  font-family: "IBM Plex Mono", sans-serif;
+  font-weight: 700;
+  padding: 10px;
+  width: 100px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+button span:after {
+  content: "»";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -15px;
+  transition: 0.5s;
+}
+
+button:hover {
+  background-color: #ff206e;
+}
+
+button:hover span {
+  padding-right: 15px;
+}
+
+button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.ohref {
+  all: unset;
+  cursor: pointer;
+  color: cyan;
+  font-family: "IBM Plex Mono", monospace, sans-serif;
+  font-weight: 700;
+  transition-duration: 0.4s;
+}
+
+.ohref:hover {
+  color: #ff206e;
+}
+
+.authgroup {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-inputs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #ddd;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 300px;
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+}

@@ -1,14 +1,22 @@
 services:
   backend:
-    build: 
-      dockerfile: Dockerfile
+    build: .
+    container_name: backend
     ports:
-      - "7000:7000"  
-    volumes:
-      - .:/app  
+      - "0.0.0.0:8080:8080"
+    networks:
+      - devhub-network
+
   frontend:
-    build:
-      dockerfile: frontend/Dockerfile
+    build: ./frontend
+    container_name: frontend
     ports:
-      - "5173:5173"
-    
+      - "0.0.0.0:5173:5173"
+    networks:
+      - devhub-network
+    depends_on:
+      - backend
+
+networks:
+  devhub-network:
+    driver: bridge

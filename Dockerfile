@@ -5,7 +5,7 @@ COPY . .
 
 RUN go mod download
 
-EXPOSE 7000
+EXPOSE 8080
 CMD ["go", "run", "."]
 
 LABEL "version"="1.0.0"

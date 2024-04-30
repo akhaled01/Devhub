@@ -6,15 +6,15 @@ import (
 
 func CreatePostTables(DB *sql.DB) error {
 	TableStatements := []string{
-		`CREATE TABLE IF NOT EXISTS posts (
-            post_id               VARCHAR NOT NULL PRIMARY KEY,
-            user_id               VARCHAR NOT NULL,
-            creation_date         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            post_content          VARCHAR(150) NOT NULL,
-            post_image_path       VARCHAR(150),
-						like_count            INTEGER,
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
-        )`,
+		`CREATE TABLE posts ( 
+			post_id              VARCHAR NOT NULL  PRIMARY KEY  ,
+			user_id              VARCHAR NOT NULL    ,
+			creation_date        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
+			post_content         VARCHAR(150) NOT NULL    ,
+			post_image_path      VARCHAR(150)     ,
+			like_count           INTEGER NOT NULL DEFAULT 0   ,
+			FOREIGN KEY ( user_id ) REFERENCES users( user_id )  
+		 )`,
 		`CREATE TABLE IF NOT EXISTS category (
             cat_id               INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             category             CHAR NOT NULL

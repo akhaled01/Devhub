@@ -5,7 +5,7 @@ const postId = 1;
 // for later, it should be connected to the back-end
 // Fetch the post data
 export async function fetchPost() {
-  const response = await fetch(`/api/post/${postId}`);
+  const response = await fetch(`/post/${id}`);
   const data = await response.json();
 
   const postDiv = document.getElementById("post");

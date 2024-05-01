@@ -1,7 +1,7 @@
 import { LoadNav } from "../funcs/navbar";
-import noheart from "../images/unliked.svg";
-import heart from "../images/liked.svg";
-import comment from "../images/comment.svg";
+import noheart from "../assets/unliked.svg";
+import heart from "../assets/liked.svg";
+import comment from "../assets/comment.svg";
 
 export const Post = () => {
   document.getElementById("app").innerHTML = /*html*/ `
@@ -154,7 +154,7 @@ export const Post = () => {
   });
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-  fetchComments();
-  fetchPost();
-});
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   fetchComments();
+  //   fetchPost();
+  // });

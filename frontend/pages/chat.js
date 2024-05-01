@@ -1,5 +1,5 @@
-import schat from "../images/sendChat.svg"
-import nchat from "../images/nchat.svg"
+import schat from "../assets/sendChat.svg"
+import nchat from "../assets/nchat.svg"
 
 export const Chat = () => {
   document.getElementById("app").innerHTML += `

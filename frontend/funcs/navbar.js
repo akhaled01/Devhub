@@ -1,5 +1,5 @@
-import DM from "../images/nchat.svg"
-import plus from "../images/plus.svg"
+import DM from "../assets/nchat.svg"
+import plus from "../assets/plus.svg"
 
 /**
  * 
@@ -11,7 +11,7 @@ export const LoadNav = () => {
     return /*html*/`
       <nav>
   <a href="/">
-    <img class="navMainLogo" src="../images/logo.svg">
+    <img class="navMainLogo" src="../assets/logo.svg">
   </a>
   <ul class="actionitems">
     <li>
@@ -48,7 +48,7 @@ export const LoadNav = () => {
     return /*html*/`
       <nav>
         <a href="/">
-          <img class="navMainLogo" src="../images/logo.svg">
+          <img class="navMainLogo" src="../assets/logo.svg">
         </a>
         <div>
           <a href="/login">

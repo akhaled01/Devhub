@@ -181,6 +181,19 @@ a {
   background-color: rgba(255, 255, 255, 0.166);
 }
 
+.actionItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.actionItem > img {
+  width: 30px;
+  height: 30px;
+}
+
 /* Style for a Post*/
 
 .f-post {
@@ -373,7 +386,7 @@ a {
   display: flex;
   background-color: aliceblue;
   align-items: center;
-  gap: 5px;
+  gap: 20px;
   background-color: transparent;
   margin-bottom: 10px;
 }
@@ -394,6 +407,11 @@ a {
 
 #c-post-options > div {
   cursor: pointer;
+}
+
+.c-post-option > img {
+  width: 20px;
+  height: 20px;
 }
 
 .c-option {

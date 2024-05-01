@@ -6,7 +6,7 @@
   margin: 0;
   height: 100%;
   display: flex;
-  background-color: #111;
+  background-color: #0c0f0a;
 }
 
 ::selection {
@@ -146,6 +146,11 @@ body > div {
   cursor: pointer;
 }
 
+#nchat > img {
+    width: 30px;
+  height: 30px;
+}
+
 #user-text {
   border: 0.5px solid rgba(255, 255, 255, 0.321);
   outline: none;
@@ -169,6 +174,13 @@ body > div {
 
 #sendTextBtn {
   cursor: pointer;
+  width: 30px;
+  height: 30px;
+  transition-duration: 0.4s;
+}
+
+#sendTextBtn:hover {
+  transform: translateY(-3px);
 }
 
 .message {

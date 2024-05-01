@@ -104,10 +104,15 @@ func Send_Message(sender_user *types.User, request string) {
 }
 
 func Open_chat(user *types.User, request string) {
-	json_msg, _ := json.Marshal(&ser.Message{
-		Msg_Content: "Open_chat",
-	})
 
-	fmt.Println(request)
+	message_contents := &ser.Open_chat_request{}
+	json.Unmarshal([]byte(request), message_contents)
+
+	chat_messages, err := chat.Get_chat(user.Username, message_contents.User_id)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return
+	}
+	json_msg, _ := json.Marshal(&chat_messages)
 	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
 }

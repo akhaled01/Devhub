@@ -6,14 +6,11 @@ import (
 )
 
 type Message struct {
+	Id          string    `json:"id"`
 	Sender      string    `json:"sender"`
 	Recipient   string    `json:"recipient"`
 	Timestamp   time.Time `json:"timestamp"`
 	Msg_Content string    `json:"msg_content"`
-}
-
-type Chat_messages struct {
-	Messages []Message `json:"messages"`
 }
 
 // Message struct with interface field
@@ -29,4 +26,8 @@ func (msg Message) To_String() string {
 	line_4 := fmt.Sprintf("Msg_Content: %s", msg.Msg_Content)
 
 	return fmt.Sprintf("%s\n%s\n%s\n%s", line_1, line_2, line_3, line_4)
+}
+
+type Open_chat_request struct {
+	User_id string `json:"user_id"`
 }

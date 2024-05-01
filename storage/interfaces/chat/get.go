@@ -1,13 +1,49 @@
 package chat
 
-// EXAMPLE CODE
-/*
-const (
-	PostByIDQuery          = `SELECT user_id, creation_date, post_content, post_image_path FROM posts WHERE post_id = ?`
-	AllPostsQuery          = `SELECT post_id FROM posts ORDER BY creation_date desc`
-	GETUSERLIKEDPOSTSQUERY = `SELECT post_id FROM post_likes WHERE user_id = ?`
+import (
+	"RTF/storage"
+	"RTF/types"
+	"RTF/types/serializers"
+	"errors"
 )
 
+// EXAMPLE CODE
+
+const (
+	GET_CHAT = `SELECT * FROM chat_messages
+				WHERE (recipient = ? and sender = ? or recipient = ? and sender = ?)
+				ORDER BY id`
+)
+
+func Get_chat(user_name string, requested_user_name string) ([]serializers.Message, error) {
+
+	chat_messages := []serializers.Message{}
+	stmt, err := storage.DB_Conn.Prepare(GET_CHAT)
+	if err != nil {
+		return nil, errors.Join(types.ErrPrepare, err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(user_name, requested_user_name, requested_user_name, user_name)
+	if err != nil {
+		return nil, errors.Join(types.ErrExec, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		chat_message := serializers.Message{}
+
+		if err := rows.Scan(&chat_message.Id, &chat_message.Msg_Content, &chat_message.Timestamp, &chat_message.Sender, &chat_message.Recipient); err != nil {
+			return nil, errors.Join(types.ErrScan, err)
+		}
+
+		chat_messages = append(chat_messages, chat_message)
+	}
+
+	return chat_messages, nil
+}
+
+/*
 // Function that Gets a post from a DB by its ID
 func GetPostByID(id uuid.UUID) (types.Post, error) {
 	stmt, err := storage.DB_Conn.Prepare(PostByIDQuery)

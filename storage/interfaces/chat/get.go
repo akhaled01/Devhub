@@ -1,18 +1,7 @@
 package chat
 
-import (
-	"database/sql"
-	"errors"
-
-	"RTF/storage"
-	"RTF/storage/interfaces/comment"
-	"RTF/storage/interfaces/likes"
-	"RTF/storage/interfaces/user"
-	"RTF/types"
-
-	"github.com/gofrs/uuid"
-)
-
+// EXAMPLE CODE
+/*
 const (
 	PostByIDQuery          = `SELECT user_id, creation_date, post_content, post_image_path FROM posts WHERE post_id = ?`
 	AllPostsQuery          = `SELECT post_id FROM posts ORDER BY creation_date desc`
@@ -121,3 +110,4 @@ func AllPostsFromDB() ([]types.Post, error) {
 
 	return all_posts, nil
 }
+*/

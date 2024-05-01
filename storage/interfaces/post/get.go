@@ -44,6 +44,11 @@ func GetPostByID(id uuid.UUID) (types.Post, error) {
 		return (types.Post{}), errors.Join(errors.New("error getting user for this post"), err)
 	}
 
+	partial_creator := types.PartialUser{
+		ID:       creator.ID,
+		Username: creator.Username,
+	}
+
 	// get post likes
 	if p.Likes, err = likes.GetPostLikes(id); err != nil {
 		return (types.Post{}), err
@@ -54,7 +59,7 @@ func GetPostByID(id uuid.UUID) (types.Post, error) {
 		return (types.Post{}), err
 	}
 
-	p.User = creator
+	p.User = partial_creator
 	return p, nil
 }
 

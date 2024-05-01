@@ -17,3 +17,8 @@ type User struct {
 	Avatar    string          `json:"avatar"`
 	Conn      *websocket.Conn // Store the websocket connection here
 }
+
+type PartialUser struct {
+	ID       uuid.UUID `json:"uuid"`
+	Username string    `json:"username"`
+}

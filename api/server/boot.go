@@ -33,6 +33,6 @@ func (d *DevServer) Boot() error {
 	signal.Notify(shutdownSignal, syscall.SIGTERM)
 	go d.GracefulShutdown(shutdownSignal)
 
-	utils.InfoConsoleLog(red + "DevHub API is Live on http://127.0.0.1" + d.ListenAddr + reset)
+	utils.InfoConsoleLog(red + "DevHub API is Live on http://" + d.ListenAddr + reset)
 	return http.ListenAndServe(d.ListenAddr, d.Router)
 }

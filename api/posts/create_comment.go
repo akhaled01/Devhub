@@ -33,6 +33,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Saving the session id in the request (idk why!?)
 	comment_creation_request.Session_id = session_id.Value
 
 	if err := json.NewDecoder(r.Body).Decode(&comment_creation_request); err != nil {

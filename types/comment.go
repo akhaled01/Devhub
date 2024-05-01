@@ -7,10 +7,10 @@ import (
 )
 
 type Comment struct {
-	ID           uuid.UUID `json:"uuid"`
-	User         User      `json:"user"`
-	Post_ID      uuid.UUID `json:"post_id"`
-	CreationDate time.Time `json:"creationDate"`
-	Content      string    `json:"content"`
-	Likes        int64     `json:"likes"`
+	ID           uuid.UUID   `json:"uuid"`
+	User         PartialUser `json:"user"`
+	Post_ID      uuid.UUID   `json:"post_id"`
+	CreationDate time.Time   `json:"creationDate"`
+	Content      string      `json:"content"`
+	Likes        int64       `json:"likes"`
 }

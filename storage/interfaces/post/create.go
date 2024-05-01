@@ -63,6 +63,10 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 		return (types.Post{}), errors.Join(types.ErrCats, err)
 	}
 
+	partial_post_author := types.PartialUser{
+		ID:       post_author.ID,
+		Username: post_author.Username,
+	}
 	var image_path string
 
 	if r.Post_image_base64 == "" {
@@ -76,7 +80,7 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 
 	return types.Post{
 		ID:           new_pid,
-		User:         *post_author,
+		User:         partial_post_author,
 		Content:      r.Post_text,
 		CreationDate: time.Now(),
 		Image_Path:   image_path,

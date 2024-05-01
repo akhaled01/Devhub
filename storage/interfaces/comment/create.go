@@ -49,11 +49,15 @@ func ConstructNewCommentFromRequest(r types.CommentCreationRequest) (types.Comme
 	}
 
 	comment_author := author_session.User
+	partial_comment_author := types.PartialUser{
+		ID:       comment_author.ID,
+		Username: comment_author.Username,
+	}
 
 	return types.Comment{
 		ID:           new_pid,
-		User:         *comment_author,
-		Post_ID:      new_pid,
+		User:         partial_comment_author,
+		Post_ID:      r.Post_id,
 		CreationDate: time.Now(),
 		Content:      r.Comment_text,
 		Likes:        0,

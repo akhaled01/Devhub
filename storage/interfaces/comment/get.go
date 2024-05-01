@@ -12,7 +12,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-const QueryPostComments = "SELECT comm_id, user_id, comment_date, comment FROM comments WHERE post_id = ?"
+const QueryPostComments = "SELECT comm_id, user_id, SUBSTR(comment_date, '%Y-%m-%d') AS Date, comment FROM comments WHERE post_id = ?"
 
 // function to return an array of post comments by id
 func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
@@ -43,6 +43,10 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 		if err != nil {
 			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
+		partial_user := types.PartialUser{
+			ID:       u.ID,
+			Username: u.Username,
+		}
 
 		//! MIGHT BE BUGGY FROM HERE ON OUT
 		if c.Likes, err = GetCommentLikes(uuid.FromStringOrNil(comment_id)); err != nil {
@@ -51,7 +55,7 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 
 		c.ID = uuid.FromStringOrNil(comment_id)
 		c.Post_ID = postid
-		c.User = u
+		c.User = partial_user
 		if c.CreationDate, err = time.Parse("YYYY-MM-DD", comment_date); err != nil {
 			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
@@ -63,7 +67,7 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 
 // gets comment likes by id
 func GetCommentLikes(commentID uuid.UUID) (int64, error) {
-	query := "SELECT COUNT(*) FROM comment_interactions WHERE comment_id = ?"
+	query := "SELECT COUNT(*) FROM comment_likes WHERE comment_id = ?"
 
 	row := storage.DB_Conn.QueryRow(query, commentID)
 	var count int64

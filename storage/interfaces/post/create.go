@@ -19,7 +19,7 @@ const NEWPOSTQUERY = `
   `
 
 // This function saves a post object to the DB
-func SavePostInDB(p types.Post) error {
+func SavePostInDB(p types.Post, post_categories []int) error {
 	stmt, err := storage.DB_Conn.Prepare(NEWPOSTQUERY)
 	if err != nil {
 		return errors.Join(errors.New("error preparing SavePostInDB query"), err)
@@ -36,9 +36,9 @@ func SavePostInDB(p types.Post) error {
 		return errors.Join(errors.New("error executing SavePostInDB query"), err)
 	}
 
-	/*if err = categories.AssignPostCategory(p.ID, p.Category); err != nil {
+	if err = categories.AssignPostCategory(p.ID, post_categories); err != nil {
 		return errors.Join(errors.New("error assigning categories to post"), err)
-	}*/
+	}
 
 	utils.InfoConsoleLog(fmt.Sprintf("New post created with ID: %s", p.ID))
 	return nil

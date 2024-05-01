@@ -2,10 +2,8 @@ package posts
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
-	"RTF/storage/interfaces/categories"
 	"RTF/storage/interfaces/post"
 	"RTF/types"
 	"RTF/utils"
@@ -52,16 +50,10 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := post.SavePostInDB(new_post_object); err != nil {
+	if err := post.SavePostInDB(new_post_object, post_creation_request.Post_category); err != nil {
 		utils.ErrorConsoleLog("error saving the new post")
 		utils.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if err = categories.AssignPostCategory(new_post_object.ID, post_creation_request.Post_category); err != nil {
-		errors.Join(errors.New("error assigning categories to post"), err)
-		utils.PrintErrorTrace(err)
 		return
 	}
 

@@ -27,6 +27,7 @@ func GetCommentsByPostID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
 		utils.ErrorConsoleLog("error encoding post")
 		utils.PrintErrorTrace(err)

@@ -27,6 +27,7 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(post); err != nil {
 		utils.ErrorConsoleLog("error encoding post")
 		utils.PrintErrorTrace(err)

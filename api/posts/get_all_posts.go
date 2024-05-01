@@ -61,6 +61,7 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		utils.ErrorConsoleLog("error encoding all posts")
 		utils.PrintErrorTrace(err)

@@ -14,6 +14,7 @@ const (
 	GET_CATEGORY      = `SELECT * FROM category WHERE cat_id = ?`
 	ADD_THREAD        = `INSERT INTO post_categories (post_id, cat_id) VALUES (?, ?)`
 	CHECK_CAT_EXISTS  = `SELECT EXISTS(SELECT 1 FROM category WHERE cat_id = ?)`
+	GET_FULL_CATS     = `SELECT cat_id, category FROM category`
 )
 
 // Invokes GET_CATEGORY query that returns a full category struct (name and id)
@@ -83,4 +84,24 @@ func CheckCategoryExists(id int) (bool, error) {
 	}
 
 	return is_exist, nil
+}
+
+func GetAllCategoryInfo() ([]types.Category, error) {
+	var container []types.Category
+
+	rows, err := storage.DB_Conn.Query(GET_FULL_CATS)
+	if err != nil {
+		return container, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var result types.Category
+		if err := rows.Scan(&result.Id, &result.Name); err != nil {
+			return container, err
+		}
+		container = append(container, result)
+	}
+
+	return container, nil
 }

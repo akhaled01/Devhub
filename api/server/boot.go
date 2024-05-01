@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"RTF/api/auth"
+	"RTF/api/categories"
 	"RTF/api/chat"
 	"RTF/api/posts"
 	"RTF/storage"
@@ -29,6 +30,7 @@ func (d *DevServer) Boot() error {
 	posts.RegisterPostRoutes(d.Router)
 	auth.RegisterAuthRoutes(d.Router)
 	chat.RegisterChatRoutes(d.Router)
+	categories.RegisterCategoriesRoutes(d.Router)
 
 	shutdownSignal := make(chan os.Signal, 1)
 	signal.Notify(shutdownSignal, syscall.SIGTERM)

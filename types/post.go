@@ -12,7 +12,7 @@ type Post struct {
 	Image_Path   string      `json:"image"`
 	Likes        int64       `json:"likes"`
 	Comments     []Comment   `json:"comments"`
-	Category     Category    `json:"category"`
+	Category     []string    `json:"category"`
 	CreationDate time.Time   `json:"creationDate"`
 	Content      string      `json:"content"`
 }

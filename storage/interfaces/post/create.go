@@ -36,9 +36,9 @@ func SavePostInDB(p types.Post) error {
 		return errors.Join(errors.New("error executing SavePostInDB query"), err)
 	}
 
-	if err = categories.AssignPostCategory(p.ID, p.Category.Id); err != nil {
+	/*if err = categories.AssignPostCategory(p.ID, p.Category); err != nil {
 		return errors.Join(errors.New("error assigning categories to post"), err)
-	}
+	}*/
 
 	utils.InfoConsoleLog(fmt.Sprintf("New post created with ID: %s", p.ID))
 	return nil
@@ -58,9 +58,15 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 	}
 
 	post_author := author_session.User
-	category, err := categories.GetFullCategory(r.Post_category)
-	if err != nil {
-		return (types.Post{}), errors.Join(types.ErrCats, err)
+
+	var categories_as_string []string
+	for cat_idx := range r.Post_category {
+		category_as_string, err := categories.GetFullCategory(r.Post_category[cat_idx])
+		if err != nil {
+			return (types.Post{}), errors.Join(types.ErrCats, err)
+		}
+
+		categories_as_string = append(categories_as_string, category_as_string.Name)
 	}
 
 	partial_post_author := types.PartialUser{
@@ -84,6 +90,6 @@ func ConstructNewPostFromRequest(r types.PostCreationRequest) (types.Post, error
 		Content:      r.Post_text,
 		CreationDate: time.Now(),
 		Image_Path:   image_path,
-		Category:     *category,
+		Category:     categories_as_string,
 	}, nil
 }

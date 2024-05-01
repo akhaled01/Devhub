@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"RTF/storage"
+	"RTF/storage/interfaces/categories"
 	"RTF/storage/interfaces/comment"
 	"RTF/storage/interfaces/likes"
 	"RTF/storage/interfaces/user"
@@ -59,7 +60,11 @@ func GetPostByID(id uuid.UUID) (types.Post, error) {
 		return (types.Post{}), err
 	}
 
+	// Get post categories
+	post_cats, _ := categories.GetPostCategories(p.ID)
+
 	p.User = partial_creator
+	p.Category = post_cats
 	return p, nil
 }
 

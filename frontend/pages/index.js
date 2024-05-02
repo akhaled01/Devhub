@@ -1,9 +1,9 @@
 import { LoadNav } from "../funcs/navbar";
-import noheart from "../images/unliked.svg";
-import heart from "../images/liked.svg";
-import comment from "../images/comment.svg";
-import imgupload from "../images/imageupload.svg";
-import hashtag from "../images/hashtag.svg";
+import noheart from "../assets/unliked.svg";
+import heart from "../assets/liked.svg";
+import comment from "../assets/comment.svg";
+import imgupload from "../assets/imageupload.svg";
+import hashtag from "../assets/hashtag.svg";
 
 export const Home = () => {
   document.getElementById("app").innerHTML = /*html*/ `

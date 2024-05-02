@@ -6,7 +6,7 @@ import { HandleSignup } from "../../funcs/auth";
 export const Signup = () => {
   document.getElementById("app").innerHTML = /* html */`
     <div class="logo">
-      <img src="../../images/logo.svg" id="authlogo">
+      <img src="../../assets/logo.svg" id="authlogo">
     </div>
     <div class="form">
       <form id="signupform" autocomplete="off">

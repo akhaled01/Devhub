@@ -1,7 +1,7 @@
 import { LoadNav } from "../funcs/navbar";
-import noheart from "../images/unliked.svg";
-import heart from "../images/liked.svg";
-import comment from "../images/comment.svg";
+import noheart from "../assets/unliked.svg";
+import heart from "../assets/liked.svg";
+import comment from "../assets/comment.svg";
 
 export const Post = () => {
   document.getElementById("app").innerHTML = /*html*/ `
@@ -90,7 +90,7 @@ export const Post = () => {
                         <div class="p-stats">
                             <div class="p-likeCount">
                                 <div class="p-likeBtn">
-                                    <img src="/images/unliked.svg" alt="like">
+                                    <img src="/assets/unliked.svg" alt="like">
                                 </div>
                                 <div class="p-likeStat">9</div>
                             </div>
@@ -111,7 +111,7 @@ export const Post = () => {
                     <div class="p-stats">
                         <div class="p-likeCount">
                             <div class="p-likeBtn">
-                                <img src="/images/unliked.svg" alt="like">
+                                <img src="/assets/unliked.svg" alt="like">
                             </div>
                             <div class="p-likeStat">2</div>
                         </div>

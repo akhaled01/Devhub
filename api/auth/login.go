@@ -92,6 +92,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Expires: session.Expiry,
 	})
 
+	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(struct {
 		Session_id string `json:"session_id"`
 		Username   string `json:"username"`

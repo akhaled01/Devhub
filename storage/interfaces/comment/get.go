@@ -81,3 +81,20 @@ func GetCommentLikes(commentID uuid.UUID) (int64, error) {
 
 	return count, nil
 }
+
+// GetCommentsCount retrieves the count of comments for a given post ID.
+func GetCommentsCount(postID string) (int, error) {
+	var count int
+
+	// Prepare the SQL query
+	query := "SELECT COUNT(*) FROM comments WHERE post_id = ?"
+	row := storage.DB_Conn.QueryRow(query, postID)
+
+	// Scan the result into the count variable
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

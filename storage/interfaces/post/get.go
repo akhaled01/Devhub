@@ -122,6 +122,7 @@ func AllPostsFromDB() ([]types.Post, error) {
 		}
 
 		post, err := GetPostByID(uuid.FromStringOrNil(str_post_id))
+		post.Number_of_comments, _ = comment.GetCommentsCount(post.ID.String())
 		if err != nil {
 			return nil, errors.Join(types.ErrAppendPost, err)
 		}

@@ -1,11 +1,11 @@
 // Fetch the comments data
 export async function fetchComments() {
-    const response = await fetch(`/api/comments?Post_id=${postId}`);
-    const data = await response.json();
-  
-    const commentsDiv = document.getElementById("comments");
-    data.comments.forEach((comment) => {
-      commentsDiv.innerHTML += `
+  const response = await fetch(`/api/comments?Post_id=${postId}`);
+  const data = await response.json();
+
+  const commentsDiv = document.getElementById("comments");
+  data.comments.forEach((comment) => {
+    commentsDiv.innerHTML += `
               <div class="comment">
                   <div class="comment-header">
                       <div class="c-profileInfo">
@@ -17,7 +17,5 @@ export async function fetchComments() {
                   <div class="p-main">${comment.content}</div>
               </div>
           `;
-    });
-  }
-  
-  
+  });
+}

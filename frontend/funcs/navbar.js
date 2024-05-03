@@ -1,20 +1,21 @@
-import DM from "../assets/nchat.svg"
-import plus from "../assets/plus.svg"
+import DM from "../assets/nchat.svg";
+import plus from "../assets/plus.svg";
 
 /**
- * 
+ * Renders Navbar based on the if the user is logged in or
+ * not
+ *
  * @returns Navbar HTML
  */
 export const LoadNav = () => {
-  //FIXME - MAKE SURE THIS IS FIXED BEFORE PRODUCTION
-  if (!localStorage.getItem("user_token")) {
-    return /*html*/`
+  if (localStorage.getItem("user_token")) {
+    return /*html*/ `
       <nav>
   <a href="/">
     <img class="navMainLogo" src="../assets/logo.svg">
   </a>
   <ul class="actionitems">
-    <li>
+    <li id="NewPost">
         <div class="actionItem" id="c-post-start">
           <img src="${plus}" alt="New Post" title="New Post">
         </div>
@@ -45,7 +46,7 @@ export const LoadNav = () => {
 </nav>
     `;
   } else {
-    return /*html*/`
+    return /*html*/ `
       <nav>
         <a href="/">
           <img class="navMainLogo" src="../assets/logo.svg">
@@ -59,3 +60,6 @@ export const LoadNav = () => {
     `;
   }
 };
+
+
+

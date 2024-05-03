@@ -3,6 +3,10 @@ import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
 
+/**
+ * This function fetches the main post page
+ * (the one with all the details like comments lol)
+ */
 export const Post = () => {
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
@@ -90,7 +94,7 @@ export const Post = () => {
                         <div class="p-stats">
                             <div class="p-likeCount">
                                 <div class="p-likeBtn">
-                                    <img src="/assets/unliked.svg" alt="like">
+                                    <img src="/images/unliked.svg" alt="like">
                                 </div>
                                 <div class="p-likeStat">9</div>
                             </div>
@@ -111,7 +115,7 @@ export const Post = () => {
                     <div class="p-stats">
                         <div class="p-likeCount">
                             <div class="p-likeBtn">
-                                <img src="/assets/unliked.svg" alt="like">
+                                <img src="/images/unliked.svg" alt="like">
                             </div>
                             <div class="p-likeStat">2</div>
                         </div>
@@ -154,7 +158,54 @@ export const Post = () => {
   });
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-  fetchComments();
-  fetchPost();
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Get the "NewPost" div element
+  const newPostDiv = document.getElementById('c-post-Btn');
+
+  // Check if the element exists before adding the event listener
+  if (newPostDiv) {
+    // Add a click event listener to the "NewPost" div
+    newPostDiv.addEventListener('click', () => {
+      // Get the post text and image from the form
+      const postText = document.getElementById('c-post-textArea').value;
+      const postImage = ''; // Get the base64-encoded image data
+
+      // Create an object with the post data
+      const postData = {
+        post_text: postText,
+        post_image_base64: postImage,
+        post_category: 1, // Set the desired category ID
+      };
+
+      // Send a POST request to the backend
+      fetch('8080:/post/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      })
+        .then(response => {
+          if (response.ok) {
+            // Post created successfully
+            console.log('Post created successfully');
+            // Redirect to the post page or update the UI as needed
+          } else {
+            // Handle error response
+            console.error('Error creating post');
+          }
+        })
+        .catch(error => {
+          console.error('Error creating post:', error);
+        });
+    });
+  }
 });
+
+
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   fetchComments();
+  //   fetchPost();
+  // });

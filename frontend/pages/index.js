@@ -4,8 +4,13 @@ import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
+import { OrgIndexPosts } from "../funcs/posts";
 
-export const Home = () => {
+export const Home = async() => {
+  if (!localStorage.getItem("user_token")) {
+    window.location.assign("/login")
+    return
+  }
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
@@ -48,10 +53,13 @@ export const Home = () => {
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
 
-  // When the user clicks the button, open the modal
-  modalOpenBtn.onclick = function () {
-    modal.style.display = "block";
-  };
+    // Check if the elements exist before attaching event handlers
+    if (modalOpenBtn && modal) {
+      // When the user clicks the button, open the modal
+      modalOpenBtn.onclick = function () {
+        modal.style.display = "block";
+      };
+    }
 
   // When user clicks outside window, remove modal
   window.onclick = function (event) {
@@ -59,6 +67,58 @@ export const Home = () => {
       modal.style.display = "none";
     }
   };
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+  console.log("dvz");
+  // Get the "NewPost" div element
+  const newPostDiv = document.getElementById('c-post-Btn');
+
+  // Check if the element exists before adding the event listener
+  if (newPostDiv) {
+    // Add a click event listener to the "NewPost" div
+    newPostDiv.addEventListener('click', () => {
+
+      // Get the post text and image from the form
+      const postText = document.getElementById('c-post-textArea').value;
+      const postImage = ''; // Get the base64-encoded image data
+      const postCategory = document.getElementById('cat-choose-Btn').value;
+
+      // Create an object with the post data
+      const postData = {
+        post_text: postText,
+        post_image_base64: postImage,
+        post_category: postCategory, // Set the desired category ID
+      };
+
+      // Send a POST request to the backend
+      fetch('http://localhost:8080/post/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'no-cors',
+        body: JSON.stringify(postData),
+      }) 
+      
+        .then(response => {
+          modal.style.display = "none";
+          if (response.ok) {
+            // Post created successfully
+            console.log('Post created successfully');
+            // Redirect to the post page or update the UI as needed
+          } else {
+            // Handle error response
+            console.error('Error creating post');
+          }
+        })
+        .catch(error => {
+          console.error('Error creating post:', error);
+        });
+    });
+  }
+// });
+
 
   // add event listener for category button
   let toggled = false;
@@ -78,6 +138,7 @@ export const Home = () => {
     document.getElementById("img-upload").click();
   });
 
+  // liking event listener
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
   console.log(likeImages);
@@ -97,6 +158,8 @@ export const Home = () => {
       }
     });
   });
+  
+  await OrgIndexPosts();
 };
 
 export async function fetchPost() {

@@ -7,8 +7,8 @@ import { UpdateCSS } from "./utils";
 
 const routes = {
   '/post': { component: Post, stylesheet: '/css/post.css' },
-  '/auth/signup': { component: Signup, stylesheet: '/css/auth.css' },
-  '/auth/login': { component: Login, stylesheet: '/css/auth.css' },
+  '/signup': { component: Signup, stylesheet: '/css/auth.css' },
+  '/login': { component: Login, stylesheet: '/css/auth.css' },
   '/chat': { component: Chat, stylesheet: '/css/chat.css' },
   '/': { component: Home, stylesheet: '/css/index.css' },
 };

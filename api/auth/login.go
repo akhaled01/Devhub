@@ -36,6 +36,14 @@ EXAMPLE SUCCESSFUL RESPONSE (200 OK)
 	}
 */
 func Login(w http.ResponseWriter, r *http.Request) {
+	// if r.Method == http.MethodOptions {
+	// 	// Set CORS headers
+	// 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000") // Replace with the appropriate origin(s)
+	// 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	// 	return
+	// }
 	req := types.LoginRequest{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -84,6 +92,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// // Set CORS headers
+	// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000") // Replace with the appropriate origin(s)
+	// w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",

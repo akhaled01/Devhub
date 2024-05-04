@@ -31,52 +31,7 @@ export const Chat = () => {
         <div id="pic"></div>
         <div id="r-name">sahmed</div>
       </div>
-      <div id="message-space">
-        <div class="m">
-          <div class="message">
-            <div class="sender-info">
-              <div class="sname">Sahmed</div>
-              <div class="date">2 Hours Ago</div>
-            </div>
-            <p>hi</p>
-          </div>
-        </div>
-
-        <div class="mself">
-          <div class="message self">
-            <div class="sender-info">
-              <div class="sname">You</div>
-              <div class="date">2 Hours Ago</div>
-            </div>
-            <p>hi</p>
-          </div>
-        </div>
-
-        <div class="m">
-          <div class="message">
-            <div class="sender-info">
-              <div class="sname">Sahmed</div>
-              <div class="date">2 Hours Ago</div>
-            </div>
-            <p>hi</p>
-          </div>
-        </div>
-
-        <div class="mself">
-          <div class="message self">
-            <div class="sender-info">
-              <div class="sname">You</div>
-              <div class="date">2 Hours Ago</div>
-            </div>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab,
-              fugit. Corrupti accusantium eligendi magnam blanditiis, obcaecati
-              consequatur perferendis quaerat qui dolor aperiam repudiandae
-              nobis, sit laborum dignissimos deserunt voluptate facilis?
-            </p>
-          </div>
-        </div>
-      </div>
+      <div id="message-space"></div>
 
       <div id="mbar">
         <textarea
@@ -94,20 +49,19 @@ export const Chat = () => {
   const messageInput = document.getElementById("user-text");
   let ws = new WebSocket("ws://localhost:8080/ws");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    ws.onopen = () => {
-      console.log("websocket Opening Successful");
-    };
+  ws.onopen = () => {
+    console.log("websocket Opening Successful");
+  };
 
-    ws.onclose = () => {
-      console.log("websocket closing Successful");
-    };
+  ws.onclose = () => {
+    console.log("websocket closing Successful");
+  };
 
-    ws.onmessage = (e) => {
-      alert("message came");
-      addMessage(e.req_Content.msg_content, false, e.req_Content.sender);
-    };
-  });
+  ws.onmessage = (e) => {
+    console.log("Received message:", e.data);
+    let data = JSON.parse(e.data);
+    addMessage(data.req_Content.msg_content, false, data.req_Content.sender);
+  };
 
   /**
    *

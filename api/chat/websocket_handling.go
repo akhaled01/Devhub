@@ -25,9 +25,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var (
-	ws_server = NewServer()
-)
+var ws_server = NewServer()
 
 /* Handles the request to connect to chat socket */
 func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
@@ -117,12 +115,12 @@ func Send_Message(sender_user *types.User, request string) {
 		return
 	}
 
-	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
+	utils.InfoConsoleLog("MESSAGE SENT")
 
+	// sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 }
 
 func Open_chat(user *types.User, request string) {
-
 	message_contents := &ser.Open_chat_request{}
 	json.Unmarshal([]byte(request), message_contents)
 

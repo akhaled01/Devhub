@@ -123,3 +123,41 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
 };
+
+/**
+ * Renders a new chat message to the message area
+ * @param {string} message - the message content
+ * @param {boolean} is_self - 
+ * @param {*} name - name of send (if `is_self` is false)
+ * @param {Date} time - time of message
+ */
+export const NewChatMessage = (message, is_self, name = "", time = new Date()) => {
+  const messageElement = document.createElement("div");
+  const actualMessage = document.createElement("div");
+  // is_self checks if the message came from the current user, not the
+  // other one
+  if (is_self) {
+    messageElement.classList.add("mself");
+    actualMessage.classList.add("self");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">You</div>
+              <div class="date">${time.toDateString()}</div>
+            </div>`;
+  } else {
+    messageElement.classList.add("m");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">${name}</div>
+              <div class="date">2 Hours Ago</div>
+            </div>`;
+  }
+
+  actualMessage.classList.add("message");
+
+  const content = document.createElement("p");
+  const chatArea = document.getElementById("message-space");
+  content.textContent = message;
+  actualMessage.appendChild(content);
+  messageElement.appendChild(actualMessage);
+  chatArea.appendChild(messageElement);
+  chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+};

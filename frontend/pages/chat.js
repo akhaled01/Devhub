@@ -1,5 +1,7 @@
 import schat from "../assets/sendChat.svg";
 import nchat from "../assets/nchat.svg";
+import { NewChatWS } from "../funcs/sockets";
+import { NewChatMessage } from "../funcs/utils";
 
 export const Chat = () => {
   document.getElementById("app").innerHTML += `
@@ -19,12 +21,6 @@ export const Chat = () => {
         </div>
         <div class="name">sahmed</div>
       </div>
-      <div class="contact">
-        <div class="profile-pic">
-          <div class="pfp"></div>
-        </div>
-        <div class="name">malsamma</div>
-      </div>
     </div>
     <div id="messageArea">
       <div id="r-profile">
@@ -39,67 +35,13 @@ export const Chat = () => {
           id="user-text"
           placeholder="Message..."
         ></textarea>
-
         <img src="${schat}" alt="DM" id="sendTextBtn" title="Send" />
       </div>
     </div>
   `;
 
-  const chatArea = document.getElementById("message-space");
   const messageInput = document.getElementById("user-text");
-  let ws = new WebSocket("ws://localhost:8080/ws");
-
-  ws.onopen = () => {
-    console.log("websocket Opening Successful");
-  };
-
-  ws.onclose = () => {
-    console.log("websocket closing Successful");
-  };
-
-  ws.onmessage = (e) => {
-    console.log("Received message:", e.data);
-    let data = JSON.parse(e.data);
-    addMessage(data.req_Content.msg_content, false, data.req_Content.sender);
-  };
-
-  /**
-   *
-   * Function to add a message div via websocket
-   *
-   * @param {*} message - text to be sent
-   * @param {*} isSelf - mark true if the current user is sending
-   * @param {string} [name=""] - name of sender (only if isSelf is false)
-   */
-  function addMessage(message, isSelf, name = "") {
-    const messageElement = document.createElement("div");
-    const actualMessage = document.createElement("div");
-    // is self checks if the message came from the current user, not the
-    // other one
-    if (isSelf) {
-      messageElement.classList.add("mself");
-      actualMessage.classList.add("self");
-      actualMessage.innerHTML += `<div class="sender-info">
-              <div class="sname">You</div>
-              <div class="date">2 Hours Ago</div>
-            </div>`;
-    } else {
-      messageElement.classList.add("m");
-      actualMessage.innerHTML += `<div class="sender-info">
-              <div class="sname">${name}</div>
-              <div class="date">2 Hours Ago</div>
-            </div>`;
-    }
-
-    actualMessage.classList.add("message");
-
-    const content = document.createElement("p");
-    content.textContent = message;
-    actualMessage.appendChild(content);
-    messageElement.appendChild(actualMessage);
-    chatArea.appendChild(messageElement);
-    chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
-  }
+  let ws = NewChatWS();
 
   document.getElementById("sendTextBtn").addEventListener("click", function () {
     const message = messageInput.value;
@@ -109,12 +51,12 @@ export const Chat = () => {
         type: "send_msg",
         req_Content: {
           sender: "",
-          recipient: "VK",
+          recipient: "VK", //TODO: Make it change based on session
           msg_content: message,
         },
       })
     );
-    addMessage(message, true); // Add as self message
-    messageInput.value = ""; // Clear input
+    NewChatMessage(message, true); // Add as self message
+    messageInput.value = "";
   });
 };

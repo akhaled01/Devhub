@@ -17,9 +17,9 @@ import (
 	"RTF/utils"
 )
 
-type ConnEvent struct {
-	Name  string `json:"name"`
-	Event string `json:"event"`
+type CurrentStatus struct {
+	User   types.User `json:"user"`
+	Status bool       `json:"status"`
 }
 
 var upgrader = websocket.Upgrader{
@@ -30,7 +30,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var listenerChan = make(chan ConnEvent)
+var listenerChan = make(chan bool)
 
 var (
 	ws_server = NewServer()
@@ -153,21 +153,49 @@ and brodcasts them to all other users for frontend updates
 */
 func OnlineListener() {
 	for {
-		event := <-listenerChan
-		Brodcast(event)
+		<-listenerChan
+		utils.InfoConsoleLog("conn change detected")
+		if err := EvalOnlineUsers(); err != nil {
+			utils.ErrorConsoleLog("error brodcasting online users")
+			utils.PrintErrorTrace(err)
+			return
+		}
 	}
 }
 
-/*
-Broadcasts an event to all connected users
-an event is basically when a user connects / disconnects
-*/
-func Brodcast(event ConnEvent) {
-	jsonMsg, _ := json.Marshal(&ser.WS_Request{
-		Type:    "conn_event",
-		Content: event,
+func EvalOnlineUsers() error {
+	onlineUserMap := []CurrentStatus{}
+	all_users, err := user.GetAllUsers()
+	if err != nil {
+		return err
+	}
+
+	for _, user := range all_users {
+		if _, ok := types.UserHasSessions(user.ID); ok {
+			onlineUserMap = append(onlineUserMap, CurrentStatus{
+				User:   user,
+				Status: true,
+			})
+		} else {
+			onlineUserMap = append(onlineUserMap, CurrentStatus{
+				User:   user,
+				Status: false,
+			})
+		}
+	}
+
+	jsonMsg, err := json.Marshal(&ser.WS_Request{
+		Type:    "online_user_list",
+		Content: onlineUserMap,
 	})
+
+	if err != nil {
+		return err
+	}
+
 	for conn := range ws_server.conns {
 		conn.Conn.WriteMessage(websocket.TextMessage, jsonMsg)
 	}
+
+	return nil
 }

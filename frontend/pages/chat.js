@@ -4,7 +4,7 @@ import { NewChatWS } from "../funcs/sockets";
 import { NewChatMessage } from "../funcs/utils";
 
 export const Chat = () => {
-  document.getElementById("app").innerHTML += `
+  document.getElementById("app").innerHTML += /*html*/`
   <div id="contacts">
       <div id="profile">
         <div id="profile-name">${sessionStorage.getItem("username")}</div>
@@ -12,20 +12,13 @@ export const Chat = () => {
           <img src="${nchat}" alt="new chat" />
         </button>
       </div>
-
       <div id="c-title"></div>
-
-      <div class="contact">
-        <div class="profile-pic">
-          <div class="pfp"></div>
-        </div>
-        <div class="name">sahmed</div>
-      </div>
-    </div>
+      <div id="c-contacts"></div>
+  </div>
     <div id="messageArea">
       <div id="r-profile">
         <div id="pic"></div>
-        <div id="r-name">sahmed</div>
+        <div id="r-name">${sessionStorage.getItem("chat_user")}</div>
       </div>
       <div id="message-space"></div>
 
@@ -39,9 +32,20 @@ export const Chat = () => {
       </div>
     </div>
   `;
-
+  
   const messageInput = document.getElementById("user-text");
   let ws = NewChatWS();
+
+  document.addEventListener("DOMContentLoaded", () => {
+    ws.send(JSON.stringify(
+      {
+        type: "Open_chat",
+        req_Content : {
+          user_id : sessionStorage.getItem("chat_user")
+        }
+      }
+    ))
+  });
 
   document.getElementById("sendTextBtn").addEventListener("click", function () {
     const message = messageInput.value;
@@ -51,7 +55,7 @@ export const Chat = () => {
         type: "send_msg",
         req_Content: {
           sender: "",
-          recipient: "VK", //TODO: Make it change based on session
+          recipient: sessionStorage.getItem("chat_user"), //TODO: Make it change based on session
           msg_content: message,
         },
       })

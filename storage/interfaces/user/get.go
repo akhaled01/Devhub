@@ -63,3 +63,24 @@ func Authenticate(credential string, password string) (types.User, error) {
 
 	return authorized_user, nil
 }
+
+// function to fetch all users from the DB
+func GetAllUsers() ([]types.User, error) {
+	query := "SELECT * FROM users"
+	rows, err := storage.DB_Conn.Query(query)
+	if err != nil {
+		return nil, errors.Join(types.ErrExec, err)
+	}
+
+	var users []types.User
+
+	for rows.Next() {
+		var user types.User
+		err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password)
+		if err != nil {
+			return nil, errors.Join(types.ErrScan, err)
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}

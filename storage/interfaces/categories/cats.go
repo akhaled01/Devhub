@@ -2,6 +2,7 @@ package categories
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gofrs/uuid"
 
@@ -34,36 +35,52 @@ func GetFullCategory(categoryid int) (*types.Category, error) {
 }
 
 // Invokes GET_POST_CATEGORY that returns full category that is assigned to a specific post
-func GetPostCategories(postid uuid.UUID) (*types.Category, error) {
-	stmt, err := storage.DB_Conn.Prepare(GET_POST_CATEGORY)
+func GetPostCategories(postid uuid.UUID) ([]string, error) {
+	query := `
+	SELECT category
+	FROM post_categories
+	JOIN category ON post_categories.cat_id = category.cat_id
+	WHERE post_id = ?
+`
+
+	rows, err := storage.DB_Conn.Query(query, postid)
 	if err != nil {
-		return nil, errors.Join(errors.New("error preparing GetPostCategories query"), err)
+		return nil, err
 	}
-	defer stmt.Close()
-	var category_id int
+	defer rows.Close()
 
-	if err := stmt.QueryRow(postid.String()).Scan(category_id); err != nil {
-		return nil, errors.Join(errors.New("error executing GetPostCategories query"), err)
+	var categories []string
+	for rows.Next() {
+		var category string
+		if err := rows.Scan(&category); err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
 	}
 
-	cat, err := GetFullCategory(category_id)
-	if err != nil {
-		return nil, errors.Join(errors.New("error getting full category"), err)
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
-	return cat, nil
+	return categories, nil
 }
 
 // invokes ADD_THREAD that adds a new category-post mapping record into the post_categories table.
-func AssignPostCategory(postid uuid.UUID, catid int) error {
-	stmt, err := storage.DB_Conn.Prepare(ADD_THREAD)
-	if err != nil {
-		return errors.Join(errors.New("error preparing AssignPostCategory query"), err)
+func AssignPostCategory(postid uuid.UUID, catids []int) error {
+	// Inserting the post category into the database
+	query := "INSERT INTO post_categories (post_id, cat_id) VALUES (?, ?)"
+	for _, catID := range catids {
+		if _, err := storage.DB_Conn.Exec(query, postid, catID); err != nil {
+			return fmt.Errorf("failed to insert the post category")
+		}
 	}
-	defer stmt.Close()
 
-	if _, err = stmt.Exec(postid.String(), catid); err != nil {
-		return errors.Join(errors.New("error executing AssignPostCategory query"), err)
+	// If no categories in the post, insert it into the General category
+	if len(catids) == 0 {
+		query = "INSERT INTO post_categories (post_id, cat_id) VALUES (?, ?)"
+		if _, err := storage.DB_Conn.Exec(query, postid, 1); err != nil {
+			return fmt.Errorf("failed to insert the post General category")
+		}
 	}
 
 	return nil

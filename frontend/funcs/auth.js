@@ -1,95 +1,155 @@
 import { BACKENDURL } from "./vars";
-import { Flogin } from "./utils"
+import { EncodeBase64Image, SetSessionStorage } from "./utils";
 
-// TODO - INCLUDE GENDER, AGE AND OTHER DATA IN VALIDATION AND POST
-
+/**
+ * Validates signup form data
+ * @returns error string if there is
+ */
 const ValidateData = () => {
-  const { value: username, value: email } = document.getElementById("uname")
-    .querySelectorAll("input[type='text']"); // Assuming both fields are within a wrapper
+  const fname = document.getElementById("fname").value;
+  const lname = document.getElementById("lname").value;
+  const age = document.getElementById("age").value;
+  const gender = document.getElementById("gender").value;
+  const username = document.getElementById("uname").value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("pass").value;
   const confirmPassword = document.getElementById("cpass").value;
 
-  // Check for empty fields concisely
-  if ([username, email].some(value => !value.trim())) {
-    return "Username and email are required.";
+  if (
+    !fname ||
+    !lname ||
+    !age ||
+    !gender ||
+    !username ||
+    !password ||
+    !confirmPassword ||
+    !email
+  ) {
+    return "There is a missing required field";
   }
 
-  // Validate length for both name and email consistently
+  if (age < 0 || age > 100) {
+    return "please enter a sensible age";
+  }
+
+  if (gender.toUpperCase() !== "M" && gender.toUpperCase() !== "F") {
+    return "gender can either be M or F";
+  }
+
   if (username.length > 20 || email.length > 30) {
     return "Username and email should each be up to 20 and 30 characters long, respectively.";
   }
 
-  // Validate password equality and length
-  if (password !== confirmPassword) {
-    return "Passwords don't match.";
+  if (password.length < 6) {
+    return "Password should be atleast 6 charachters long";
   }
 
-  if (password.length < 6 || password.length > 20) {
-    return "Password should be between 6 and 20 characters long.";
+  if (password !== confirmPassword) {
+    return "Passwords don't match.";
   }
 
   return "";
 };
 
+/**
+ * Invokes a async fetch request to create a new user
+ * and log him in
+ */
 export const HandleSignup = async () => {
-  const { value: username, value: email } = document.getElementById("uname")
-    .querySelectorAll("input[type='text']"); // Assuming both fields are within a wrapper
-  const password = document.getElementById("pass").value;
-
   const validationMessage = ValidateData();
+
   if (validationMessage) {
     alert(validationMessage);
     return;
   }
 
-  const signUpData = {
-    email,
-    username,
-    password,
-  };
+  EncodeBase64Image(async (EncodedAvatar) => {
+    const formData = {};
+    const authGroups = document.querySelectorAll(".authgroup");
 
-  try {
-    const response = await fetch(BACKENDURL + "/signup", {
-      method: "POST",
-      body: JSON.stringify(signUpData),
-      headers: {
-        "Content-Type": "application/json",
-      },
+    authGroups.forEach((group) => {
+      const inputs = group.querySelectorAll("input");
+      inputs.forEach((input) => {
+        if (input.name !== "avatar" && input.name !== "signUpPassConfirm") {
+          formData[input.name] = input.value;
+        }
+      });
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      alert(errorText);
-    } else {
-      await Flogin()
+    formData["image"] = EncodedAvatar;
+    formData["age"] = parseInt(formData["age"]);
+
+    console.log(formData);
+
+    try {
+      const response = await fetch(BACKENDURL + "/auth/signup", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.status === 201) {
+        switch (response.status) {
+          case 409:
+            alert("some of the credetials have already been used");
+            break;
+          default:
+            alert("error on signup, check logs");
+            break;
+        }
+      } else {
+        window.location.assign("/login"); //TODO: If you can, remimplement FLogin
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("An error occurred during signup. Please try again.");
     }
-  } catch (error) {
-    console.error("Signup error:", error);
-    alert("An error occurred during signup. Please try again.");
-  }
+  });
 };
 
-
+/**
+ * Invokes async request that handles login
+ *
+ * Path of backend is /auth/login
+ */
 export const HandleLogin = async () => {
-  const cred = document.getElementById("cred")
-  const pass = document.getElementById("pass")
+  const cred = document.getElementById("cred");
+  const pass = document.getElementById("pass");
 
   if (!cred.value.trim() || !pass.value.trim()) {
-    alert("please enter correct values")
-    return
+    alert("please enter correct values");
+    return;
   }
 
-  const res = await fetch(BACKENDURL + "/login", {
+  const res = await fetch(BACKENDURL + "/auth/login", {
     method: "POST",
     body: JSON.stringify({
-      cred,
-      pass
-    })
-  })
+      credential: cred.value,
+      password: pass.value,
+      credential: cred.value,
+      password: pass.value,
+    }),
+    credentials: "include",
+  });
 
   if (res.ok) {
-    window.location.assign("/")
+    const data = await res.json();
+    // Store data in sessionStorage
+    SetSessionStorage(data);
+    window.location.assign("/");
   } else {
-    alert(res.text)
+    switch (res.status) {
+      case 401:
+        alert("Incorrect Password");
+        break;
+      case 404:
+        alert("User not found");
+        break;
+      default:
+        alert("error logging in");
+        break;
+    }
   }
-}
+};

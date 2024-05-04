@@ -2,6 +2,10 @@
   display: none;
 }
 
+*::selection {
+  color: #82f5ff;
+}
+
 #app {
   margin: 0;
   height: 100%;

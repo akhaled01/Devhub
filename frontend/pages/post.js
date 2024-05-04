@@ -3,7 +3,15 @@ import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
 
+/**
+ * This function fetches the main post page
+ * (the one with all the details like comments lol)
+ */
 export const Post = () => {
+  if (!localStorage.getItem("user_token")) {
+    window.location.assign("/login");
+    return;
+  }
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
@@ -153,8 +161,3 @@ export const Post = () => {
     });
   });
 };
-
-  // document.addEventListener("DOMContentLoaded", function () {
-  //   fetchComments();
-  //   fetchPost();
-  // });

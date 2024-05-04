@@ -1,9 +1,9 @@
-import { HandleLogin } from "../../funcs/auth"
+import { HandleLogin } from "../../funcs/auth";
 
 export const Login = () => {
-  document.getElementById("app").innerHTML = /* html */`
+  document.getElementById("app").innerHTML = /* html */ `
     <div class="logo">
-      <img src="../../images/logo.svg" id="authlogo">
+      <img src="../../assets/logo.svg" id="authlogo">
     </div>
     <div class="form">
       <form id="signupform" autocomplete="off">
@@ -31,26 +31,27 @@ export const Login = () => {
         <a class="ohref" href="/signup">Or Signup Instead</a>
       </form>
     </div>
-  `
+  `;
 
-  document.getElementById("submit").addEventListener("click", async () => await HandleLogin())
+  document
+    .getElementById("submit")
+    .addEventListener("click", async () => await HandleLogin());
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      document.getElementById("submit").click()
+    if (event.key.toLowerCase() === "enter") {
+      document.getElementById("submit").click();
     }
-  })
-  const svg = document.getElementById('authlogo');
+  });
+  const svg = document.getElementById("authlogo");
   let degree = 0;
-
 
   function animate() {
     degree++;
     if (degree === 360) {
-      degree = 0
+      degree = 0;
     }
     svg.style.transform = `rotateY(${degree}deg)`;
     requestAnimationFrame(animate);
   }
 
   animate();
-}
+};

@@ -50,7 +50,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := post.SavePostInDB(new_post_object); err != nil {
+	if err := post.SavePostInDB(new_post_object, post_creation_request.Post_category); err != nil {
 		utils.ErrorConsoleLog("error saving the new post")
 		utils.PrintErrorTrace(err)
 		w.WriteHeader(http.StatusInternalServerError)

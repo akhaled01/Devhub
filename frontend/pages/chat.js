@@ -1,11 +1,11 @@
-import schat from "../assets/sendChat.svg"
-import nchat from "../assets/nchat.svg"
+import schat from "../assets/sendChat.svg";
+import nchat from "../assets/nchat.svg";
 
 export const Chat = () => {
   document.getElementById("app").innerHTML += `
   <div id="contacts">
       <div id="profile">
-        <div id="profile-name">_.ak79</div>
+        <div id="profile-name">${sessionStorage.getItem("username")}</div>
         <button type="button" title="New Chat" id="nchat">
           <img src="${nchat}" alt="new chat" />
         </button>
@@ -29,7 +29,7 @@ export const Chat = () => {
     <div id="messageArea">
       <div id="r-profile">
         <div id="pic"></div>
-        <div id="r-name">Sahmed</div>
+        <div id="r-name">sahmed</div>
       </div>
       <div id="message-space">
         <div class="m">
@@ -88,78 +88,79 @@ export const Chat = () => {
         <img src="${schat}" alt="DM" id="sendTextBtn" title="Send" />
       </div>
     </div>
-  `
+  `;
 
-  const chatArea = document.getElementById('message-space');
-  const messageInput = document.getElementById('user-text');
-  let ws = new WebSocket("ws://localhost:7000")
-
+  const chatArea = document.getElementById("message-space");
+  const messageInput = document.getElementById("user-text");
+  let ws = new WebSocket("ws://localhost:8080/ws");
 
   document.addEventListener("DOMContentLoaded", () => {
     ws.onopen = () => {
       console.log("websocket Opening Successful");
-    }
+    };
 
     ws.onclose = () => {
       console.log("websocket closing Successful");
-    }
+    };
 
     ws.onmessage = (e) => {
-      addMessage(e.data.message, false, e.data.name)
-    }
-  })
+      alert("message came");
+      addMessage(e.req_Content.msg_content, false, e.req_Content.sender);
+    };
+  });
 
   /**
-   * 
+   *
    * Function to add a message div via websocket
-   * 
+   *
    * @param {*} message - text to be sent
    * @param {*} isSelf - mark true if the current user is sending
-   * @param {string} [name=""] - name of sender (only if isSelf is false) 
+   * @param {string} [name=""] - name of sender (only if isSelf is false)
    */
   function addMessage(message, isSelf, name = "") {
-    const messageElement = document.createElement('div');
-    const actualMessage = document.createElement('div')
+    const messageElement = document.createElement("div");
+    const actualMessage = document.createElement("div");
     // is self checks if the message came from the current user, not the
     // other one
     if (isSelf) {
-      messageElement.classList.add('mself');
-      actualMessage.classList.add('self');
+      messageElement.classList.add("mself");
+      actualMessage.classList.add("self");
       actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">You</div>
               <div class="date">2 Hours Ago</div>
-            </div>`
+            </div>`;
     } else {
-      messageElement.classList.add('m');
+      messageElement.classList.add("m");
       actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">${name}</div>
               <div class="date">2 Hours Ago</div>
-            </div>`
+            </div>`;
     }
 
-    actualMessage.classList.add("message")
+    actualMessage.classList.add("message");
 
-    const content = document.createElement('p');
+    const content = document.createElement("p");
     content.textContent = message;
     actualMessage.appendChild(content);
-    messageElement.appendChild(actualMessage)
+    messageElement.appendChild(actualMessage);
     chatArea.appendChild(messageElement);
     chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
   }
 
-  document.getElementById('sendTextBtn').addEventListener('click', function () {
+  document.getElementById("sendTextBtn").addEventListener("click", function () {
     const message = messageInput.value;
-    if (!message) return;
-    ws.send(JSON.stringify({
-      "name": localStorage.getItem("uname"),
-      "message": message,
-      "time": new Date()
-    }))
+    if (!message.trim()) return;
+    ws.send(
+      JSON.stringify({
+        type: "send_msg",
+        req_Content: {
+          sender: "",
+          recipient: "sahmed",
+          msg_content: message,
+        },
+      })
+    );
     addMessage(message, true); // Add as self message
-    messageInput.value = ''; // Clear input
-
-    //FIXME - Once Websocket logic is done, remove the below line
-
-    // setTimeout(() => addMessage('This is a response message.', false, "sahmed"), 1000);
+    messageInput.value = ""; // Clear input
   });
-}
+};

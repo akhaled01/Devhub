@@ -4,16 +4,28 @@ import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
+import { OrgIndexPosts } from "../funcs/posts";
+import { BACKENDURL } from "../funcs/vars";
 
-export const Home = () => {
+export const Home = async () => {
+  if (!localStorage.getItem("user_token")) {
+    window.location.assign("/login")
+    return
+  }
+
+  let username = localStorage.getItem("username");
+  let avatar = localStorage.getItem("avatar");
+
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
     <div id="c-post-modal" class="modal">
         <div class="modal-content">
             <div id="c-post-userinfo">
-                <div id="c-post-pfp"></div>
-                <p id="c-post-nickname">_.ak79</p>
+                <div id="c-post-pfp">
+                    <img src="${avatar}">
+                </div>
+                <p id="c-post-nickname">${username}</p>
             </div>
             <textarea id="c-post-textArea"
                 placeholder="What's on your mind?"></textarea>
@@ -48,10 +60,13 @@ export const Home = () => {
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
 
-  // When the user clicks the button, open the modal
-  modalOpenBtn.onclick = function () {
-    modal.style.display = "block";
-  };
+  // Check if the elements exist before attaching event handlers
+  if (modalOpenBtn && modal) {
+    // When the user clicks the button, open the modal
+    modalOpenBtn.onclick = function () {
+      modal.style.display = "block";
+    };
+  }
 
   // When user clicks outside window, remove modal
   window.onclick = function (event) {
@@ -59,6 +74,58 @@ export const Home = () => {
       modal.style.display = "none";
     }
   };
+
+
+  // document.addEventListener('DOMContentLoaded', () => {
+  // Get the "NewPost" div element
+  const newPostDiv = document.getElementById('c-post-Btn');
+
+  // Check if the element exists before adding the event listener
+  if (newPostDiv) {
+    // Add a click event listener to the "NewPost" div
+    newPostDiv.addEventListener('click', () => {
+
+      // Get the post text and image from the form
+      const postText = document.getElementById('c-post-textArea').value;
+      const postImage = ''; // Get the base64-encoded image data
+      const postCategory = document.getElementById('cat-choose-Btn').value;
+
+      // Create an object with the post data
+      const postData = {
+        post_text: postText,
+        post_image_base64: postImage,
+        post_category: postCategory, // Set the desired category ID
+        creator_id: localStorage.getItem("user_id"), // Get the user ID from local storage
+      };
+
+      // Send a POST request to the backend
+      fetch(BACKENDURL + '/post/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: "include",
+
+        body: JSON.stringify(postData),
+      })
+        .then(response => {
+          modal.style.display = "none";
+          if (response.ok) {
+            // Post created successfully
+            console.log('Post created successfully');
+            // Redirect to the post page or update the UI as needed
+          } else {
+            // Handle error response
+            console.error('Error creating post');
+          }
+        })
+        .catch(error => {
+          console.error('Error creating post:', error);
+        });
+    });
+  }
+  // });
+
 
   // add event listener for category button
   let toggled = false;
@@ -78,6 +145,7 @@ export const Home = () => {
     document.getElementById("img-upload").click();
   });
 
+  // liking event listener
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
   console.log(likeImages);
@@ -97,10 +165,12 @@ export const Home = () => {
       }
     });
   });
+
+  await OrgIndexPosts();
 };
 
 export async function fetchPost() {
-  const response = await fetch(`/post/all`);
+  const response = await fetch(BACKENDURL + `/post/all`);
   const data = await response.json();
 
   const postDiv = document.getElementById("post");
@@ -117,13 +187,12 @@ export async function fetchPost() {
               <div class="p-main">
                   <div class="p-content">
                       ${data.content}
-                      ${
-                        data.Image_Path
-                          ? `<div class="p-image">
+                      ${data.Image_Path
+        ? `<div class="p-image">
                           <img src=${data.Image_Path} alt="post image">
                       </div>`
-                          : ""
-                      }
+        : ""
+      }
                   </div>
                   <div class="p-stats">
                       <div class="p-likeCount">

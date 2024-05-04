@@ -8,6 +8,7 @@ import (
 
 var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"GET /post/all":        GetAllPosts,
+	"OPTIONS /post/all":    GetAllPosts,
 	"GET /post/{id}":       GetPostByID,
 	"POST /post/create":    CreatePost,
 	"POST /comment/create": CreateComment,
@@ -17,6 +18,8 @@ var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
 // Register Post Routes with middleware validation
 func RegisterPostRoutes(mux *http.ServeMux) {
 	for route, f := range Routes {
-		mux.Handle(route, middleware.SessionValidationMiddleware(http.HandlerFunc(f)))
+		validated := middleware.SessionValidationMiddleware(http.HandlerFunc(f))
+		allowed_cors := middleware.AllowCorsMiddleware(validated)
+		mux.Handle(route, allowed_cors)
 	}
 }

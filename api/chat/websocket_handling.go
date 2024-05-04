@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	"RTF/storage/interfaces/chat"
+	"RTF/storage/interfaces/user"
 	"RTF/types"
 	ser "RTF/types/serializers"
 	"RTF/utils"
@@ -19,6 +20,9 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 var (
@@ -70,9 +74,26 @@ func Send_Message(sender_user *types.User, request string) {
 	message_contents.Sender = sender_user.Username // Put the username in the message capsul
 	message_contents.Timestamp = time.Now()
 
-	json_msg, _ := json.Marshal(message_contents)
+	// Encapsulate the response
+	response_capusl := &ser.WS_Request{
+		Type:    "message",
+		Content: message_contents,
+	}
+	json_msg, _ := json.Marshal(response_capusl)
 
 	var send_to_conn *websocket.Conn
+
+	_, err := user.GetSingleUser("user_name", message_contents.Recipient)
+	if err != nil {
+		utils.ErrorConsoleLog("User can't be found in the database!")
+		return
+	}
+
+	// Save the message in the database
+	err = chat.SaveChatInDB(*message_contents)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+	}
 
 	// Find the user within the connections
 	user_idx := 0 // counter for the below loop
@@ -83,31 +104,39 @@ func Send_Message(sender_user *types.User, request string) {
 		}
 		// End of the loop and user wasn't found
 		if user_idx == len(ws_server.conns)-1 {
-			utils.InfoConsoleLog("username wasn't found!")
+			utils.InfoConsoleLog("user might not be connected!")
 			return
 		}
 		user_idx++
 	}
 
-	err := send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
+	// send the message to the correct user via its websocket connection
+	err = send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
 	if err != nil {
 		utils.ErrorConsoleLog("Connection closed!")
 		return
 	}
 
-	err = chat.SaveChatInDB(*message_contents)
-	if err != nil {
-		utils.ErrorConsoleLog(err.Error())
-	}
 	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 
 }
 
 func Open_chat(user *types.User, request string) {
-	json_msg, _ := json.Marshal(&ser.Message{
-		Msg_Content: "Open_chat",
-	})
 
-	fmt.Println(request)
+	message_contents := &ser.Open_chat_request{}
+	json.Unmarshal([]byte(request), message_contents)
+
+	chat_messages, err := chat.Get_chat(user.Username, message_contents.User_id)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return
+	}
+
+	response_capusl := &ser.WS_Request{
+		Type:    "open_chat_response",
+		Content: chat_messages,
+	}
+
+	json_msg, _ := json.Marshal(&response_capusl)
 	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
 }

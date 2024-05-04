@@ -2,20 +2,29 @@ package utils
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
+	"syscall"
 )
 
 // Saves the image to the filesystem and returns the path
 // img_type refers to the purpose of the image (avatar / post)
 func SaveImage(encode string, img_type string) (string, error) {
-	decoded, err := base64.StdEncoding.DecodeString(encode)
+	// Extract the base64 part without the "data:image/png;base64," prefix
+	if len(encode) == 0 {
+		return "", errors.New("no image")
+	}
+	base64Data := strings.Split(encode, ";base64,")[1]
+	decoded, err := base64.StdEncoding.DecodeString(base64Data)
 	if err != nil {
 		return "", err
 	}
 
-	err = os.MkdirAll("images", os.ModePerm)
+	syscall.Umask(0)
+	err = os.MkdirAll("images", 0777)
 	if err != nil {
 		return "", err
 	}

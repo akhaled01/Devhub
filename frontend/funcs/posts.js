@@ -1,36 +1,17 @@
-export async function fetchPost() {
-  const response = await fetch(`/post/${id}`);
-  const data = await response.json();
+import { AssemblePosts } from "./utils";
+import { BACKENDURL } from "./vars";
 
-  document.getElementById("post").innerHTML += `
-        <div class="f-post">
-            <div class="p-header">
-                <div class="p-profileInfo">
-                    <div class="p-profile-pic"></div>
-                    <div class="p-nickname">${data.author}</div>
-                </div>
-                <div class="p-creationDate">${data.creationDate}</div>
-            </div>
-            <div class="p-main">
-                <div class="p-content">
-                    ${data.content}
-                    <div class="p-image">
-                        <img src="${data.image}" alt="post image">
-                    </div>
-                </div>
-                <div class="p-stats">
-                    <div class="p-likeCount">
-                        <div class="p-likeBtn">
-                            <img src="${noheart}" alt="like" />
-                        </div>
-                        <div class="p-likeStat">${data.likes}</div>
-                    </div>
-                    <div class="p-commentCount">
-                        <img src="${comment}" alt="comment" />
-                        <div class="p-comment-Stat">${data.comments}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
+/**
+ * This function Sets Up the main page with
+ * All the Posts By fetching all posts from
+ * /post/all and invoking AssemblePosts
+ * In order to assemble them in the main page
+ */
+export const OrgIndexPosts = async () => {
+  const response = await fetch(BACKENDURL + "/post/all", {
+    credentials: "include",
+  });
+  const posts_in_json = await response.json();
+  console.log(posts_in_json);
+  AssemblePosts(posts_in_json);
+};

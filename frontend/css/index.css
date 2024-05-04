@@ -13,9 +13,8 @@
 }
 
 *::selection {
-  color: rgb(255, 117, 255);
+  color: #82f5ff;
 }
-
 body,
 html {
   margin: 0;

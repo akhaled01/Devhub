@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -35,6 +36,11 @@ func (d *DevServer) Boot() error {
 	signal.Notify(shutdownSignal, syscall.SIGTERM)
 	go d.GracefulShutdown(shutdownSignal)
 
-	utils.InfoConsoleLog(red + "DevHub API is Live on http://localhost" + d.ListenAddr + reset)
+	go chat.OnlineListener()
+
+	conn, _ := net.Dial("udp", "8.8.8.8:80")
+	host := conn.LocalAddr().(*net.UDPAddr)
+
+	utils.InfoConsoleLog(red + "DevHub API is Live on http://" + host.IP.String() + d.ListenAddr + reset)
 	return http.ListenAndServe(d.ListenAddr, d.Router)
 }

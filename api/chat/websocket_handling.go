@@ -17,6 +17,11 @@ import (
 	"RTF/utils"
 )
 
+type ConnEvent struct {
+	Name  string `json:"name"`
+	Event string `json:"event"`
+}
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -25,7 +30,11 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var ws_server = NewServer()
+var listenerChan = make(chan ConnEvent)
+
+var (
+	ws_server = NewServer()
+)
 
 /* Handles the request to connect to chat socket */
 func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
@@ -115,9 +124,8 @@ func Send_Message(sender_user *types.User, request string) {
 		return
 	}
 
-	utils.InfoConsoleLog("MESSAGE SENT")
+	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 
-	// sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
 }
 
 func Open_chat(user *types.User, request string) {
@@ -137,4 +145,29 @@ func Open_chat(user *types.User, request string) {
 
 	json_msg, _ := json.Marshal(&response_capusl)
 	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+}
+
+/*
+This function listenes for new connections and disconnections
+and brodcasts them to all other users for frontend updates
+*/
+func OnlineListener() {
+	for {
+		event := <-listenerChan
+		Brodcast(event)
+	}
+}
+
+/*
+Broadcasts an event to all connected users
+an event is basically when a user connects / disconnects
+*/
+func Brodcast(event ConnEvent) {
+	jsonMsg, _ := json.Marshal(&ser.WS_Request{
+		Type:    "conn_event",
+		Content: event,
+	})
+	for conn := range ws_server.conns {
+		conn.Conn.WriteMessage(websocket.TextMessage, jsonMsg)
+	}
 }

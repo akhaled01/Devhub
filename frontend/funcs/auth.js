@@ -1,5 +1,5 @@
 import { BACKENDURL } from "./vars";
-import { EncodeBase64Image, Flogin, SetLocalstorage } from "./utils";
+import { EncodeBase64Image, SetSessionStorage } from "./utils";
 
 /**
  * Validates signup form data
@@ -100,7 +100,7 @@ export const HandleSignup = async () => {
             break;
         }
       } else {
-        await Flogin(formData["email"], formData["password"]);
+        window.location.assign("/login"); //TODO: If you can, remimplement FLogin
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -111,7 +111,7 @@ export const HandleSignup = async () => {
 
 /**
  * Invokes async request that handles login
- * 
+ *
  * Path of backend is /auth/login
  */
 export const HandleLogin = async () => {
@@ -128,22 +128,17 @@ export const HandleLogin = async () => {
     body: JSON.stringify({
       credential: cred.value,
       password: pass.value,
+      credential: cred.value,
+      password: pass.value,
     }),
-    headers: {
-      "Content-Type": "application/json",
-    },
     credentials: "include",
-    witheCredentials: true,
   });
 
   if (res.ok) {
-    let data = await res.json()
-    if (res.headers.has("Set-Cookie")) {
-      console.log("Received cookie:", cookieValue);
-    }
-    SetLocalstorage(data);
-    console.log(data);
-    window.location.assign("/")
+    const data = await res.json();
+    // Store data in sessionStorage
+    SetSessionStorage(data);
+    window.location.assign("/");
   } else {
     switch (res.status) {
       case 401:

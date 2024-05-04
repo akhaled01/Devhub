@@ -1,6 +1,7 @@
+import { BACKENDURL } from "./vars";
 // Fetch the comments data
 export async function fetchComments() {
-  const response = await fetch(`/api/comments?Post_id=${postId}`);
+  const response = await fetch(BACKENDURL+`/api/comments?Post_id=${postId}`);
   const data = await response.json();
 
   const commentsDiv = document.getElementById("comments");

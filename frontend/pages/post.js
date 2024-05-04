@@ -8,6 +8,10 @@ import comment from "../assets/comment.svg";
  * (the one with all the details like comments lol)
  */
 export const Post = () => {
+  if (!localStorage.getItem("user_token")) {
+    window.location.assign("/login");
+    return;
+  }
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
@@ -157,55 +161,3 @@ export const Post = () => {
     });
   });
 };
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the "NewPost" div element
-  const newPostDiv = document.getElementById('c-post-Btn');
-
-  // Check if the element exists before adding the event listener
-  if (newPostDiv) {
-    // Add a click event listener to the "NewPost" div
-    newPostDiv.addEventListener('click', () => {
-      // Get the post text and image from the form
-      const postText = document.getElementById('c-post-textArea').value;
-      const postImage = ''; // Get the base64-encoded image data
-
-      // Create an object with the post data
-      const postData = {
-        post_text: postText,
-        post_image_base64: postImage,
-        post_category: 1, // Set the desired category ID
-      };
-
-      // Send a POST request to the backend
-      fetch('8080:/post/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      })
-        .then(response => {
-          if (response.ok) {
-            // Post created successfully
-            console.log('Post created successfully');
-            // Redirect to the post page or update the UI as needed
-          } else {
-            // Handle error response
-            console.error('Error creating post');
-          }
-        })
-        .catch(error => {
-          console.error('Error creating post:', error);
-        });
-    });
-  }
-});
-
-
-  // document.addEventListener("DOMContentLoaded", function () {
-  //   fetchComments();
-  //   fetchPost();
-  // });

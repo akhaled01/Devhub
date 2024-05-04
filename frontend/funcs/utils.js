@@ -23,7 +23,7 @@ export const Flogin = async (email, pass) => {
   });
 
   if (res.ok) {
-    SetLocalstorage(await res.json());
+    SetSessionStorage(await res.json());
     window.location.assign("/");
   }
 };
@@ -114,12 +114,12 @@ export const EncodeBase64Image = (callback) => {
 };
 
 /**
- * Sets the required localstorage Params
+ * Sets the required sessionStorage Params
  * @param {*} json_data
  */
-export const SetLocalstorage = (json_data) => {
-  localStorage.setItem("user_token", json_data.session_id);
-  localStorage.setItem("username", json_data.username);
-  localStorage.setItem("email", json_data.email);
-  localStorage.setItem("avatar", json_data.encoded_avatar);
+export const SetSessionStorage = (json_data) => {
+  sessionStorage.setItem("user_token", json_data.session_id);
+  sessionStorage.setItem("username", json_data.username);
+  sessionStorage.setItem("email", json_data.email);
+  sessionStorage.setItem("avatar", json_data.encoded_avatar);
 };

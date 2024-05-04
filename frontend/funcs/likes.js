@@ -1,5 +1,6 @@
+import { BACKENDURL } from "./vars";
 export const RecordLikes = async (event = 1, post_id) => {
-  const response = await fetch(`/api/likes?Post_id=${post_id}`, {
+  const response = await fetch(BACKENDURL+`/api/likes?Post_id=${post_id}`, {
     method: "POST",
     body: JSON.stringify({
       Post_id: post_id,

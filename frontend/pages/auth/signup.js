@@ -41,6 +41,11 @@ export const Signup = () => {
     .getElementById("submit")
     .addEventListener("click", async () => await HandleSignup());
 
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "enter") {
+      document.getElementById("submit").click();
+    }
+  });
 
   const svg = document.getElementById("authlogo");
   let degree = 0;

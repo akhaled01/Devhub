@@ -8,7 +8,7 @@ import plus from "../assets/plus.svg";
  * @returns Navbar HTML
  */
 export const LoadNav = () => {
-  if (localStorage.getItem("user_token")) {
+  if (sessionStorage.getItem("user_token")) {
     return /*html*/ `
       <nav>
   <a href="/">

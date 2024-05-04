@@ -5,20 +5,27 @@ import comment from "../assets/comment.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
 import { OrgIndexPosts } from "../funcs/posts";
+import { BACKENDURL } from "../funcs/vars";
 
-export const Home = async() => {
+export const Home = async () => {
   if (!localStorage.getItem("user_token")) {
     window.location.assign("/login")
     return
   }
+
+  let username = localStorage.getItem("username");
+  let avatar = localStorage.getItem("avatar");
+
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
     <div id="c-post-modal" class="modal">
         <div class="modal-content">
             <div id="c-post-userinfo">
-                <div id="c-post-pfp"></div>
-                <p id="c-post-nickname">_.ak79</p>
+                <div id="c-post-pfp">
+                    <img src="${avatar}">
+                </div>
+                <p id="c-post-nickname">${username}</p>
             </div>
             <textarea id="c-post-textArea"
                 placeholder="What's on your mind?"></textarea>
@@ -53,13 +60,13 @@ export const Home = async() => {
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
 
-    // Check if the elements exist before attaching event handlers
-    if (modalOpenBtn && modal) {
-      // When the user clicks the button, open the modal
-      modalOpenBtn.onclick = function () {
-        modal.style.display = "block";
-      };
-    }
+  // Check if the elements exist before attaching event handlers
+  if (modalOpenBtn && modal) {
+    // When the user clicks the button, open the modal
+    modalOpenBtn.onclick = function () {
+      modal.style.display = "block";
+    };
+  }
 
   // When user clicks outside window, remove modal
   window.onclick = function (event) {
@@ -69,8 +76,7 @@ export const Home = async() => {
   };
 
 
-// document.addEventListener('DOMContentLoaded', () => {
-  console.log("dvz");
+  // document.addEventListener('DOMContentLoaded', () => {
   // Get the "NewPost" div element
   const newPostDiv = document.getElementById('c-post-Btn');
 
@@ -89,18 +95,19 @@ export const Home = async() => {
         post_text: postText,
         post_image_base64: postImage,
         post_category: postCategory, // Set the desired category ID
+        creator_id: localStorage.getItem("user_id"), // Get the user ID from local storage
       };
 
       // Send a POST request to the backend
-      fetch('http://localhost:8080/post/create', {
+      fetch(BACKENDURL + '/post/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: 'no-cors',
+        credentials: "include",
+
         body: JSON.stringify(postData),
-      }) 
-      
+      })
         .then(response => {
           modal.style.display = "none";
           if (response.ok) {
@@ -117,7 +124,7 @@ export const Home = async() => {
         });
     });
   }
-// });
+  // });
 
 
   // add event listener for category button
@@ -158,12 +165,12 @@ export const Home = async() => {
       }
     });
   });
-  
+
   await OrgIndexPosts();
 };
 
 export async function fetchPost() {
-  const response = await fetch(`/post/all`);
+  const response = await fetch(BACKENDURL + `/post/all`);
   const data = await response.json();
 
   const postDiv = document.getElementById("post");
@@ -180,13 +187,12 @@ export async function fetchPost() {
               <div class="p-main">
                   <div class="p-content">
                       ${data.content}
-                      ${
-                        data.Image_Path
-                          ? `<div class="p-image">
+                      ${data.Image_Path
+        ? `<div class="p-image">
                           <img src=${data.Image_Path} alt="post image">
                       </div>`
-                          : ""
-                      }
+        : ""
+      }
                   </div>
                   <div class="p-stats">
                       <div class="p-likeCount">

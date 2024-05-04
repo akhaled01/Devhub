@@ -8,13 +8,13 @@ import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
 
 export const Home = async () => {
-  if (!localStorage.getItem("user_token")) {
-    window.location.assign("/login")
-    return
+  if (!sessionStorage.getItem("user_token")) {
+    window.location.assign("/login");
+    return;
   }
 
-  let username = localStorage.getItem("username");
-  let avatar = localStorage.getItem("avatar");
+  let username = sessionStorage.getItem("username");
+  let avatar = sessionStorage.getItem("avatar");
 
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
@@ -75,57 +75,54 @@ export const Home = async () => {
     }
   };
 
-
   // document.addEventListener('DOMContentLoaded', () => {
   // Get the "NewPost" div element
-  const newPostDiv = document.getElementById('c-post-Btn');
+  const newPostDiv = document.getElementById("c-post-Btn");
 
   // Check if the element exists before adding the event listener
   if (newPostDiv) {
     // Add a click event listener to the "NewPost" div
-    newPostDiv.addEventListener('click', () => {
-
+    newPostDiv.addEventListener("click", () => {
       // Get the post text and image from the form
-      const postText = document.getElementById('c-post-textArea').value;
-      const postImage = ''; // Get the base64-encoded image data
-      const postCategory = document.getElementById('cat-choose-Btn').value;
+      const postText = document.getElementById("c-post-textArea").value;
+      const postImage = ""; // Get the base64-encoded image data
+      const postCategory = document.getElementById("cat-choose-Btn").value;
 
       // Create an object with the post data
       const postData = {
         post_text: postText,
         post_image_base64: postImage,
         post_category: postCategory, // Set the desired category ID
-        creator_id: localStorage.getItem("user_id"), // Get the user ID from local storage
+        creator_id: sessionStorage.getItem("user_id"), // Get the user ID from local storage
       };
 
       // Send a POST request to the backend
-      fetch(BACKENDURL + '/post/create', {
-        method: 'POST',
+      fetch(BACKENDURL + "/post/create", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         credentials: "include",
 
         body: JSON.stringify(postData),
       })
-        .then(response => {
+        .then((response) => {
           modal.style.display = "none";
           if (response.ok) {
             // Post created successfully
-            console.log('Post created successfully');
+            console.log("Post created successfully");
             // Redirect to the post page or update the UI as needed
           } else {
             // Handle error response
-            console.error('Error creating post');
+            console.error("Error creating post");
           }
         })
-        .catch(error => {
-          console.error('Error creating post:', error);
+        .catch((error) => {
+          console.error("Error creating post:", error);
         });
     });
   }
   // });
-
 
   // add event listener for category button
   let toggled = false;
@@ -187,12 +184,13 @@ export async function fetchPost() {
               <div class="p-main">
                   <div class="p-content">
                       ${data.content}
-                      ${data.Image_Path
-        ? `<div class="p-image">
+                      ${
+                        data.Image_Path
+                          ? `<div class="p-image">
                           <img src=${data.Image_Path} alt="post image">
                       </div>`
-        : ""
-      }
+                          : ""
+                      }
                   </div>
                   <div class="p-stats">
                       <div class="p-likeCount">

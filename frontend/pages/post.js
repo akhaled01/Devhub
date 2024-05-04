@@ -8,7 +8,7 @@ import comment from "../assets/comment.svg";
  * (the one with all the details like comments lol)
  */
 export const Post = () => {
-  if (!localStorage.getItem("user_token")) {
+  if (!sessionStorage.getItem("user_token")) {
     window.location.assign("/login");
     return;
   }

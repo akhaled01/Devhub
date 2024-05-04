@@ -155,7 +155,7 @@ export const Chat = () => {
         type: "send_msg",
         req_Content: {
           sender: "",
-          recipient: "sahmed",
+          recipient: "VK",
           msg_content: message,
         },
       })

@@ -118,9 +118,7 @@ export const Home = async () => {
     create_post_Btn.addEventListener("click", async () => {
       const post_text = document.getElementById("c-post-textArea").value;
       const raw_image_file = document.getElementById("c-img-upload").value;
-
-      const post_category = document.getElementById('c-post-cat-select');
-      // const postCategory = postCategorySelect.options[postCategorySelect.selectedIndex].value;
+      const post_category = document.getElementById("cat-choose-Btn").value;
 
       const Image_Converstion_wrapper = async () => {
         return await convertImageToBase64(raw_image_file);

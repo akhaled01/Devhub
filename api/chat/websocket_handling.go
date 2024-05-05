@@ -18,8 +18,8 @@ import (
 )
 
 type CurrentStatus struct {
-	User   types.User `json:"user"`
-	Status bool       `json:"status"`
+	User      types.User `json:"user"`
+	Is_Online bool       `json:"is_online"`
 }
 
 var upgrader = websocket.Upgrader{
@@ -173,13 +173,13 @@ func EvalOnlineUsers() error {
 	for _, user := range all_users {
 		if _, ok := types.UserHasSessions(user.ID); ok {
 			onlineUserMap = append(onlineUserMap, CurrentStatus{
-				User:   user,
-				Status: true,
+				User:      user,
+				Is_Online: true,
 			})
 		} else {
 			onlineUserMap = append(onlineUserMap, CurrentStatus{
-				User:   user,
-				Status: false,
+				User:      user,
+				Is_Online: false,
 			})
 		}
 	}

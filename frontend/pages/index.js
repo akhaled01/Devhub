@@ -77,22 +77,22 @@ export const Home = async () => {
   `;
 
   try {
-    const response = await fetch(BACKENDURL + '/categories');
+    const response = await fetch(BACKENDURL + "/categories");
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    const categoryList = document.querySelector('.category-list');
+    const categoryList = document.querySelector(".category-list");
 
-    data.forEach(category => {
-      const li = document.createElement('li');
+    data.forEach((category) => {
+      const li = document.createElement("li");
       li.textContent = category.name;
       categoryList.appendChild(li);
     });
   } catch (error) {
-    console.error('Fetch failed:', error);
+    console.error("Fetch failed:", error);
   }
 
   // Modal Operations
@@ -112,84 +112,90 @@ export const Home = async () => {
     }
   };
 
-  const create_post_Btn = document.getElementById("c-post-Btn");
+  const post_id = document.getElementsByClassName("f-post")[0].id;
 
   if (create_post_Btn) {
-    create_post_Btn.addEventListener("click", async () => {
-      const post_text = document.getElementById("c-post-textArea").value;
-      const raw_image_file = document.getElementById("c-img-upload").value;
-      const post_category = document.getElementById("cat-choose-Btn").value;
+    post_id.addEventListener("click", async () => {});
 
-      const Image_Converstion_wrapper = async () => {
-        return await convertImageToBase64(raw_image_file);
-      };
+    const create_post_Btn = document.getElementById("c-post-Btn");
 
-      const postImage = await Image_Converstion_wrapper();
+    if (create_post_Btn) {
+      create_post_Btn.addEventListener("click", async () => {
+        const post_text = document.getElementById("c-post-textArea").value;
+        const raw_image_file = document.getElementById("c-img-upload").value;
+        const post_category = document.getElementById("cat-choose-Btn").value;
 
-      const post_data = {
-        user_token: sessionStorage.getItem("user_token"),
-        post_text: post_text,
-        post_image_base64: postImage,
-        post_category: post_category,
-      };
+        const Image_Converstion_wrapper = async () => {
+          return await convertImageToBase64(raw_image_file);
+        };
 
-      try {
-        const res = await fetch(BACKENDURL + "/post/create", {
-          method: "POST",
-          body: JSON.stringify(post_data),
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const postImage = await Image_Converstion_wrapper();
 
-        modal.style.display = "none";
+        const post_data = {
+          user_token: sessionStorage.getItem("user_token"),
+          post_text: post_text,
+          post_image_base64: postImage,
+          post_category: post_category,
+        };
 
-        if (res.status === 201) {
-          window.location.reload();
-        } else {
-          throw new Error(res.status, res.statusText);
+        try {
+          const res = await fetch(BACKENDURL + "/post/create", {
+            method: "POST",
+            body: JSON.stringify(post_data),
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          modal.style.display = "none";
+
+          if (res.status === 201) {
+            window.location.reload();
+          } else {
+            throw new Error(res.status, res.statusText);
+          }
+        } catch (error) {
+          alert(error);
+          console.error("post creation error", error);
         }
-      } catch (error) {
-        alert(error);
-        console.error("post creation error", error);
-      }
-    });
-  }
-  let toggled = false;
-
-  document.getElementById("cat-choose-Btn").addEventListener("click", () => {
-    toggled = !toggled;
-    if (toggled) {
-      document.getElementById("c-post-cats").style.display = "block";
-    } else {
-      document.getElementById("c-post-cats").style.display = "none";
+      });
     }
-  });
+    let toggled = false;
 
-  document.getElementById("c-img-upload").addEventListener("click", () => {
-    document.getElementById("img-upload").click();
-  });
-
-  const likeImages = document.querySelectorAll(".p-likeBtn img");
-
-  console.log(likeImages);
-
-  likeImages.forEach((likeBtn) => {
-    console.log(likeBtn.getAttribute("src"));
-
-    likeBtn.addEventListener("click", () => {
-      if (likeBtn.getAttribute("src") === noheart) {
-        likeBtn.setAttribute("src", heart);
-        console.log("liked");
-        // add other like event
+    document.getElementById("cat-choose-Btn").addEventListener("click", () => {
+      toggled = !toggled;
+      if (toggled) {
+        document.getElementById("c-post-cats").style.display = "block";
       } else {
-        likeBtn.setAttribute("src", noheart);
-        console.log("unliked");
-        // add other unlike event
+        document.getElementById("c-post-cats").style.display = "none";
       }
     });
-  });
 
-  await OrgIndexPosts();
+    document.getElementById("c-img-upload").addEventListener("click", () => {
+      document.getElementById("img-upload").click();
+    });
+
+    const likeImages = document.querySelectorAll(".p-likeBtn img");
+
+    console.log(likeImages);
+
+    likeImages.forEach((likeBtn) => {
+      console.log(likeBtn.getAttribute("src"));
+
+      likeBtn.addEventListener("click", () => {
+        if (likeBtn.getAttribute("src") === noheart) {
+          likeBtn.setAttribute("src", heart);
+          console.log("liked");
+          // add other like event
+        } else {
+          likeBtn.setAttribute("src", noheart);
+          console.log("unliked");
+          // add other unlike event
+        }
+      });
+    });
+
+    await OrgIndexPosts();
+  }
 };

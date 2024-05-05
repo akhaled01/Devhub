@@ -51,7 +51,7 @@ export const UpdateCSS = (stylesheet) => {
 export const AssemblePosts = (posts_in_json = []) => {
   document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
-    document.getElementById("posts").innerHTML += `<div class="f-post ${
+    document.getElementById("posts").innerHTML += `<a herf="/post"><div class="f-post ${
       !post_data.Image_Path ? "noimage" : ""
     }" id=${post_data.id}>
   <div class="p-header">
@@ -86,9 +86,11 @@ export const AssemblePosts = (posts_in_json = []) => {
     </div>
   </div>
 </div>
+</a>
     `;
   });
 };
+
 
 /**
  * Function that encodes the avatar uploaded by the

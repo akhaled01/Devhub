@@ -11,6 +11,7 @@ var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"OPTIONS /post/all":    GetAllPosts,
 	"GET /post/{id}":       GetPostByID,
 	"POST /post/create":    CreatePost,
+	"OPTIONS /post/create": CreatePost,
 	"POST /comment/create": CreateComment,
 	"GET /comments/{id}":   GetCommentsByPostID,
 }

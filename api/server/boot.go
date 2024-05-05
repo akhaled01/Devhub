@@ -9,6 +9,7 @@ import (
 	"RTF/api/auth"
 	"RTF/api/categories"
 	"RTF/api/chat"
+	"RTF/api/likes"
 	"RTF/api/posts"
 	"RTF/storage"
 	"RTF/utils"
@@ -30,6 +31,7 @@ func (d *DevServer) Boot() error {
 	auth.RegisterAuthRoutes(d.Router)
 	chat.RegisterChatRoutes(d.Router)
 	categories.RegisterCategoriesRoutes(d.Router)
+	likes.RegisterLikeRoutes(d.Router)
 
 	shutdownSignal := make(chan os.Signal, 1)
 	signal.Notify(shutdownSignal, syscall.SIGTERM)

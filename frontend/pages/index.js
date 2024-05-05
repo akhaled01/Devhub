@@ -59,16 +59,16 @@ export const Home = async () => {
       <div class="profile-card">
         <div class="profile-header">
           <div class="profileImage">
-            <img src="${avatar}" alt="">
+            <img src="${sessionStorage.getItem("avatar")}" alt="">
           </div>
         </div>
         <div class="UserInfo-div">
-          <p class="UserName-p">${username}</p>
+          <p class="UserName-p">${sessionStorage.getItem("username")}</p>
           <p class="profile-title">Profile</p>
         </div>
       </div>
       <div class="categories-section">
-        <h2 class="categories-text">Categories</h2>
+        <h2 class="categories-text">Users</h2>
         <ul class="category-list">
         </ul>
       </div>
@@ -137,7 +137,7 @@ export const Home = async () => {
         const res = await fetch(BACKENDURL + "/post/create", {
           method: "POST",
           body: JSON.stringify(post_data),
-          credential: "include",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

@@ -1,4 +1,4 @@
-import { BACKENDURL, post_wrapper } from "./vars";
+import { BACKENDURL } from "./vars";
 import noheart from "../assets/unliked.svg";
 import comment from "../assets/comment.svg";
 
@@ -49,8 +49,9 @@ export const UpdateCSS = (stylesheet) => {
  * @param {any[]} posts_in_json
  */
 export const AssemblePosts = (posts_in_json = []) => {
+  document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
-    post_wrapper.innerHTML += `<div class="f-post ${
+    document.getElementById("posts").innerHTML += `<div class="f-post ${
       !post_data.Image_Path ? "noimage" : ""
     }" id=${post_data.id}>
   <div class="p-header">
@@ -58,7 +59,7 @@ export const AssemblePosts = (posts_in_json = []) => {
       <div class="p-profile-pic"></div>
       <div class="p-nickname">${post_data.user.username}</div>
     </div>
-    <div class="p-creationDate">${post_data.CreationDate}</div>
+    <div class="p-creationDate">${new Date(post_data.creationDate).toDateString()}</div>
   </div>
   <div class="p-main">
     <div class="p-content">

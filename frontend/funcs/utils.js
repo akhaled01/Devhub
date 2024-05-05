@@ -127,11 +127,16 @@ export const SetSessionStorage = (json_data) => {
 /**
  * Renders a new chat message to the message area
  * @param {string} message - the message content
- * @param {boolean} is_self - 
+ * @param {boolean} is_self -
  * @param {*} name - name of send (if `is_self` is false)
  * @param {Date} time - time of message
  */
-export const NewChatMessage = (message, is_self, name = "", time = new Date()) => {
+export const NewChatMessage = (
+  message,
+  is_self,
+  name = "",
+  time = new Date()
+) => {
   const messageElement = document.createElement("div");
   const actualMessage = document.createElement("div");
   // is_self checks if the message came from the current user, not the
@@ -161,3 +166,25 @@ export const NewChatMessage = (message, is_self, name = "", time = new Date()) =
   chatArea.appendChild(messageElement);
   chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
 };
+
+export function convertImageToBase64(file) {
+  if (!file) {
+    return null;
+  }
+
+  const reader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    reader.onloadend = function () {
+      if (reader.readyState === FileReader.DONE) {
+        const base64String = reader.result;
+        console.log(base64String);
+        resolve(base64String);
+      } else {
+        reject(new Error("Error reading file"));
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+}

@@ -24,6 +24,7 @@ json body it accepts
 returns 201 on success, 500 on error and 400 on bad request
 */
 func CreatePost(w http.ResponseWriter, r *http.Request) {
+	utils.InfoConsoleLog("recieved post create Request")
 	post_creation_request := types.PostCreationRequest{}
 	session_id, err := r.Cookie("session_id")
 	if err != nil {
@@ -42,7 +43,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	new_post_object, err := post.ConstructNewPostFromRequest(post_creation_request)
-
 	if err != nil {
 		utils.ErrorConsoleLog("error constructing a new post")
 		utils.PrintErrorTrace(err)

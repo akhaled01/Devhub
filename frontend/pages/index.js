@@ -1,11 +1,11 @@
 import { LoadNav } from "../funcs/navbar";
 import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
-import comment from "../assets/comment.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
 import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
+import { convertImageToBase64 } from "../funcs/utils";
 
 export const Home = async () => {
   if (!sessionStorage.getItem("user_token")) {
@@ -13,19 +13,19 @@ export const Home = async () => {
     return;
   }
 
-  let username = sessionStorage.getItem("username");
-  let avatar = sessionStorage.getItem("avatar");
-
-  document.getElementById("app").innerHTML = /*html*/ `
+  document.getElementById("app").innerHTML = `
     ${LoadNav()}
+    <div class="lower-div">
     <main>
-    <div id="c-post-modal" class="modal">
+      <div id="c-post-modal" class="modal">
         <div class="modal-content">
             <div id="c-post-userinfo">
                 <div id="c-post-pfp">
-                    <img src="${avatar}">
+                    <img src="${sessionStorage.getItem("avatar")}">
                 </div>
-                <p id="c-post-nickname">${username}</p>
+                <p id="c-post-nickname">${sessionStorage.getItem(
+                  "username"
+                )}</p>
             </div>
             <textarea id="c-post-textArea"
                 placeholder="What's on your mind?"></textarea>
@@ -42,27 +42,64 @@ export const Home = async () => {
             </div>
             <div id="c-post-cats">
                 <select id="c-post-cat-select">
-                    <option class="c-option" value="general">General</option>
-                    <option class="c-option" value="general">Dev</option>
-                    <option class="c-option" value="general">News</option>
-                    <option class="c-option" value="general">Non
-                        Fiction</option>
+                    <option class="c-option" value="1">General</option>
+                    <option class="c-option" value="2">Engineering</option>
+                    <option class="c-option" value="3">Travel</option>
+                    <option class="c-option" value="4">Tech</option>
+                    <option class="c-option" value="5">Mathematics</option>
                 </select>
             </div>
             <div id="c-post-Btn">Create Post</div>
         </div>
+      </div>
+      <div id="posts"></div>
+    </main>
+  
+    <div class="side-divs">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profileImage">
+            <img src="${avatar}" alt="">
+          </div>
+        </div>
+        <div class="UserInfo-div">
+          <p class="UserName-p">${username}</p>
+          <p class="profile-title">Profile</p>
+        </div>
+      </div>
+      <div class="categories-section">
+        <h2 class="categories-text">Categories</h2>
+        <ul class="category-list">
+        </ul>
+      </div>
     </div>
-    <div id="posts"></div>
-</main>
+  </div>
   `;
+
+  try {
+    const response = await fetch(BACKENDURL + '/categories');
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const categoryList = document.querySelector('.category-list');
+
+    data.forEach(category => {
+      const li = document.createElement('li');
+      li.textContent = category.name;
+      categoryList.appendChild(li);
+    });
+  } catch (error) {
+    console.error('Fetch failed:', error);
+  }
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
 
-  // Check if the elements exist before attaching event handlers
   if (modalOpenBtn && modal) {
-    // When the user clicks the button, open the modal
     modalOpenBtn.onclick = function () {
       modal.style.display = "block";
     };
@@ -75,56 +112,52 @@ export const Home = async () => {
     }
   };
 
-  // document.addEventListener('DOMContentLoaded', () => {
-  // Get the "NewPost" div element
-  const newPostDiv = document.getElementById("c-post-Btn");
+  const create_post_Btn = document.getElementById("c-post-Btn");
 
-  // Check if the element exists before adding the event listener
-  if (newPostDiv) {
-    // Add a click event listener to the "NewPost" div
-    newPostDiv.addEventListener("click", () => {
-      // Get the post text and image from the form
-      const postText = document.getElementById("c-post-textArea").value;
-      const postImage = ""; // Get the base64-encoded image data
-      const postCategory = document.getElementById("cat-choose-Btn").value;
+  if (create_post_Btn) {
+    create_post_Btn.addEventListener("click", async () => {
+      const post_text = document.getElementById("c-post-textArea").value;
+      const raw_image_file = document.getElementById("c-img-upload").value;
 
-      // Create an object with the post data
-      const postData = {
-        post_text: postText,
-        post_image_base64: postImage,
-        post_category: postCategory, // Set the desired category ID
-        creator_id: sessionStorage.getItem("user_id"), // Get the user ID from local storage
+      const post_category = document.getElementById('c-post-cat-select');
+      // const postCategory = postCategorySelect.options[postCategorySelect.selectedIndex].value;
+
+      const Image_Converstion_wrapper = async () => {
+        return await convertImageToBase64(raw_image_file);
       };
 
-      // Send a POST request to the backend
-      fetch(BACKENDURL + "/post/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+      const postImage = await Image_Converstion_wrapper();
 
-        body: JSON.stringify(postData),
-      })
-        .then((response) => {
-          modal.style.display = "none";
-          if (response.ok) {
-            // Post created successfully
-            console.log("Post created successfully");
-            // Redirect to the post page or update the UI as needed
-          } else {
-            // Handle error response
-            console.error("Error creating post");
-          }
-        })
-        .catch((error) => {
-          console.error("Error creating post:", error);
+      const post_data = {
+        user_token: sessionStorage.getItem("user_token"),
+        post_text: post_text,
+        post_image_base64: postImage,
+        post_category: post_category,
+      };
+
+      try {
+        const res = await fetch(BACKENDURL + "/post/create", {
+          method: "POST",
+          body: JSON.stringify(post_data),
+          credential: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
+
+        modal.style.display = "none";
+
+        if (res.status === 201) {
+          window.location.reload();
+        } else {
+          throw new Error(res.status, res.statusText);
+        }
+      } catch (error) {
+        alert(error);
+        console.error("post creation error", error);
+      }
     });
   }
-  // });
-
-  // add event listener for category button
   let toggled = false;
 
   document.getElementById("cat-choose-Btn").addEventListener("click", () => {
@@ -136,13 +169,10 @@ export const Home = async () => {
     }
   });
 
-  // add event listener to hidden file upload
-
   document.getElementById("c-img-upload").addEventListener("click", () => {
     document.getElementById("img-upload").click();
   });
 
-  // liking event listener
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
   console.log(likeImages);
@@ -165,53 +195,3 @@ export const Home = async () => {
 
   await OrgIndexPosts();
 };
-
-export async function fetchPost() {
-  const response = await fetch(BACKENDURL + `/post/all`);
-  const data = await response.json();
-
-  const postDiv = document.getElementById("post");
-  if (data.image) {
-    postDiv.innerHTML = `
-        <div class="f-post" ${!data.Image_Path ? "noimage" : ""}>
-              <div class="p-header">
-                  <div class="p-profileInfo">
-                      <div class="p-profile-pic"></div>
-                      <div class="p-nickname">${data.author}</div>
-                  </div>
-                  <div class="p-creationDate">${data.creationDate}</div>
-              </div>
-              <div class="p-main">
-                  <div class="p-content">
-                      ${data.content}
-                      ${
-                        data.Image_Path
-                          ? `<div class="p-image">
-                          <img src=${data.Image_Path} alt="post image">
-                      </div>`
-                          : ""
-                      }
-                  </div>
-                  <div class="p-stats">
-                      <div class="p-likeCount">
-                          <div class="p-likeBtn">
-                              <img src="${noheart}" alt="like" />
-                          </div>
-                          <div class="p-likeStat">${data.likes}</div>
-                      </div>
-                      <div class="p-commentCount">
-                          <img src="${comment}" alt="comment" />
-                          <div class="p-comment-Stat">${data.comments}</div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      `;
-  }
-}
-// categories for later.
-/* export async function fetchPost() {
-  const response = await fetch(``);
-  const data = await response.json();
-  const postDiv = document.getElementById("post");
-} */

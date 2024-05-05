@@ -9,6 +9,8 @@ import plus from "../assets/plus.svg";
  */
 export const LoadNav = () => {
   if (sessionStorage.getItem("user_token")) {
+    let avatar = sessionStorage.getItem("avatar");
+    let username = sessionStorage.getItem("username");
     return /*html*/ `
       <nav>
   <a href="/">
@@ -40,11 +42,22 @@ export const LoadNav = () => {
   </div>
   <div>
     <a href="/logout">
-      <button class="profile" id="profileBtn">Logout</button>
+    <button id="btn-message" class="button-message">
+      <div class="content-avatar">
+        <div class="status-user"></div>
+        <img src="${avatar}" class="avatar" alt="${avatar}">
+      </div>
+      <div class="notice-content">
+        <div class="Logout-div">Logout</div>
+        <div class="User-div">${username}</div>
+      </div>
+    </button>
     </a>
   </div>
 </nav>
     `;
+
+    // <button class="profile" id="profileBtn">Logout</button> 
   } else {
     return /*html*/ `
       <nav>

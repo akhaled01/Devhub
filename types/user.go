@@ -11,11 +11,11 @@ type User struct {
 	FirstName string          `json:"firstname"`
 	LastName  string          `json:"lastname"`
 	Email     string          `json:"email"`
-	Password  string          `json:"password"`
+	Password  string          `json:"-"`
 	Gender    string          `json:"gender"`
 	Age       int             `json:"age"`
 	Avatar    string          `json:"avatar"`
-	Conn      *websocket.Conn // Store the websocket connection here
+	Conn      *websocket.Conn `json:"-"` // Store the websocket connection here
 }
 
 type PartialUser struct {

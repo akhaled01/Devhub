@@ -44,7 +44,7 @@ export const NewChatWS = () => {
   return ws;
 };
 
-export const SaveCurrentChatUser = async(username) => {
+export const SaveCurrentChatUser = async (username) => {
   console.log(username);
   sessionStorage.setItem("chat_user", username);
   window.location.reload()
@@ -60,16 +60,22 @@ export const AssembleOnlineUsers = (data) => {
   console.log(data);
   data.req_Content.forEach(user_obj => {
     let user = user_obj.user;
-    console.log(user_obj.status);
+    console.log(user_obj.is_online);
     if (user.username !== sessionStorage.getItem("username")) {
-      contact_div.innerHTML += `<div class="contact" id="${user.username}">
-    <div class="name">${user.username}</div>
-  </div>` //TODO: add avatars later
-
-  document.getElementById(user.username).addEventListener("click", () => {
-    SaveCurrentChatUser(user.username);
-  });
+      const contactDiv = document.createElement('div');
+      contactDiv.classList.add('contact');
+      contactDiv.id = user.username;
+  
+      const nameDiv = document.createElement('div');
+      nameDiv.classList.add('name');
+      nameDiv.textContent = user.username;
+  
+      contactDiv.appendChild(nameDiv);
+      contact_div.appendChild(contactDiv);
+  
+      document.getElementById(user.username).addEventListener("click", () => {
+        SaveCurrentChatUser(user.username);
+      });
     }
   });
 }
-

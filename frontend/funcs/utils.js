@@ -121,7 +121,19 @@ export const EncodeBase64Image = (callback) => {
 
     reader.readAsDataURL(file);
   } else {
-    console.log("Please select an image file.");
+    const default_profile_pic = "../assets/defaultPfp.svg"; 
+    fetch(default_profile_pic)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const bs64str = e.target.result;
+          console.log("Default Base64 Image:", bs64str);
+          callback(bs64str); // Call the callback function with the base64 string of the custom image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => console.error("Error fetching custom file:", error));
   }
 };
 

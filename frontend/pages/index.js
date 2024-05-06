@@ -15,8 +15,9 @@ export const Home = async () => {
 
   document.getElementById("app").innerHTML = `
     ${LoadNav()}
+    <div class="lower-div">
     <main>
-    <div id="c-post-modal" class="modal">
+      <div id="c-post-modal" class="modal">
         <div class="modal-content">
             <div id="c-post-userinfo">
                 <div id="c-post-pfp">
@@ -50,10 +51,49 @@ export const Home = async () => {
             </div>
             <div id="c-post-Btn">Create Post</div>
         </div>
+      </div>
+      <div id="posts"></div>
+    </main>
+  
+    <div class="side-divs">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profileImage">
+            <img src="${sessionStorage.getItem("avatar")}" alt="">
+          </div>
+        </div>
+        <div class="UserInfo-div">
+          <p class="UserName-p">${sessionStorage.getItem("username")}</p>
+          <p class="profile-title">Profile</p>
+        </div>
+      </div>
+      <div class="categories-section">
+        <h2 class="categories-text">Users</h2>
+        <ul class="category-list">
+        </ul>
+      </div>
     </div>
-    <div id="posts"></div>
-</main>
+  </div>
   `;
+
+  try {
+    const response = await fetch(BACKENDURL + "/categories");
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const categoryList = document.querySelector(".category-list");
+
+    data.forEach((category) => {
+      const li = document.createElement("li");
+      li.textContent = category.name;
+      categoryList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Fetch failed:", error);
+  }
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");
@@ -97,7 +137,7 @@ export const Home = async () => {
         const res = await fetch(BACKENDURL + "/post/create", {
           method: "POST",
           body: JSON.stringify(post_data),
-          credential: "include",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

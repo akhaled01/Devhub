@@ -9,6 +9,10 @@ import plus from "../assets/plus.svg";
  */
 export const LoadNav = () => {
   if (sessionStorage.getItem("user_token")) {
+    if (!sessionStorage.getItem("user_token")) {
+      window.location.assign("/login");
+      return;
+    }
     return /*html*/ `
       <nav>
   <a href="/">
@@ -28,23 +32,26 @@ export const LoadNav = () => {
       </a>
     </li>
   </ul>
-  <div class="filters">
-    <label class="filter">
-      <input type="radio" name="radio" checked="">
-      <span class="name">Newest</span>
-    </label>
-    <label class="filter">
-      <input type="radio" name="radio">
-      <span class="name">Liked By You</span>
-    </label>
-  </div>
   <div>
     <a href="/logout">
-      <button class="profile" id="profileBtn">Logout</button>
+    <button id="btn-message" class="button-message">
+      <div class="content-avatar">
+        <div class="status-user"></div>
+        <img src="${sessionStorage.getItem(
+          "avatar"
+        )}" class="avatar" alt="${sessionStorage.getItem("avatar")}">
+      </div>
+      <div class="notice-content">
+        <div class="Logout-div">Logout</div>
+        <div class="User-div">${sessionStorage.getItem("username")}</div>
+      </div>
+    </button>
     </a>
   </div>
 </nav>
     `;
+
+    // <button class="profile" id="profileBtn">Logout</button>
   } else {
     return /*html*/ `
       <nav>
@@ -60,6 +67,3 @@ export const LoadNav = () => {
     `;
   }
 };
-
-
-

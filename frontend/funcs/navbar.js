@@ -32,16 +32,6 @@ export const LoadNav = () => {
       </a>
     </li>
   </ul>
-  <div class="filters">
-    <label class="filter">
-      <input type="radio" name="radio" checked="">
-      <span class="name">Newest</span>
-    </label>
-    <label class="filter">
-      <input type="radio" name="radio">
-      <span class="name">Liked By You</span>
-    </label>
-  </div>
   <div>
     <a href="/logout">
     <button id="btn-message" class="button-message">

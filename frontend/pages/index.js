@@ -112,90 +112,84 @@ export const Home = async () => {
     }
   };
 
-  const post_id = document.getElementsByClassName("f-post")[0].id;
+  const create_post_Btn = document.getElementById("c-post-Btn");
 
   if (create_post_Btn) {
-    post_id.addEventListener("click", async () => {});
+    create_post_Btn.addEventListener("click", async () => {
+      const post_text = document.getElementById("c-post-textArea").value;
+      const raw_image_file = document.getElementById("c-img-upload").value;
+      const post_category = document.getElementById("cat-choose-Btn").value;
 
-    const create_post_Btn = document.getElementById("c-post-Btn");
+      const Image_Converstion_wrapper = async () => {
+        return await convertImageToBase64(raw_image_file);
+      };
 
-    if (create_post_Btn) {
-      create_post_Btn.addEventListener("click", async () => {
-        const post_text = document.getElementById("c-post-textArea").value;
-        const raw_image_file = document.getElementById("c-img-upload").value;
-        const post_category = document.getElementById("cat-choose-Btn").value;
+      const postImage = await Image_Converstion_wrapper();
 
-        const Image_Converstion_wrapper = async () => {
-          return await convertImageToBase64(raw_image_file);
-        };
+      const post_data = {
+        user_token: sessionStorage.getItem("user_token"),
+        post_text: post_text,
+        post_image_base64: postImage,
+        post_category: post_category,
+      };
 
-        const postImage = await Image_Converstion_wrapper();
+      try {
+        const res = await fetch(BACKENDURL + "/post/create", {
+          method: "POST",
+          body: JSON.stringify(post_data),
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-        const post_data = {
-          user_token: sessionStorage.getItem("user_token"),
-          post_text: post_text,
-          post_image_base64: postImage,
-          post_category: post_category,
-        };
+        modal.style.display = "none";
 
-        try {
-          const res = await fetch(BACKENDURL + "/post/create", {
-            method: "POST",
-            body: JSON.stringify(post_data),
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          modal.style.display = "none";
-
-          if (res.status === 201) {
-            window.location.reload();
-          } else {
-            throw new Error(res.status, res.statusText);
-          }
-        } catch (error) {
-          alert(error);
-          console.error("post creation error", error);
+        if (res.status === 201) {
+          window.location.reload();
+        } else {
+          throw new Error(res.status, res.statusText);
         }
-      });
-    }
-    let toggled = false;
-
-    document.getElementById("cat-choose-Btn").addEventListener("click", () => {
-      toggled = !toggled;
-      if (toggled) {
-        document.getElementById("c-post-cats").style.display = "block";
-      } else {
-        document.getElementById("c-post-cats").style.display = "none";
+      } catch (error) {
+        alert(error);
+        console.error("post creation error", error);
       }
     });
-
-    document.getElementById("c-img-upload").addEventListener("click", () => {
-      document.getElementById("img-upload").click();
-    });
-
-    const likeImages = document.querySelectorAll(".p-likeBtn img");
-
-    console.log(likeImages);
-
-    likeImages.forEach((likeBtn) => {
-      console.log(likeBtn.getAttribute("src"));
-
-      likeBtn.addEventListener("click", () => {
-        if (likeBtn.getAttribute("src") === noheart) {
-          likeBtn.setAttribute("src", heart);
-          console.log("liked");
-          // add other like event
-        } else {
-          likeBtn.setAttribute("src", noheart);
-          console.log("unliked");
-          // add other unlike event
-        }
-      });
-    });
-
-    await OrgIndexPosts();
   }
+  let toggled = false;
+
+  document.getElementById("cat-choose-Btn").addEventListener("click", () => {
+    toggled = !toggled;
+    if (toggled) {
+      document.getElementById("c-post-cats").style.display = "block";
+    } else {
+      document.getElementById("c-post-cats").style.display = "none";
+    }
+  });
+
+  document.getElementById("c-img-upload").addEventListener("click", () => {
+    document.getElementById("img-upload").click();
+  });
+
+  const likeImages = document.querySelectorAll(".p-likeBtn img");
+
+  console.log(likeImages);
+
+  likeImages.forEach((likeBtn) => {
+    console.log(likeBtn.getAttribute("src"));
+
+    likeBtn.addEventListener("click", () => {
+      if (likeBtn.getAttribute("src") === noheart) {
+        likeBtn.setAttribute("src", heart);
+        console.log("liked");
+        // add other like event
+      } else {
+        likeBtn.setAttribute("src", noheart);
+        console.log("unliked");
+        // add other unlike event
+      }
+    });
+  });
+
+  await OrgIndexPosts();
 };

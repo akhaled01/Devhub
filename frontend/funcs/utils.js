@@ -51,7 +51,15 @@ export const UpdateCSS = (stylesheet) => {
 export const AssemblePosts = (posts_in_json = []) => {
   document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
-    document.getElementById("posts").innerHTML += `<a herf="/post"><div class="f-post ${
+    let text = post_data.content + "";
+
+    if (text.length > 255) {
+      text = text.slice(0, 255 - "...".length) + "...";
+    }
+
+    document.getElementById(
+      "posts"
+    ).innerHTML += `<a herf="/post"><div class="f-post ${
       !post_data.Image_Path ? "noimage" : ""
     }" id=${post_data.id}>
   <div class="p-header">
@@ -59,11 +67,13 @@ export const AssemblePosts = (posts_in_json = []) => {
       <div class="p-profile-pic"></div>
       <div class="p-nickname">${post_data.user.username}</div>
     </div>
-    <div class="p-creationDate">${new Date(post_data.creationDate).toDateString()}</div>
+    <div class="p-creationDate">${new Date(
+      post_data.creationDate
+    ).toDateString()}</div>
   </div>
   <div class="p-main">
     <div class="p-content">
-      ${post_data.content}
+      ${text}
       ${
         post_data.Image_Path
           ? `<div class="p-image">
@@ -90,7 +100,6 @@ export const AssemblePosts = (posts_in_json = []) => {
     `;
   });
 };
-
 
 /**
  * Function that encodes the avatar uploaded by the

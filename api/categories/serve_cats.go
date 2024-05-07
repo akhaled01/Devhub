@@ -9,11 +9,6 @@ import (
 )
 
 func Serve_categories_handler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
 	catigories, err := categories.GetAllCategoryInfo()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to get category information: %v", err), http.StatusInternalServerError)

@@ -361,6 +361,7 @@ a {
 .p-likeBtn > img {
   cursor: pointer;
   transition: ease-out 0.9s;
+  width: 20px;
 }
 
 .p-likeBtn > img:hover {

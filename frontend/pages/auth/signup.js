@@ -42,7 +42,7 @@ export const Signup = () => {
     .addEventListener("click", async () => await HandleSignup());
 
   document.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "enter") {
+    if (e && e.key && e.key.toLowerCase() === "enter") {
       document.getElementById("submit").click();
     }
   });

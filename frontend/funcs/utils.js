@@ -59,7 +59,7 @@ export const AssemblePosts = (posts_in_json = []) => {
 
     document.getElementById(
       "posts"
-    ).innerHTML += `<a herf="/post"><div class="f-post ${
+    ).innerHTML += `<a href="/post/${post_data.id}"><div class="f-post ${
       !post_data.Image_Path ? "noimage" : ""
     }" id=${post_data.id}>
   <div class="p-header">

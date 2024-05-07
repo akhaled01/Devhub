@@ -199,3 +199,19 @@ func EvalOnlineUsers() error {
 
 	return nil
 }
+
+func Get_DMs(user *types.User, request string) {
+	DMs, err := chat.Get_Users_By_Last_Message(user.Username)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return
+	}
+
+	response_capusl := &ser.WS_Request{
+		Type:    "DMs",
+		Content: DMs,
+	}
+	json_msg, _ := json.Marshal(&response_capusl)
+
+	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+}

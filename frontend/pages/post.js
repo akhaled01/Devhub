@@ -1,8 +1,9 @@
-import { LoadNav } from "../funcs/navbar";
+import { fetchComments } from "../funcs/comments";
 import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
 import { BACKENDURL } from "../funcs/vars";
+import { LoadNav } from "../funcs/navbar";
 
 /**
  * This function fetches the main post page
@@ -40,6 +41,42 @@ export const Post = () => {
             document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     <main>
+    <div id="c-com-modal" class="modal">
+    <div class="modal-content">
+      <!-- </div> -->
+      <!-- <div class="modal-content"> -->
+      <div id="c-com-userinfo">
+        <div id="c-com-pfp">
+          <img src="${sessionStorage.getItem("avatar")}">
+        </div>
+        <p id="c-com-nickname">${sessionStorage.getItem(
+            "username"
+          )}</p>
+        <div class="p-creationDate">12/12/2020</div>
+      </div>
+      <div class="p-content">
+        <p style="margin: 0;">
+        </p>
+        <div class="p-image">
+        </div>
+      </div>
+      <div class="PostComment_Contaiar">
+        <div class="شخطة"></div>
+        <div class="com2ent">
+          <div id="c-com-userinfo">
+            <div id="c-com-pfp">            
+              <img src="${sessionStorage.getItem("avatar")}" alt="">
+            </div>
+            <p id="c-com-nickname">${sessionStorage.getItem(
+                "username"
+              )}</p>
+          </div>
+          <textarea id="c-com-textArea" placeholder="What's on your mind?"></textarea>
+        </div>
+      </div>
+      <div id="c-com-Btn">Create a Replay</div>
+    </div>
+  </div>
     <div id="post-page">
       <!-- for later (connectting the backend) -->
       <div id="post"></div>
@@ -55,6 +92,7 @@ export const Post = () => {
   </main>
   `;
             fetchPost(postId);
+            fetchComments(postId);
         })
         .catch((error) => {
             console.error("Error fetching post details:", error);
@@ -89,21 +127,22 @@ export const Post = () => {
         const response = await fetch(`${BACKENDURL}/post/${postId}`, {
             credentials: "include",
         });
-    
+
         const data = await response.json();
 
-       const postDiv = document.getElementById("post");
+        console.log(data);
+        const postDiv = document.getElementById("post");
         if (data.image) {
             postDiv.innerHTML = `
             <div class="f-post">
                 <div class="p-header">
                     <div class="p-profileInfo">
                         <div class="p-profile-pic"></div>
-                        <div class="p-nickname">${data.author}</div>
+                        <div class="p-nickname">${data.user.username}</div>
                     </div>
                     <div class="p-creationDate">${new Date(
-                        data.creationDate
-                      ).toDateString()}</div>
+                data.creationDate
+            ).toDateString()}</div>
                 </div>
                 <div class="p-main">
                     <div class="p-content">
@@ -120,7 +159,7 @@ export const Post = () => {
                             <div class="p-likeStat">${data.likes}</div>
                         </div>
                         <div class="p-commentCount">
-                            <img src="${comment}" alt="comment" />
+                            <img src="${comment}" alt="comment" id="c-com-start" />
                             <div class="p-comment-Stat">${data.number_of_comments}</div>
                         </div>
                     </div>
@@ -135,11 +174,11 @@ export const Post = () => {
               <div class="p-header">
                   <div class="p-profileInfo">
                       <div class="p-profile-pic"></div>
-                      <div class="p-nickname">${data.author}</div>
+                      <div class="p-nickname">${data.user.username}</div>
                   </div>
                   <div class="p-creationDate">${new Date(
-                    data.creationDate
-                  ).toDateString()}</div>
+                data.creationDate
+            ).toDateString()}</div>
               </div>
               <div class="p-main">
                   <div class="p-content">
@@ -153,7 +192,7 @@ export const Post = () => {
                           <div class="p-likeStat">${data.likes}</div>
                       </div>
                       <div class="p-commentCount">
-                          <img src="${comment}" alt="comment" />
+                          <img src="${comment}" alt="comment" id="c-com-start" />
                           <div class="p-comment-Stat">${data.number_of_comments}</div>
                       </div>
                   </div>
@@ -161,6 +200,62 @@ export const Post = () => {
           </div>
       `;
         }
+    }
+
+
+    // Modal Operations
+    const modal = document.getElementById("c-com-modal");
+    const modalOpenBtn = document.getElementById("c-com-start");
+    console.log(modalOpenBtn, modal);
+    if (modalOpenBtn || modal) {
+        console.log("-------------");
+        modalOpenBtn.onclick = function () {
+            modal.style.display = "block";
+            console.log("Modal opened");
+        };
+    }
+
+    // When user clicks outside window, remove modal
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    const create_com_Btn = document.getElementById("c-com-Btn");
+
+    if (create_com_Btn) {
+        create_com_Btn.addEventListener("click", async () => {
+            const comment_text = document.getElementById("c-com-textArea").value;
+
+            const comment_data = {
+                user_token: sessionStorage.getItem("user_token"),
+                post_id: postId,
+                content: comment_text
+            };
+
+            try {
+                const res = await fetch(BACKENDURL + "/post/create", {
+                    method: "POST",
+                    body: JSON.stringify(comment_data),
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                modal.style.display = "none";
+
+                if (res.status === 201) {
+                    window.location.reload();
+                } else {
+                    throw new Error(res.status, res.statusText);
+                }
+            } catch (error) {
+                alert(error);
+                console.error("post creation error", error);
+            }
+        });
     }
 };
 

@@ -149,7 +149,7 @@ nav {
   transition: all 0.15s ease-in-out;
 }
 
-.filters .filter input:checked + .name {
+.filters .filter input:checked+.name {
   background-color: #555;
   font-weight: 600;
 }
@@ -239,14 +239,14 @@ a {
   font-family: var(--main-font-family);
 }
 
-.actionitems > li {
+.actionitems>li {
   cursor: pointer;
   padding: 10px 10px;
   border-radius: 10px;
   transition-duration: 0.3s;
 }
 
-.actionitems > li:hover {
+.actionitems>li:hover {
   color: black;
   background-color: rgba(255, 255, 255, 0.166);
 }
@@ -293,7 +293,7 @@ a {
   font-weight: 800;
 }
 
-.p-image > img {
+.p-image>img {
   width: 245px;
   height: 60%;
   border-radius: 10px;
@@ -344,13 +344,13 @@ a {
   cursor: pointer;
 }
 
-.p-commentCount > img {
+.p-commentCount>img {
   transition: ease-out 0.3s;
 }
 
-.p-commentCount > img:hover {
+/* .p-commentCount > img:hover {
   transform: translateY(-5px);
-}
+} */
 
 .p-likeBtn {
   display: flex;
@@ -358,38 +358,17 @@ a {
   justify-content: center;
 }
 
-.p-likeBtn > img {
+.p-likeBtn>img {
   cursor: pointer;
   transition: ease-out 0.9s;
   width: 20px;
 }
 
-.p-likeBtn > img:hover {
+/* .p-likeBtn > img:hover {
   transform: translateY(-5px);
-}
+} */
 
 /*Test*/
-
-/* The Modal (background) */
-.modal {
-  display: none;
-  /* Hidden by default */
-  position: fixed;
-  /* Stay in place */
-  z-index: 9999;
-  /* Sit on top of other content */
-  left: 0;
-  top: 0;
-  width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
-  overflow: hidden;
-  /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black with opacity */
-}
-
 /* Modal Content */
 .modal-content {
   background-color: #181818;
@@ -474,7 +453,7 @@ a {
   margin-bottom: 10px;
 }
 
-#c-post-options > div {
+#c-post-options>div {
   cursor: pointer;
 }
 
@@ -494,4 +473,210 @@ a {
   background-color: rgba(0, 0, 0, 0.511);
   color: white;
   border: 0.3px dashed rgba(255, 255, 255, 0.275);
+}
+
+/* Style for a Post*/
+
+.noimage {
+  margin-top: 61px;
+}
+
+.p-creationDate {
+  color: hsla(0, 0%, 100%, 0.535);
+}
+
+.p-nickname {
+  font-weight: 800;
+}
+
+.p-image>img {
+  width: 90px;
+  height: 80%;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.p-profileInfo {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.p-profile-pic {
+  width: 36px;
+  height: 36px;
+  background-color: aliceblue;
+  border-radius: 1000px;
+}
+
+
+
+
+/*Test*/
+
+/* The Modal (background) */
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 9999;
+  /* Sit on top of other content */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: hidden;
+  /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #181818;
+  margin: 20% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 620px;
+  min-height: 440px;
+  border-radius: 16px;
+  border: 0.6px solid rgba(243, 245, 247, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+#c-com-userinfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#c-com-pfp {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 1000px;
+}
+
+#img-upload {
+  display: none;
+}
+
+#c-com-nickname {
+  font-weight: 700;
+  font-size: small;
+}
+
+#c-com-textArea {
+  background-color: transparent;
+  outline: 0;
+  color: white;
+  font-size: 1rem;
+  border: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  resize: none;
+  width: 100%;
+  height: fit-content;
+}
+
+#c-com-textArea::selection {
+  color: rgb(255, 165, 255);
+}
+
+#c-com-options {
+  height: fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  display: flex;
+  background-color: aliceblue;
+  align-items: center;
+  gap: 5px;
+  background-color: transparent;
+  margin-bottom: 10px;
+}
+
+#c-com-cats {
+  display: none;
+}
+
+#c-com-cat-select {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  border-radius: 20px;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+}
+
+#c-com-options>div {
+  cursor: pointer;
+}
+
+.c-option {
+  background-color: #181818;
+  color: rgb(255, 255, 255);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  border-radius: 20px;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+
+.c-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+#c-com-Btn {
+  cursor: pointer;
+  border: 0;
+  border-radius: 300px;
+  padding: 10px 20px;
+  transition-duration: 0.3s;
+  font-weight: 600;
+  background-color: white;
+  color: black;
+  width: 115px;
+}
+
+#c-com-Btn:hover {
+  background-color: rgba(0, 0, 0, 0.511);
+  color: white;
+  border: 0.3px dashed rgba(255, 255, 255, 0.275);
+}
+
+.p-content {
+  font-size: smaller;
+}
+
+.com2ent {
+  margin-left: 20px;
+}
+
+.PostComment_Contaiar {
+  display: flex;
+  flex-direction: row;
+  width: 98%;
+  border-top: 1px solid #ffffff7d;
+  padding-top: inherit;
+}
+
+.شخطة {
+  width: 1px;
+  background-color: #f5fffa;
+  height: 75%;
+  margin-left: 40px;
 }

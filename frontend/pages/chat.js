@@ -20,11 +20,7 @@ export const Chat = () => {
     <div id="messageArea">
       <div id="r-profile">
         <div id="pic"></div>
-        <div id="r-name">${
-          sessionStorage.getItem("chat_user")
-            ? sessionStorage.getItem("chat_user")
-            : ""
-        }</div>
+        <div id="r-name"></div>
       </div>
       <div id="message-space"></div>
 

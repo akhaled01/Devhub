@@ -1,24 +1,20 @@
 import { ws } from "../main";
 
+export let CurrentChatUser = null;
+
 /**
  * Registers a new user chat sess
  * @param {*} username
  */
 export const SaveCurrentChatUser = async (username) => {
   console.log(username);
-  if (sessionStorage.getItem("chat_user_selected")) return;
+  if (
+    sessionStorage.getItem("chat_user_selected") &&
+    username === sessionStorage.getItem("chat_user")
+  )
+    return;
   sessionStorage.setItem("chat_user", username);
   sessionStorage.setItem("chat_user_selected", "true");
-  // window.location.reload();
-  console.log("SEND OPEN_CHAT");
-  console.log(
-    JSON.stringify({
-      type: "Open_chat",
-      req_Content: {
-        user_id: sessionStorage.getItem("chat_user"),
-      },
-    })
-  );
   ws.send(
     JSON.stringify({
       type: "Open_chat",
@@ -27,6 +23,7 @@ export const SaveCurrentChatUser = async (username) => {
       },
     })
   );
+  CurrentChatUser = username;
 };
 
 /**

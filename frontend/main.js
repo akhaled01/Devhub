@@ -25,7 +25,10 @@ ws.onmessage = (e) => {
   } else if (data.type === "online_user_list") {
     AssembleOnlineUsers(data);
   } else if (data.type === "open_chat_response") {
+    // window.location.reload();
     let data = JSON.parse(e.data);
+    document.getElementById("r-name").innerText =
+      sessionStorage.getItem("chat_user");
     console.log(data.type);
     data.req_Content.forEach((m) => {
       NewChatMessage(

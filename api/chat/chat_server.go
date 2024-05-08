@@ -31,7 +31,7 @@ func (s *Chat_Server) HandleWS(
 	ws_routes map[string]func(user *types.User, request string),
 ) {
 	utils.InfoConsoleLog(fmt.Sprint("New connection from client: ", user.Conn.RemoteAddr()))
-	listenerChan <- true
+	ListenerChan <- true
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -40,7 +40,7 @@ func (s *Chat_Server) HandleWS(
 	go func() {
 		defer func() {
 			mutex.Lock()
-			listenerChan <- true
+			ListenerChan <- true
 			delete(s.conns, user)
 			mutex.Unlock()
 			user.Conn.Close()

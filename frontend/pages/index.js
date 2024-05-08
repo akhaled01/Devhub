@@ -76,24 +76,24 @@ export const Home = async () => {
   </div>
   `;
 
-  try {
-    const response = await fetch(BACKENDURL + "/categories");
+  // try {
+  //   const response = await fetch(BACKENDURL + "/categories");
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  //   if (!response.ok) {
+  //     throw new Error(`HTTP error! status: ${response.status}`);
+  //   }
 
-    const data = await response.json();
-    const categoryList = document.querySelector(".category-list");
+  //   const data = await response.json();
+  //   const categoryList = document.querySelector(".category-list");
 
-    data.forEach((category) => {
-      const li = document.createElement("li");
-      li.textContent = category.name;
-      categoryList.appendChild(li);
-    });
-  } catch (error) {
-    console.error("Fetch failed:", error);
-  }
+  //   data.forEach((category) => {
+  //     const li = document.createElement("li");
+  //     li.textContent = category.name;
+  //     categoryList.appendChild(li);
+  //   });
+  // } catch (error) {
+  //   console.error("Fetch failed:", error);
+  // }
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");

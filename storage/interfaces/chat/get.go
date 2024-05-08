@@ -1,10 +1,11 @@
 package chat
 
 import (
+	"errors"
+
 	"RTF/storage"
 	"RTF/types"
 	"RTF/types/serializers"
-	"errors"
 )
 
 // EXAMPLE CODE
@@ -24,7 +25,6 @@ const (
 )
 
 func Get_chat(user_name string, requested_user_name string) ([]serializers.Message, error) {
-
 	chat_messages := []serializers.Message{}
 	stmt, err := storage.DB_Conn.Prepare(GET_CHAT)
 	if err != nil {
@@ -52,7 +52,6 @@ func Get_chat(user_name string, requested_user_name string) ([]serializers.Messa
 }
 
 func Get_Users_By_Last_Message(user_name string) ([]serializers.DMs_User, error) {
-
 	dm_users := []serializers.DMs_User{}
 	stmt, err := storage.DB_Conn.Prepare(GET_LATEST_DMS)
 	if err != nil {

@@ -17,9 +17,13 @@ const routes = {
 const ExtractHref = () => {
   let url = location.href;
   const urlParts = url.split("/");
-
-  const pathname = urlParts[urlParts.length - 1];
-
+  console.log(urlParts, urlParts[urlParts.length - 2]);
+  if (urlParts.length > 4) {
+    var pathname = urlParts[urlParts.length - 2];
+  } else {
+    var pathname = urlParts[urlParts.length - 1];
+  }
+  console.log(pathname);
   return pathname;
 };
 

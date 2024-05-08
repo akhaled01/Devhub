@@ -27,6 +27,7 @@ body > div {
   flex-direction: column;
   flex-shrink: 0;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #contacts > div {
@@ -141,6 +142,7 @@ body > div {
   justify-content: center;
   height: 10vw;
   gap: 30px;
+  overflow-y: hidden;
 }
 
 #nchat {

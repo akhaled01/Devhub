@@ -57,11 +57,11 @@ export const AssemblePosts = (posts_in_json = []) => {
       text = text.slice(0, 255 - "...".length) + "...";
     }
 
-    document.getElementById(
-      "posts"
-    ).innerHTML += `<a href="/post/${post_data.id}"><div class="f-post ${
-      !post_data.Image_Path ? "noimage" : ""
-    }" id=${post_data.id}>
+    document.getElementById("posts").innerHTML += `<a href="/post/${
+      post_data.id
+    }"><div class="f-post ${!post_data.Image_Path ? "noimage" : ""}" id=${
+      post_data.id
+    }>
   <div class="p-header">
     <div class="p-profileInfo">
       <div class="p-profile-pic"></div>
@@ -121,7 +121,7 @@ export const EncodeBase64Image = (callback) => {
 
     reader.readAsDataURL(file);
   } else {
-    const default_profile_pic = "../assets/defaultPfp.svg"; 
+    const default_profile_pic = "../assets/defaultPfp.svg";
     fetch(default_profile_pic)
       .then((response) => response.blob())
       .then((blob) => {
@@ -176,7 +176,7 @@ export const NewChatMessage = (
     messageElement.classList.add("m");
     actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">${name}</div>
-              <div class="date">2 Hours Ago</div>
+              <div class="date">${time.toDateString()}</div>
             </div>`;
   }
 

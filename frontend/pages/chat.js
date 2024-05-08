@@ -1,15 +1,17 @@
 import schat from "../assets/sendChat.svg";
 import nchat from "../assets/nchat.svg";
-import { NewChatWS } from "../funcs/sockets";
+import logout from "../assets/logout.svg";
 import { NewChatMessage } from "../funcs/utils";
+import { ws } from "../main";
+import { Logout } from "../funcs/logout";
 
 export const Chat = () => {
-  document.getElementById("app").innerHTML += /*html*/`
+  document.getElementById("app").innerHTML += /*html*/ `
   <div id="contacts">
       <div id="profile">
         <div id="profile-name">${sessionStorage.getItem("username")}</div>
         <button type="button" title="New Chat" id="nchat">
-          <img src="${nchat}" alt="new chat" />
+          <img src="${logout}" alt="logout" title="logout" id="logout-btn"/>
         </button>
       </div>
       <div id="c-title"></div>
@@ -18,7 +20,11 @@ export const Chat = () => {
     <div id="messageArea">
       <div id="r-profile">
         <div id="pic"></div>
-        <div id="r-name">${sessionStorage.getItem("chat_user")}</div>
+        <div id="r-name">${
+          sessionStorage.getItem("chat_user")
+            ? sessionStorage.getItem("chat_user")
+            : ""
+        }</div>
       </div>
       <div id="message-space"></div>
 
@@ -32,20 +38,12 @@ export const Chat = () => {
       </div>
     </div>
   `;
-  
-  const messageInput = document.getElementById("user-text");
-  let ws = NewChatWS();
 
-  document.addEventListener("DOMContentLoaded", () => {
-    ws.send(JSON.stringify(
-      {
-        type: "Open_chat",
-        req_Content : {
-          user_id : sessionStorage.getItem("chat_user")
-        }
-      }
-    ))
-  });
+  document
+    .getElementById("logout-btn")
+    .addEventListener("click", () => Logout());
+
+  const messageInput = document.getElementById("user-text");
 
   document.getElementById("sendTextBtn").addEventListener("click", function () {
     const message = messageInput.value;
@@ -55,7 +53,7 @@ export const Chat = () => {
         type: "send_msg",
         req_Content: {
           sender: "",
-          recipient: sessionStorage.getItem("chat_user"), //TODO: Make it change based on session
+          recipient: sessionStorage.getItem("chat_user"),
           msg_content: message,
         },
       })

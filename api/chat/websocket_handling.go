@@ -22,18 +22,16 @@ type CurrentStatus struct {
 	Is_Online bool       `json:"is_online"`
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
-
-var listenerChan = make(chan bool)
-
 var (
-	ws_server = NewServer()
+	ListenerChan = make(chan bool)
+	ws_server    = NewServer()
+	upgrader     = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
 )
 
 /* Handles the request to connect to chat socket */
@@ -125,7 +123,6 @@ func Send_Message(sender_user *types.User, request string) {
 	}
 
 	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
-
 }
 
 func Open_chat(user *types.User, request string) {
@@ -153,7 +150,7 @@ and brodcasts them to all other users for frontend updates
 */
 func OnlineListener() {
 	for {
-		<-listenerChan
+		<-ListenerChan
 		utils.InfoConsoleLog("conn change detected")
 		if err := EvalOnlineUsers(); err != nil {
 			utils.ErrorConsoleLog("error brodcasting online users")
@@ -188,7 +185,6 @@ func EvalOnlineUsers() error {
 		Type:    "online_user_list",
 		Content: onlineUserMap,
 	})
-
 	if err != nil {
 		return err
 	}

@@ -24,7 +24,7 @@ func SaveImage(encode string, img_type string) (string, error) {
 	}
 
 	syscall.Umask(0)
-	err = os.MkdirAll("images", 0777)
+	err = os.MkdirAll("images", 0o777)
 	if err != nil {
 		return "", err
 	}
@@ -55,6 +55,8 @@ func EncodeImage(imagePath string) (string, error) {
 
 	// Encode to base64 string
 	base64Str := base64.StdEncoding.EncodeToString(imageBytes)
+
+	InfoConsoleLog(base64Str)
 
 	return base64Str, nil
 }

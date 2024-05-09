@@ -99,6 +99,17 @@ export const Home = async () => {
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
 
+  const encodedImage = sessionStorage.getItem("avatar"); // replace with the encoded image string
+
+  const img = new Image();
+  let url = "data:image/png;base64," + encodedImage;
+  fetch(url)
+    .then((res) => res.blob())
+    .then((blob) => {
+      
+    });
+  document.getElementById("c-avatar").appendChild(img);
+
   if (modalOpenBtn && modal) {
     modalOpenBtn.onclick = function () {
       modal.style.display = "block";

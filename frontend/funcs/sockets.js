@@ -33,6 +33,7 @@ export const SaveCurrentChatUser = async (username) => {
  */
 export const AssembleOnlineUsers = (data) => {
   const contact_div = document.getElementById("c-contacts");
+  if (!contact_div) return;
   contact_div.innerHTML = "";
   console.log(data);
   data.req_Content.forEach((user_obj) => {

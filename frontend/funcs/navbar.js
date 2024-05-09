@@ -13,6 +13,7 @@ export const LoadNav = () => {
       window.location.assign("/login");
       return;
     }
+
     return /*html*/ `
       <nav>
   <a href="/">
@@ -35,12 +36,10 @@ export const LoadNav = () => {
   <div>
     <a href="/logout">
     <button id="btn-message" class="button-message">
-      <div class="content-avatar">
+      <div class="content-avatar" id="c-avatar">
         <div class="status-user"></div>
-        <img src="${sessionStorage.getItem(
-          "avatar"
-        )}" class="avatar" alt="${sessionStorage.getItem("avatar")}">
       </div>
+  </button>
       <div class="notice-content">
         <div class="Logout-div">Logout</div>
         <div class="User-div">${sessionStorage.getItem("username")}</div>

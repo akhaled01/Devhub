@@ -15,6 +15,7 @@ export const SaveCurrentChatUser = async (username) => {
     return;
   sessionStorage.setItem("chat_user", username);
   sessionStorage.setItem("chat_user_selected", "true");
+  document.getElementById("message-space").innerHTML = "";
   ws.send(
     JSON.stringify({
       type: "Open_chat",

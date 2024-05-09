@@ -1,4 +1,13 @@
 /* styles.css - Add these styles to the previous ones */
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap");
+
+:root {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+  --bg-nav-color: RGB(12, 15, 10, 0.8);
+  --main-font-family: "Rubik", monospace, sans-serif;
+  --bg-component-color: #1c1818;
+}
 
 .comments-section {
   /* gap: 20px; */
@@ -12,10 +21,12 @@
   /* background-color: #f9f9f9; */
   margin-left: 2%;
   width: 85%;
-  margin-top: 10%;
+  margin-top: 5%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  gap: 20px;
 }
 
 .modal-contentt {
@@ -56,23 +67,19 @@
 
 .c-creationDate {
   color: hsla(0, 0%, 100%, 0.535);
+  font-size: small;
 }
 
 #post-page {
   display: flex;
   flex-direction: row;
+  max-height: 400px;
+  height: 50%;
+  width: 85%;
 }
 
 /* Continue with additional styles as needed */
-@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap");
 
-:root {
-  --bg-color: #000000;
-  --text-color: #ffffff;
-  --bg-nav-color: RGB(12, 15, 10, 0.8);
-  --main-font-family: "Rubik", monospace, sans-serif;
-  --bg-component-color: #1c1818;
-}
 
 *::-webkit-scrollbar {
   display: none;
@@ -674,9 +681,13 @@ a {
   padding-top: inherit;
 }
 
-.شخطة {
+.shakta {
   width: 1px;
   background-color: #f5fffa;
   height: 75%;
   margin-left: 40px;
+}
+
+.noimage-c {
+  margin: 13px 0;
 }

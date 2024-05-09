@@ -50,18 +50,14 @@ export const Post = () => {
           <img src="${sessionStorage.getItem("avatar")}">
         </div>
         <p id="c-com-nickname">${sessionStorage.getItem(
-            "username"
-          )}</p>
-        <div class="p-creationDate">12/12/2020</div>
+                "username"
+            )}</p>
+        <div class="p-creationDate"></div>
       </div>
       <div class="p-content">
-        <p style="margin: 0;">
-        </p>
-        <div class="p-image">
-        </div>
       </div>
       <div class="PostComment_Contaiar">
-        <div class="شخطة"></div>
+        <div class="shakta"></div>
         <div class="com2ent">
           <div id="c-com-userinfo">
             <div id="c-com-pfp">            
@@ -69,7 +65,7 @@ export const Post = () => {
             </div>
             <p id="c-com-nickname">${sessionStorage.getItem(
                 "username"
-              )}</p>
+            )}</p>
           </div>
           <textarea id="c-com-textArea" placeholder="What's on your mind?"></textarea>
         </div>
@@ -93,47 +89,44 @@ export const Post = () => {
   `;
             fetchPost(postId);
             fetchComments(postId);
-        })
-        .catch((error) => {
-            console.error("Error fetching post details:", error);
-            // Handle error case
-        });
+            const likeImages = document.querySelectorAll(".p-likeBtn img");
 
-    const likeImages = document.querySelectorAll(".p-likeBtn img");
+            console.log(likeImages);
 
-    console.log(likeImages);
+            likeImages.forEach((likeBtn) => {
+                console.log(likeBtn.getAttribute("src"));
 
-    likeImages.forEach((likeBtn) => {
-        console.log(likeBtn.getAttribute("src"));
+                likeBtn.addEventListener("click", () => {
+                    if (likeBtn.getAttribute("src") === noheart) {
+                        likeBtn.setAttribute("src", heart);
+                        console.log("liked");
+                        // add other like event
+                    } else {
+                        likeBtn.setAttribute("src", noheart);
+                        console.log("unliked");
+                        // add other unlike event
+                    }
+                });
+            });
 
-        likeBtn.addEventListener("click", () => {
-            if (likeBtn.getAttribute("src") === noheart) {
-                likeBtn.setAttribute("src", heart);
-                console.log("liked");
-                // add other like event
-            } else {
-                likeBtn.setAttribute("src", noheart);
-                console.log("unliked");
-                // add other unlike event
-            }
-        });
-    });
+            async function fetchPost(postId) {
+                if (postId === null) {
+                    console.error('postId is null');
+                    return;
+                }
+                const response = await fetch(`${BACKENDURL}/post/${postId}`, {
+                    credentials: "include",
+                });
 
-    async function fetchPost(postId) {
-        if (postId === null) {
-            console.error('postId is null');
-            return;
-        }
-        const response = await fetch(`${BACKENDURL}/post/${postId}`, {
-            credentials: "include",
-        });
+                const data = await response.json();
 
-        const data = await response.json();
-
-        console.log(data);
-        const postDiv = document.getElementById("post");
-        if (data.image) {
-            postDiv.innerHTML = `
+                console.log(data);
+                // load the div that we need to put thr data in
+                const postDiv = document.getElementById("post");
+                const content = document.querySelector(".p-content");
+                const date = document.querySelector(".p-creationDate");
+                if (data.image) {
+                    postDiv.innerHTML = `
             <div class="f-post">
                 <div class="p-header">
                     <div class="p-profileInfo">
@@ -141,8 +134,8 @@ export const Post = () => {
                         <div class="p-nickname">${data.user.username}</div>
                     </div>
                     <div class="p-creationDate">${new Date(
-                data.creationDate
-            ).toDateString()}</div>
+                        data.creationDate
+                    ).toDateString()}</div>
                 </div>
                 <div class="p-main">
                     <div class="p-content">
@@ -166,10 +159,19 @@ export const Post = () => {
                 </div>
             </div>
         `;
-        } else {
-            // postDiv = document.getElementById("post");
-            // <!-- categories should be connected to the backend when it's done.  -->
-            postDiv.innerHTML = `
+                    content.innerHTML = `        
+                <p style="margin: 0;">
+                ${data.content}
+                </p>
+                <div class="p-image">
+                </div>`;
+                    date.innerHTML = `${new Date(
+                        data.creationDate
+                    ).toDateString()}`;
+                } else {
+                    // postDiv = document.getElementById("post");
+                    // <!-- categories should be connected to the backend when it's done.  -->
+                    postDiv.innerHTML = `
           <div class="f-post noimage">
               <div class="p-header">
                   <div class="p-profileInfo">
@@ -177,8 +179,8 @@ export const Post = () => {
                       <div class="p-nickname">${data.user.username}</div>
                   </div>
                   <div class="p-creationDate">${new Date(
-                data.creationDate
-            ).toDateString()}</div>
+                        data.creationDate
+                    ).toDateString()}</div>
               </div>
               <div class="p-main">
                   <div class="p-content">
@@ -199,64 +201,87 @@ export const Post = () => {
               </div>
           </div>
       `;
-        }
-    }
+                    content.innerHTML = `        
+      <p style="margin: 0;">
+      ${data.content}
+      </p>`;
 
+      content.classList.add("noimage-c")
+                    date.innerHTML = `${new Date(
+                        data.creationDate
+                    ).toDateString()}`;
 
-    // Modal Operations
-    const modal = document.getElementById("c-com-modal");
-    const modalOpenBtn = document.getElementById("c-com-start");
-    console.log(modalOpenBtn, modal);
-    if (modalOpenBtn || modal) {
-        console.log("-------------");
-        modalOpenBtn.onclick = function () {
-            modal.style.display = "block";
-            console.log("Modal opened");
-        };
-    }
-
-    // When user clicks outside window, remove modal
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
-
-    const create_com_Btn = document.getElementById("c-com-Btn");
-
-    if (create_com_Btn) {
-        create_com_Btn.addEventListener("click", async () => {
-            const comment_text = document.getElementById("c-com-textArea").value;
-
-            const comment_data = {
-                user_token: sessionStorage.getItem("user_token"),
-                post_id: postId,
-                content: comment_text
-            };
-
-            try {
-                const res = await fetch(BACKENDURL + "/post/create", {
-                    method: "POST",
-                    body: JSON.stringify(comment_data),
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-
-                modal.style.display = "none";
-
-                if (res.status === 201) {
-                    window.location.reload();
-                } else {
-                    throw new Error(res.status, res.statusText);
                 }
-            } catch (error) {
-                alert(error);
-                console.error("post creation error", error);
+                // Modal Operations
+                // var modal = document.getElementById("c-com-modal");
+                var modal = document.querySelector(".modal");
+                var modalcon = document.querySelector(".modal-content");
+                if (!data.image && modalcon) {
+                    modalcon.style.minHeight = "260px";
+                }
+                console.log(modal);
+                var modalOpenBtn = document.querySelector(".p-commentCount");
+                // var modali = document.querySelector(".f-post");
+                // var modalOpenBtn = document.getElementById("c-com-start");
+                console.log(modalOpenBtn, modal);
+                if (modalOpenBtn && modal) {
+                    console.log("-------------");
+                    modalOpenBtn.onclick = function () {
+                        modal.style.display = "block";
+                        console.log("Modal opened");
+                    };
+                }
+
+                // When user clicks outside window, remove modal
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                };
+
+                const create_com_Btn = document.getElementById("c-com-Btn");
+
+                if (create_com_Btn) {
+                    create_com_Btn.addEventListener("click", async () => {
+                        const comment_text = document.getElementById("c-com-textArea").value;
+
+                        const comment_data = {
+                            user_token: sessionStorage.getItem("user_token"),
+                            post_id: postId,
+                            comment_text: comment_text
+                        };
+
+                        try {
+                            const res = await fetch(BACKENDURL + "/comment/create", {
+                                method: "POST",
+                                body: JSON.stringify(comment_data),
+                                credentials: "include",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                            });
+
+                            modal.style.display = "none";
+
+                            if (res.status === 201) {
+                                window.location.reload();
+                            } else {
+                                throw new Error(res.status, res.statusText);
+                            }
+                        } catch (error) {
+                            alert(error);
+                            console.error("post creation error", error);
+                        }
+                    });
+                }
             }
+
+
+        })
+        .catch((error) => {
+            console.error("Error fetching post details:", error);
+            // Handle error case
         });
-    }
 };
 
 

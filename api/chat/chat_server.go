@@ -28,7 +28,7 @@ func NewServer() *Chat_Server {
 /* Do what you want to do with the connection */
 func (s *Chat_Server) HandleWS(
 	user *types.User,
-	ws_routes map[string]func(user *types.User, request string),
+	ws_routes map[string]func(user *types.User, request string) error,
 ) {
 	utils.InfoConsoleLog(fmt.Sprint("New connection from client: ", user.Conn.RemoteAddr()))
 	ListenerChan <- true

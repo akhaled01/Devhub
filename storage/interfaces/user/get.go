@@ -66,7 +66,7 @@ func Authenticate(credential string, password string) (types.User, error) {
 
 // function to fetch all users from the DB
 func GetAllUsers() ([]types.User, error) {
-	query := "SELECT * FROM users"
+	query := "SELECT * FROM users ORDER BY user_name ASC"
 	rows, err := storage.DB_Conn.Query(query)
 	if err != nil {
 		return nil, errors.Join(types.ErrExec, err)

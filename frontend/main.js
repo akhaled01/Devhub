@@ -1,5 +1,8 @@
 import { ForumRouter } from "./funcs/router";
-import { AssembleOnlineUsers } from "./funcs/sockets";
+import {
+  AssembleOnlineUsersChat,
+  AssembleOnlineUsersIndex,
+} from "./funcs/sockets";
 import { NewChatMessage } from "./funcs/utils";
 
 export const ws = new WebSocket("ws://localhost:8080/ws");
@@ -22,8 +25,12 @@ ws.onmessage = (e) => {
       false,
       data.req_Content.sender
     );
-  } else if (data.type === "online_user_list") {
-    AssembleOnlineUsers(data);
+  } else if (data.type === "DMs") {
+    if (document.getElementById("c-contacts")) {
+      AssembleOnlineUsersChat(data);
+    } else {
+      AssembleOnlineUsersIndex(data);
+    }
   } else if (data.type === "open_chat_response") {
     // window.location.reload();
     let data = JSON.parse(e.data);

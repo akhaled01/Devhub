@@ -1,4 +1,5 @@
 import { ws } from "../main";
+import { sortByOnlineAndName } from "./utils";
 
 export let CurrentChatUser = null;
 
@@ -31,14 +32,14 @@ export const SaveCurrentChatUser = async (username) => {
  *  Takes JSON data and assembles online users
  * @param {*} data
  */
-export const AssembleOnlineUsers = (data) => {
+export const AssembleOnlineUsersChat = (data) => {
   const contact_div = document.getElementById("c-contacts");
+  let mdata = sortByOnlineAndName(data);
   if (!contact_div) return;
   contact_div.innerHTML = "";
   console.log(data);
-  data.req_Content.forEach((user_obj) => {
+  mdata.forEach((user_obj) => {
     let user = user_obj.user;
-    console.log(user_obj.is_online);
     if (user.username !== sessionStorage.getItem("username")) {
       const contactDiv = document.createElement("div");
       contactDiv.classList.add("contact");
@@ -53,6 +54,34 @@ export const AssembleOnlineUsers = (data) => {
 
       document.getElementById(user.username).addEventListener("click", () => {
         SaveCurrentChatUser(user.username);
+      });
+    }
+  });
+};
+
+
+
+export const AssembleOnlineUsersIndex = (data) => {
+  const list_div = document.getElementById("online-user-list");
+  let mdata = sortByOnlineAndName(data);
+  console.log("MDATA",mdata);
+  if (!list_div) return;
+  list_div.innerHTML = "";
+  console.log(data);
+  mdata.forEach((user_obj) => {
+    let user = user_obj;
+    if (user.username !== sessionStorage.getItem("username")) {
+      const user_div = document.createElement("li");
+      user_div.textContent = user.username;
+      user_div.id = user.username;
+      if (user_obj.is_online) {
+        user_div.classList.add("online");
+      }
+      list_div.appendChild(user_div);
+
+      document.getElementById(user.username).addEventListener("click", () => {
+        SaveCurrentChatUser(user.username);
+        window.location.assign("/chat");
       });
     }
   });

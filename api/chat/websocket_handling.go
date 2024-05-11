@@ -203,6 +203,13 @@ func Get_DMs(user *types.User, request string) {
 		return
 	}
 
+	for idx, user := range DMs {
+		if _, ok := types.UserHasSessions(user.ID); ok {
+			DMs[idx].Is_Online = true
+		} else {
+			DMs[idx].Is_Online = false
+		}
+	}
 	response_capusl := &ser.WS_Request{
 		Type:    "DMs",
 		Content: DMs,

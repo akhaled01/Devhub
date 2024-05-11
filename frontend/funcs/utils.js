@@ -212,3 +212,14 @@ export function convertImageToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+/**
+ * Sorts online user as per required
+ * @param {*} arr 
+ * @returns 
+ */
+export const sortByOnlineAndName = (arr) => {
+  return arr.req_Content.sort((a, b) => {
+    return a.username.localeCompare(b.username);
+  });
+};

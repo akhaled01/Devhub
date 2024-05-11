@@ -6,6 +6,7 @@ import hashtag from "../assets/hashtag.svg";
 import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
+import { ws } from "../main";
 
 export const Home = async () => {
   if (!sessionStorage.getItem("user_token")) {
@@ -67,33 +68,15 @@ export const Home = async () => {
           <p class="profile-title">Profile</p>
         </div>
       </div>
-      <div class="categories-section">
-        <h2 class="categories-text">Users</h2>
-        <ul class="category-list">
-        </ul>
+      <div class="online-user-section">
+        <h2 class="online-text">Users</h2>
+        <ul class="user-list" id="online-user-list"> </ul>
       </div>
     </div>
   </div>
   `;
 
-  // try {
-  //   const response = await fetch(BACKENDURL + "/categories");
-
-  //   if (!response.ok) {
-  //     throw new Error(`HTTP error! status: ${response.status}`);
-  //   }
-
-  //   const data = await response.json();
-  //   const categoryList = document.querySelector(".category-list");
-
-  //   data.forEach((category) => {
-  //     const li = document.createElement("li");
-  //     li.textContent = category.name;
-  //     categoryList.appendChild(li);
-  //   });
-  // } catch (error) {
-  //   console.error("Fetch failed:", error);
-  // }
+  
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");
@@ -105,9 +88,7 @@ export const Home = async () => {
   let url = "data:image/png;base64," + encodedImage;
   fetch(url)
     .then((res) => res.blob())
-    .then((blob) => {
-      
-    });
+    .then((blob) => {});
   document.getElementById("c-avatar").appendChild(img);
 
   if (modalOpenBtn && modal) {
@@ -203,4 +184,9 @@ export const Home = async () => {
   });
 
   await OrgIndexPosts();
+  ws.send(
+    JSON.stringify({
+      type: "get_dms",
+    })
+  );
 };

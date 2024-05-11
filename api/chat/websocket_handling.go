@@ -73,7 +73,7 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 		ws: connection to send the message to
 		request: the message
 */
-func Send_Message(sender_user *types.User, request string) {
+func Send_Message(sender_user *types.User, request string) error {
 	message_contents := &ser.Message{}
 	json.Unmarshal([]byte(request), message_contents)
 	message_contents.Sender = sender_user.Username // Put the username in the message capsul
@@ -91,26 +91,29 @@ func Send_Message(sender_user *types.User, request string) {
 	_, err := user.GetSingleUser("user_name", message_contents.Recipient)
 	if err != nil {
 		utils.ErrorConsoleLog("User can't be found in the database!")
-		return
+		return err
 	}
 
 	// Save the message in the database
 	err = chat.SaveChatInDB(*message_contents)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
+		return err
 	}
 
 	// Find the user within the connections
 	user_idx := 0 // counter for the below loop
+	send_to_user := &types.User{}
 	for user := range ws_server.conns {
 		if user.Username == message_contents.Recipient {
+			send_to_user = user
 			send_to_conn = user.Conn
 			break
 		}
 		// End of the loop and user wasn't found
 		if user_idx == len(ws_server.conns)-1 {
 			utils.InfoConsoleLog("user might not be connected!")
-			return
+			return err
 		}
 		user_idx++
 	}
@@ -119,20 +122,24 @@ func Send_Message(sender_user *types.User, request string) {
 	err = send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
 	if err != nil {
 		utils.ErrorConsoleLog("Connection closed!")
-		return
+		return err
 	}
 
 	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
+	Get_DMs(sender_user, "")
+	Get_DMs(send_to_user, "")
+
+	return nil
 }
 
-func Open_chat(user *types.User, request string) {
+func Open_chat(user *types.User, request string) error {
 	message_contents := &ser.Open_chat_request{}
 	json.Unmarshal([]byte(request), message_contents)
 
 	chat_messages, err := chat.Get_chat(user.Username, message_contents.User_id)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
-		return
+		return err
 	}
 
 	response_capusl := &ser.WS_Request{
@@ -142,6 +149,8 @@ func Open_chat(user *types.User, request string) {
 
 	json_msg, _ := json.Marshal(&response_capusl)
 	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+
+	return nil
 }
 
 /*
@@ -161,60 +170,74 @@ func OnlineListener() {
 }
 
 func EvalOnlineUsers() error {
-	onlineUserMap := []CurrentStatus{}
-	all_users, err := user.GetAllUsers()
-	if err != nil {
-		return err
-	}
-
-	for _, user := range all_users {
-		if _, ok := types.UserHasSessions(user.ID); ok {
-			onlineUserMap = append(onlineUserMap, CurrentStatus{
-				User:      user,
-				Is_Online: true,
-			})
-		} else {
-			onlineUserMap = append(onlineUserMap, CurrentStatus{
-				User:      user,
-				Is_Online: false,
-			})
+	for user := range ws_server.conns {
+		err := Get_DMs(user, "")
+		if err != nil {
+			utils.ErrorConsoleLog("error getting DMs")
+			return err
 		}
 	}
-
-	jsonMsg, err := json.Marshal(&ser.WS_Request{
-		Type:    "online_user_list",
-		Content: onlineUserMap,
-	})
-	if err != nil {
-		return err
-	}
-
-	for conn := range ws_server.conns {
-		conn.Conn.WriteMessage(websocket.TextMessage, jsonMsg)
-	}
-
 	return nil
 }
 
-func Get_DMs(user *types.User, request string) {
-	DMs, err := chat.Get_Users_By_Last_Message(user.Username)
+func Get_DMs(req_user *types.User, request string) error {
+	DMs, err := chat.Get_Users_By_Last_Message(req_user.Username)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
-		return
+		return err
 	}
 
-	for idx, user := range DMs {
-		if _, ok := types.UserHasSessions(user.ID); ok {
+	for idx, u := range DMs {
+		if _, ok := types.UserHasSessions(u.ID); ok {
 			DMs[idx].Is_Online = true
 		} else {
 			DMs[idx].Is_Online = false
 		}
 	}
+
+	// get the rest of the users
+	all_users, err := user.GetAllUsers()
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return err
+	}
+
+	for _, u := range all_users {
+		// construst a new DM user
+		dm_user := ser.DMs_User{
+			Username: u.Username,
+			ID:       u.ID,
+		}
+
+		// check if the user has a session
+		if _, ok := types.UserHasSessions(u.ID); ok {
+			dm_user.Is_Online = true
+		} else {
+			dm_user.Is_Online = false
+		}
+
+		// check if its already in DMs
+		in_DMs := false
+		for _, dm := range DMs {
+			if dm.Username == u.Username {
+				in_DMs = true
+				break
+			}
+		}
+
+		// if its not in DMs, add it
+		if !in_DMs {
+			DMs = append(DMs, dm_user)
+		}
+	}
+
 	response_capusl := &ser.WS_Request{
 		Type:    "DMs",
 		Content: DMs,
 	}
 	json_msg, _ := json.Marshal(&response_capusl)
 
-	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+	req_user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+
+	return nil
 }

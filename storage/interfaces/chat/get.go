@@ -15,7 +15,7 @@ const (
 				WHERE (recipient = ? and sender = ? or recipient = ? and sender = ?)
 				ORDER BY id`
 
-	GET_LATEST_DMS = `SELECT users.user_name, MAX(chat_messages.created_at) AS last_message_time
+	GET_LATEST_DMS = `SELECT users.user_name, users.user_id, MAX(chat_messages.created_at) AS last_message_time
 						FROM users
 						LEFT JOIN chat_messages ON (users.user_name = chat_messages.sender OR users.user_name = chat_messages.recipient)
 						WHERE chat_messages.sender = ? OR chat_messages.recipient = ?
@@ -68,7 +68,7 @@ func Get_Users_By_Last_Message(user_name string) ([]serializers.DMs_User, error)
 	for rows.Next() {
 		dm_user := serializers.DMs_User{}
 
-		if err := rows.Scan(&dm_user.Username, &dm_user.LastMessageTime); err != nil {
+		if err := rows.Scan(&dm_user.Username, &dm_user.ID, &dm_user.LastMessageTime); err != nil {
 			return nil, errors.Join(types.ErrScan, err)
 		}
 

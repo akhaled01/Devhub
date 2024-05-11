@@ -98,3 +98,40 @@ func GetCommentsCount(postID string) (int, error) {
 
 	return count, nil
 }
+
+func GetCommentByID(commentID uuid.UUID) (*types.Comment, error) {
+    query := `
+        SELECT c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, 
+               u.username, COUNT(cl.user_id) AS likes, 
+               EXISTS(SELECT 1 FROM comment_likes cl WHERE cl.comment_id = c.comm_id AND cl.user_id = ?) AS liked
+        FROM comments c
+        JOIN users u ON c.user_id = u.user_id
+        LEFT JOIN comment_likes cl ON c.comm_id = cl.comment_id
+        WHERE c.comm_id = ?
+        GROUP BY c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, u.username
+    `
+
+    var comment types.Comment
+    var userID, postID, commentDate string
+
+    err := storage.DB_Conn.QueryRow(query, commentID, commentID).Scan(
+        &commentID, &userID, &postID, &commentDate, &comment.Content,
+        &comment.User.Username, &comment.Likes, &comment.Liked,
+    )
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, err
+        }
+        return nil, errors.Join(types.ErrScan, err)
+    }
+
+    comment.ID = uuid.FromStringOrNil(commentID.String())
+    comment.User.ID = uuid.FromStringOrNil(userID)
+    comment.Post_ID = uuid.FromStringOrNil(postID)
+
+    if comment.CreationDate, err = time.Parse("YYYY-MM-DD", commentDate); err != nil {
+        return nil, errors.Join(types.ErrGetCommentDetails, err)
+    }
+
+    return &comment, nil
+}

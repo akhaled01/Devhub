@@ -65,6 +65,10 @@
   align-items: center;
 }
 
+.p-likeStat {
+  color: #f5fffa;
+}
+
 .c-creationDate {
   color: hsla(0, 0%, 100%, 0.535);
   font-size: small;

@@ -58,7 +58,7 @@ func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
 	}
 
 	// get post comments
-	if p.Comments, err = comment.GetPostCommentsByID(id); err != nil {
+	if p.Comments, err = comment.GetPostCommentsByID(req_user, id); err != nil {
 		return (types.Post{}), err
 	}
 

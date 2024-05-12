@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"RTF/storage"
+	"RTF/storage/interfaces/likes"
 	"RTF/storage/interfaces/user"
 	"RTF/types"
 
@@ -15,7 +16,7 @@ import (
 const QueryPostComments = "SELECT comm_id, user_id, SUBSTR(comment_date, '%Y-%m-%d') AS Date, comment FROM comments WHERE post_id = ?"
 
 // function to return an array of post comments by id
-func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
+func GetPostCommentsByID(req_user *types.User, postid uuid.UUID) ([]types.Comment, error) {
 	stmt, err := storage.DB_Conn.Prepare(QueryPostComments)
 	if err != nil {
 		return nil, errors.Join(types.ErrPrepare, err)
@@ -47,6 +48,15 @@ func GetPostCommentsByID(postid uuid.UUID) ([]types.Comment, error) {
 			ID:       u.ID,
 			Username: u.Username,
 		}
+
+		// check if the user liked the comment
+		liked, err := likes.CheckUserCommentLike(uuid.FromStringOrNil(comment_id), req_user.ID)
+		if err != nil {
+			return nil, errors.Join(types.ErrGetCommentDetails, err)
+		}
+
+		// set the liked value
+		c.Liked = liked
 
 		//! MIGHT BE BUGGY FROM HERE ON OUT
 		if c.Likes, err = GetCommentLikes(uuid.FromStringOrNil(comment_id)); err != nil {
@@ -100,38 +110,38 @@ func GetCommentsCount(postID string) (int, error) {
 }
 
 func GetCommentByID(commentID uuid.UUID) (*types.Comment, error) {
-    query := `
+	query := `
         SELECT c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, 
-               u.username, COUNT(cl.user_id) AS likes, 
+               u.user_name, COUNT(cl.user_id) AS likes, 
                EXISTS(SELECT 1 FROM comment_likes cl WHERE cl.comment_id = c.comm_id AND cl.user_id = ?) AS liked
         FROM comments c
         JOIN users u ON c.user_id = u.user_id
         LEFT JOIN comment_likes cl ON c.comm_id = cl.comment_id
         WHERE c.comm_id = ?
-        GROUP BY c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, u.username
+        GROUP BY c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, u.user_name
     `
 
-    var comment types.Comment
-    var userID, postID, commentDate string
+	var comment types.Comment
+	var userID, postID, commentDate string
 
-    err := storage.DB_Conn.QueryRow(query, commentID, commentID).Scan(
-        &commentID, &userID, &postID, &commentDate, &comment.Content,
-        &comment.User.Username, &comment.Likes, &comment.Liked,
-    )
-    if err != nil {
-        if err == sql.ErrNoRows {
-            return nil, err
-        }
-        return nil, errors.Join(types.ErrScan, err)
-    }
+	err := storage.DB_Conn.QueryRow(query, commentID, commentID).Scan(
+		&commentID, &userID, &postID, &commentDate, &comment.Content,
+		&comment.User.Username, &comment.Likes, &comment.Liked,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, err
+		}
+		return nil, errors.Join(types.ErrScan, err)
+	}
 
-    comment.ID = uuid.FromStringOrNil(commentID.String())
-    comment.User.ID = uuid.FromStringOrNil(userID)
-    comment.Post_ID = uuid.FromStringOrNil(postID)
+	comment.ID = uuid.FromStringOrNil(commentID.String())
+	comment.User.ID = uuid.FromStringOrNil(userID)
+	comment.Post_ID = uuid.FromStringOrNil(postID)
 
-    if comment.CreationDate, err = time.Parse("YYYY-MM-DD", commentDate); err != nil {
-        return nil, errors.Join(types.ErrGetCommentDetails, err)
-    }
+	if comment.CreationDate, err = time.Parse("YYYY-MM-DD", commentDate); err != nil {
+		return nil, errors.Join(types.ErrGetCommentDetails, err)
+	}
 
-    return &comment, nil
+	return &comment, nil
 }

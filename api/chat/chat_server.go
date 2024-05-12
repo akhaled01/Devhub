@@ -48,6 +48,7 @@ func (s *Chat_Server) HandleWS(
 
 		msg := &ser.WS_Request{}
 		for {
+			// Listen for messages (blocking)
 			err := user.Conn.ReadJSON(msg)
 			if err != nil {
 				if err == io.EOF {

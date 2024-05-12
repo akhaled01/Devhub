@@ -11,6 +11,7 @@ type Post struct {
 	User               PartialUser `json:"user"`
 	Image_Path         string      `json:"image"`
 	Likes              int64       `json:"likes"`
+	Liked              bool        `json:"liked"`
 	Comments           []Comment   `json:"comments"`
 	Category           []string    `json:"category"`
 	CreationDate       time.Time   `json:"creationDate"`

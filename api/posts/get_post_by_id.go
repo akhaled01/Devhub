@@ -13,8 +13,21 @@ import (
 )
 
 func GetPostByID(w http.ResponseWriter, r *http.Request) {
+	session_id, err := r.Cookie("session_id")
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+
+	}
+	requester_session, ok := types.Sessions[uuid.FromStringOrNil(session_id.Value)]
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// parse id from URL and get the post from it
-	post, err := post.GetPostByID(uuid.FromStringOrNil(r.PathValue("id")))
+	post, err := post.GetPostByID(requester_session.User, uuid.FromStringOrNil(r.PathValue("id")))
 	if err != nil {
 		if errors.Is(err, types.ErrPostNotFound) {
 			utils.WarnConsoleLog("user tried to request a non-existing post")

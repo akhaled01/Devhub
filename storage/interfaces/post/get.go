@@ -21,11 +21,13 @@ const (
 )
 
 // Function that Gets a post from a DB by its ID
-func GetPostByID(id uuid.UUID) (types.Post, error) {
+func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
+	// prepare the query
 	stmt, err := storage.DB_Conn.Prepare(PostByIDQuery)
 	if err != nil {
 		return (types.Post{}), errors.Join(types.ErrPrepare, err)
 	}
+	defer stmt.Close()
 
 	p := types.Post{}
 	p.ID = id
@@ -65,35 +67,51 @@ func GetPostByID(id uuid.UUID) (types.Post, error) {
 
 	p.User = partial_creator
 	p.Category = post_cats
+
+	// Check if the user has liked the post
+	liked, err := likes.CheckUserPostLike(p.ID, req_user.ID)
+	if err != nil {
+		return types.Post{}, errors.Join(types.ErrAppendPost, err)
+	}
+	// Set the post liked field to true if the user has liked the post
+	p.Liked = liked
+
 	return p, nil
 }
 
 // function that gets posts that are liked by a specific user.
 // takes in a user id
-func GetUserLikedPosts(userid uuid.UUID) ([]types.Post, error) {
+func GetUserLikedPosts(req_user *types.User) ([]types.Post, error) {
+	// prepare the query
 	stmt, err := storage.DB_Conn.Prepare(GETUSERLIKEDPOSTSQUERY)
 	if err != nil {
 		return nil, errors.Join(types.ErrPrepare, err)
 	}
 	defer stmt.Close()
 
+	// execute the query
 	posts := []types.Post{}
-	rows, err := stmt.Query(userid.String())
+	rows, err := stmt.Query(req_user.ID.String())
 	if err != nil {
 		return nil, errors.Join(types.ErrExec, err)
 	}
+	// close the rows after the query is done
 	defer rows.Close()
 
+	// scan the results
 	for rows.Next() {
+		// get the post id
 		var post_id string
 		if err := rows.Scan(&post_id); err != nil {
 			return nil, errors.Join(errors.New("error scanning to post_id"), err)
 		}
 
+		// get the post
 		var p types.Post
-		if p, err = GetPostByID(uuid.FromStringOrNil(post_id)); err != nil {
+		if p, err = GetPostByID(req_user, uuid.FromStringOrNil(post_id)); err != nil {
 			return nil, errors.Join(errors.New("error getting post"), err)
 		}
+		// append the post to the slice
 		posts = append(posts, p)
 	}
 
@@ -101,7 +119,7 @@ func GetUserLikedPosts(userid uuid.UUID) ([]types.Post, error) {
 }
 
 // Invokes a query to get all posts sorted by creation_date.
-func AllPostsFromDB() ([]types.Post, error) {
+func AllPostsFromDB(req_user *types.User) ([]types.Post, error) {
 	all_posts := []types.Post{}
 	stmt, err := storage.DB_Conn.Prepare(AllPostsQuery)
 	if err != nil {
@@ -116,17 +134,27 @@ func AllPostsFromDB() ([]types.Post, error) {
 	defer rows.Close()
 
 	for rows.Next() {
+		// Get the post id
 		var str_post_id string
 		if err := rows.Scan(&str_post_id); err != nil {
 			return nil, errors.Join(types.ErrScan, err)
 		}
 
-		post, err := GetPostByID(uuid.FromStringOrNil(str_post_id))
+		// Get the post from the DB
+		post, err := GetPostByID(req_user, uuid.FromStringOrNil(str_post_id))
 		post.Number_of_comments, _ = comment.GetCommentsCount(post.ID.String())
 		if err != nil {
 			return nil, errors.Join(types.ErrAppendPost, err)
 		}
 
+		// Check if the user has liked the post
+		liked, err := likes.CheckUserPostLike(post.ID, req_user.ID)
+		if err != nil {
+			return nil, errors.Join(types.ErrAppendPost, err)
+		}
+		// Set the post liked field to true if the user has liked the post
+		post.Liked = liked
+		// Append the post to the list of posts
 		all_posts = append(all_posts, post)
 	}
 

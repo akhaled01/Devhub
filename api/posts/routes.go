@@ -15,6 +15,7 @@ var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"OPTIONS /post/all":       GetAllPosts,
 	"OPTIONS /post/create":    CreatePost,
 	"OPTIONS /comment/create": CreateComment,
+	"OPTIONS /comments/{id}":  GetCommentsByPostID,
 }
 
 // Register Post Routes with middleware validation

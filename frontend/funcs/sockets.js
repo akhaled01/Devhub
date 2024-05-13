@@ -34,41 +34,43 @@ export const SaveCurrentChatUser = async (username) => {
  */
 export const AssembleOnlineUsersChat = (data) => {
   const contact_div = document.getElementById("c-contacts");
-  let mdata = sortByOnlineAndName(data);
+  // let mdata = sortByOnlineAndName(data);
   if (!contact_div) return;
   contact_div.innerHTML = "";
   console.log(data);
-  mdata.forEach((user_obj) => {
-    let user = user_obj.user;
-    if (user.username !== sessionStorage.getItem("username")) {
+  data.req_Content.forEach((user_obj) => {
+    //let user = user_obj.user;
+    if (user_obj.username !== sessionStorage.getItem("username")) {
       const contactDiv = document.createElement("div");
       contactDiv.classList.add("contact");
-      contactDiv.id = user.username;
+      contactDiv.id = user_obj.username;
 
       const nameDiv = document.createElement("div");
       nameDiv.classList.add("name");
-      nameDiv.textContent = user.username;
+      nameDiv.textContent = user_obj.username;
 
       contactDiv.appendChild(nameDiv);
       contact_div.appendChild(contactDiv);
 
-      document.getElementById(user.username).addEventListener("click", () => {
-        SaveCurrentChatUser(user.username);
+      if (user_obj.is_online) {
+        nameDiv.classList.add("online");
+      }
+
+      document.getElementById(user_obj.username).addEventListener("click", () => {
+        SaveCurrentChatUser(user_obj.username);
       });
     }
   });
 };
 
-
-
 export const AssembleOnlineUsersIndex = (data) => {
   const list_div = document.getElementById("online-user-list");
-  let mdata = sortByOnlineAndName(data);
-  console.log("MDATA",mdata);
+  //let mdata = sortByOnlineAndName(data);
+  console.log("MDATA",data);
   if (!list_div) return;
   list_div.innerHTML = "";
   console.log(data);
-  mdata.forEach((user_obj) => {
+  data.req_Content.forEach((user_obj) => {
     let user = user_obj;
     if (user.username !== sessionStorage.getItem("username")) {
       const user_div = document.createElement("li");

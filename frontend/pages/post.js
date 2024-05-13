@@ -126,7 +126,7 @@ export const Post = () => {
                 const content = document.querySelector(".p-content");
                 const date = document.querySelector(".p-creationDate");
                 if (data.image) {
-                    postDiv.innerHTML = `
+                    postDiv.innerHTML = /*html*/ `
             <div class="f-post">
                 <div class="p-header">
                     <div class="p-profileInfo">
@@ -171,7 +171,7 @@ export const Post = () => {
                 } else {
                     // postDiv = document.getElementById("post");
                     // <!-- categories should be connected to the backend when it's done.  -->
-                    postDiv.innerHTML = `
+                    postDiv.innerHTML = /*html*/ `
           <div class="f-post noimage">
               <div class="p-header">
                   <div class="p-profileInfo">
@@ -203,7 +203,7 @@ export const Post = () => {
       `;
                     content.innerHTML = `        
       <p style="margin: 0;">
-      ${data.content}
+     
       </p>`;
 
       content.classList.add("noimage-c")

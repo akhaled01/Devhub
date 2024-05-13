@@ -245,3 +245,7 @@ body > div {
 .sname {
   font-weight: 600;
 }
+.online {
+  color: rgb(121, 255, 121);
+  font-weight: 600;
+}

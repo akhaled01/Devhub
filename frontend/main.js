@@ -5,6 +5,7 @@ import {
 } from "./funcs/sockets";
 import { NewChatMessage } from "./funcs/utils";
 
+// handle websocket connection
 export const ws = new WebSocket("ws://localhost:8080/ws");
 
 ws.onopen = () => {
@@ -20,11 +21,14 @@ ws.onmessage = (e) => {
   console.log("RECIEVED MESSAGE:", JSON.parse(e.data));
   let data = JSON.parse(e.data);
   if (data.type === "message") {
-    NewChatMessage(
-      data.req_Content.msg_content,
-      false,
-      data.req_Content.sender
-    );
+    if (sessionStorage.getItem("chat_user") == data.req_Content.sender) {
+      NewChatMessage(
+        data.req_Content.msg_content,
+        data.req_Content.sender,
+        data.req_Content.sender
+      );
+    } else{
+    }
   } else if (data.type === "DMs") {
     if (document.getElementById("c-contacts")) {
       AssembleOnlineUsersChat(data);

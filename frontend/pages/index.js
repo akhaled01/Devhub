@@ -8,75 +8,80 @@ import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 
+export const post_component = () => {
+  return /*html*/`<div class="lower-div">
+  <main>
+    <div id="c-post-modal" class="modal">
+      <div class="modal-content">
+          <div id="c-post-userinfo">
+              <div id="c-post-pfp">
+                  <img src="${sessionStorage.getItem("avatar")}">
+              </div>
+              <p id="c-post-nickname">${sessionStorage.getItem(
+                "username"
+              )}</p>
+          </div>
+          <textarea id="c-post-textArea"
+              placeholder="What's on your mind?"></textarea>
+          <div id="c-post-options">
+              <div class="c-post-option">
+                  <img src="${imgupload}" alt="upload Image"
+                      title="upload Image" id="c-img-upload">
+                  <input type="file" id="img-upload">
+              </div>
+              <div class="c-post-option">
+                  <img src="${hashtag}" alt="Choose Category"
+                      title="Choose Category" id="cat-choose-Btn">
+              </div>
+          </div>
+          <div id="c-post-cats">
+              <select id="c-post-cat-select">
+                  <option class="c-option" value="1">General</option>
+                  <option class="c-option" value="2">Engineering</option>
+                  <option class="c-option" value="3">Travel</option>
+                  <option class="c-option" value="4">Tech</option>
+                  <option class="c-option" value="5">Mathematics</option>
+              </select>
+          </div>
+          <div id="c-post-Btn">Create Post</div>
+      </div>
+    </div>
+    <div id="posts"></div>
+  </main>
+
+  <div class="side-divs">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profileImage">
+          <img src="${sessionStorage.getItem("avatar")}" alt="">
+        </div>
+      </div>
+      <div class="UserInfo-div">
+        <p class="UserName-p">${sessionStorage.getItem("username")}</p>
+        <p class="profile-title">Profile</p>
+      </div>
+    </div>
+    <div class="online-user-section">
+      <h2 class="online-text">Users</h2>
+      <ul class="user-list" id="online-user-list"> </ul>
+    </div>
+  </div>
+</div>
+`;
+}
 export const Home = async () => {
   if (!sessionStorage.getItem("user_token")) {
     window.location.assign("/login");
     return;
   }
 
-  document.getElementById("app").innerHTML = `
+  document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
-    <div class="lower-div">
-    <main>
-      <div id="c-post-modal" class="modal">
-        <div class="modal-content">
-            <div id="c-post-userinfo">
-                <div id="c-post-pfp">
-                    <img src="${sessionStorage.getItem("avatar")}">
-                </div>
-                <p id="c-post-nickname">${sessionStorage.getItem(
-                  "username"
-                )}</p>
-            </div>
-            <textarea id="c-post-textArea"
-                placeholder="What's on your mind?"></textarea>
-            <div id="c-post-options">
-                <div class="c-post-option">
-                    <img src="${imgupload}" alt="upload Image"
-                        title="upload Image" id="c-img-upload">
-                    <input type="file" id="img-upload">
-                </div>
-                <div class="c-post-option">
-                    <img src="${hashtag}" alt="Choose Category"
-                        title="Choose Category" id="cat-choose-Btn">
-                </div>
-            </div>
-            <div id="c-post-cats">
-                <select id="c-post-cat-select">
-                    <option class="c-option" value="1">General</option>
-                    <option class="c-option" value="2">Engineering</option>
-                    <option class="c-option" value="3">Travel</option>
-                    <option class="c-option" value="4">Tech</option>
-                    <option class="c-option" value="5">Mathematics</option>
-                </select>
-            </div>
-            <div id="c-post-Btn">Create Post</div>
-        </div>
-      </div>
-      <div id="posts"></div>
-    </main>
+    ${post_component()}
+    `
   
-    <div class="side-divs">
-      <div class="profile-card">
-        <div class="profile-header">
-          <div class="profileImage">
-            <img src="${sessionStorage.getItem("avatar")}" alt="">
-          </div>
-        </div>
-        <div class="UserInfo-div">
-          <p class="UserName-p">${sessionStorage.getItem("username")}</p>
-          <p class="profile-title">Profile</p>
-        </div>
-      </div>
-      <div class="online-user-section">
-        <h2 class="online-text">Users</h2>
-        <ul class="user-list" id="online-user-list"> </ul>
-      </div>
-    </div>
-  </div>
-  `;
 
-  
+
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");

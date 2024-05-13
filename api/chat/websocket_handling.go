@@ -100,6 +100,8 @@ func Send_Message(sender_user *types.User, request string) error {
 		utils.ErrorConsoleLog(err.Error())
 		return err
 	}
+	// Get the DMs of the users broadcast them to the sender
+	Get_DMs(sender_user, "")
 
 	// Find the user within the connections
 	user_idx := 0 // counter for the below loop
@@ -118,6 +120,9 @@ func Send_Message(sender_user *types.User, request string) error {
 		user_idx++
 	}
 
+	// Get the DMs of the users broadcast them to the receiver
+	Get_DMs(send_to_user, "")
+
 	// send the message to the correct user via its websocket connection
 	err = send_to_conn.WriteMessage(websocket.TextMessage, json_msg)
 	if err != nil {
@@ -126,8 +131,6 @@ func Send_Message(sender_user *types.User, request string) error {
 	}
 
 	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
-	Get_DMs(sender_user, "")
-	Get_DMs(send_to_user, "")
 
 	return nil
 }

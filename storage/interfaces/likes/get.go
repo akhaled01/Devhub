@@ -15,8 +15,7 @@ const (
 		WHERE post_id = ? AND user_id = ?) `
 	IS_LIKED_QUERY_COMMENT = `SELECT EXISTS(SELECT 1 FROM comment_likes
 			WHERE comment_id = ? AND user_id = ?) `
-	POST_LIKES_QUERY    = `SELECT count(like_id) FROM post_likes WHERE post_id = ?`
-	COMMENT_LIKES_QUERY = `SELECT count(like_id) FROM comment_likes WHERE comment_id = ?`
+	POST_LIKES_QUERY    = `SELECT count(*) FROM post_likes WHERE post_id = ?`
 )
 
 // Takes in a user's id and a post's id and checks if the user liked the post
@@ -61,14 +60,5 @@ func GetPostLikes(postID uuid.UUID) (int64, error) {
 		return -1, errors.Join(types.ErrScan, err)
 	}
 
-	return count, nil
-}
-
-func GetCommentLikes(postID uuid.UUID) (int64, error) {
-	row := storage.DB_Conn.QueryRow(COMMENT_LIKES_QUERY, postID.String())
-	var count int64
-	if err := row.Scan(&count); err != nil {
-		return -1, errors.Join(types.ErrScan, err)
-	}
 	return count, nil
 }

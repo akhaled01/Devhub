@@ -13,6 +13,8 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+const COMMENT_LIKES_QUERY = `SELECT count(like_id) FROM comment_likes WHERE comment_id = ?`
+
 const QueryPostComments = "SELECT comm_id, user_id, SUBSTR(comment_date, '%Y-%m-%d') AS Date, comment FROM comments WHERE post_id = ?"
 
 // function to return an array of post comments by id
@@ -66,7 +68,10 @@ func GetPostCommentsByID(req_user *types.User, postid uuid.UUID) ([]types.Commen
 		c.ID = uuid.FromStringOrNil(comment_id)
 		c.Post_ID = postid
 		c.User = partial_user
-		if c.CreationDate, err = time.Parse("YYYY-MM-DD", comment_date); err != nil {
+		comment_date = comment_date[:10]
+		// Parse the comment_date string into a time.Time value
+		c.CreationDate, err = time.Parse("2006-01-02", comment_date)
+		if err != nil {
 			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
 		comments = append(comments, *c)
@@ -111,8 +116,8 @@ func GetCommentsCount(postID string) (int, error) {
 
 func GetCommentByID(commentID uuid.UUID) (*types.Comment, error) {
 	query := `
-        SELECT c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment, 
-               u.user_name, COUNT(cl.user_id) AS likes, 
+        SELECT c.comm_id, c.user_id, c.post_id, c.comment_date, c.comment,
+               u.user_name, COUNT(cl.user_id) AS likes,
                EXISTS(SELECT 1 FROM comment_likes cl WHERE cl.comment_id = c.comm_id AND cl.user_id = ?) AS liked
         FROM comments c
         JOIN users u ON c.user_id = u.user_id
@@ -138,8 +143,9 @@ func GetCommentByID(commentID uuid.UUID) (*types.Comment, error) {
 	comment.ID = uuid.FromStringOrNil(commentID.String())
 	comment.User.ID = uuid.FromStringOrNil(userID)
 	comment.Post_ID = uuid.FromStringOrNil(postID)
+	commentDate = commentDate[:10]
 
-	if comment.CreationDate, err = time.Parse("YYYY-MM-DD", commentDate); err != nil {
+	if comment.CreationDate, err = time.Parse("2006-01-02", commentDate); err != nil {
 		return nil, errors.Join(types.ErrGetCommentDetails, err)
 	}
 

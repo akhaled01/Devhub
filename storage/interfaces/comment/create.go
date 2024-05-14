@@ -11,8 +11,8 @@ import (
 	"RTF/utils"
 )
 
-const SaveCommentInDBQuery = `INSERT INTO comments (comm_id, post_id, user_id, comment_date, comment) VALUES 
-	(?, ?, ?, ?, ?)
+const SaveCommentInDBQuery = `INSERT INTO comments (comm_id, post_id, user_id, comment) VALUES
+	(?, ?, ?, ?)
 `
 
 /*
@@ -30,7 +30,7 @@ func SaveCommentInDB(r types.Comment) error {
 	}
 	defer stmt.Close()
 
-	if _, err := stmt.Exec(r.ID, r.Post_ID, r.User.ID.String(), time.Now().Format("YYYY-MM-DD"), r.Content); err != nil {
+	if _, err := stmt.Exec(r.ID, r.Post_ID, r.User.ID.String(), r.Content); err != nil {
 		return errors.Join(types.ErrExec, err)
 	}
 

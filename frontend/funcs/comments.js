@@ -4,111 +4,126 @@ import heart from "../assets/liked.svg";
 
 // Fetch the comments data
 export async function fetchComments(postId) {
-    if (postId === null) {
-        console.error('postId is null');
-        return;
-    }
-    console.log(postId);
-    const response = await fetch(`${BACKENDURL}/comments/${postId}`, {
-        credentials: "include",
-    });
-    const data = await response.json();
-    console.log(data);
+  if (postId === null) {
+    console.error("postId is null");
+    return;
+  }
+  console.log(postId);
+  const response = await fetch(`${BACKENDURL}/comments/${postId}`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  console.log(data, "data");
 
-    const commentsDiv = document.getElementById("comments");
-    if (data) {
-        data.forEach((comment) => {
-            commentsDiv.innerHTML += `
-              <div class="comment">
+  const commentsDiv = document.getElementById("comments");
+  if (data) {
+    data.forEach((comment) => {
+      commentsDiv.innerHTML += `
+              <div class="comment" id="${comment.uuid}">
                   <div class="comment-header">
                       <div class="c-profileInfo">
                           <div class="c-profile-pic"></div>
                           <div class="c-nickname">${comment.user.username}</div>
                       </div>
                       <div class="c-creationDate">${new Date(
-                comment.creationDate
-            ).toDateString()}</div>
+                        comment.creationDate
+                      ).toDateString()}</div>
                   </div>
                   <div class="p-main">${comment.content}</div>
                   <div class="p-stats">
                     <div class="p-likeCount">
                       <div class="p-likeBtn">
-                          <img src="${noheart}" alt="like"/>
+                          <img src="${noheart}" alt="like" id="${comment.uuid}"/>
                       </div>
                       <div class="p-likeStat">${comment.likes}</div>
                     </div>
                   </div>
               </div>
           `;
-            const likeImages = document.querySelectorAll(".p-likeBtn img");
+      const likeImages = document.querySelectorAll(".p-likeBtn img");
 
-            console.log(likeImages);
+      likeImages.forEach((likeBtn) => {
+        console.log(likeBtn.getAttribute("src"));
+        if (comment.liked) {
+          likeBtn.setAttribute("src", heart);
+        }
+        likeBtn.addEventListener("click", (e) => {
+          console.log("clicked", e.target);
+          if (likeBtn.getAttribute("src") === noheart) {
+            likeBtn.setAttribute("src", heart);
+            console.log("liked");
+            comment.likes += 1;
+            const likeCountElement = likeBtn.closest(".p-likeCount").querySelector(".p-likeStat");
+            likeCountElement.textContent = comment.likes; // Update like count in the UI
+            // add other like event
+          } else {
+            likeBtn.setAttribute("src", noheart);
+            console.log("unliked");
+            comment.likes -= 1;
+            const likeCountElement = likeBtn.closest(".p-likeCount").querySelector(".p-likeStat");
+            likeCountElement.textContent = comment.likes; // Update like count in the UI
+            // add other unlike event
+          }
 
-            likeImages.forEach((likeBtn) => {
-                console.log(likeBtn.getAttribute("src"));
+          try {
+            async function likeComment(commentID) {
+              const res = await fetch(
+                BACKENDURL + `/likeComment/` + e.target.id,
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    Comment_id: commentID,
+                    // User_id: userId,
+                  }),
+                  credentials: "include",
+                  //   headers: {
+                  //       "Content-Type": "application/json",
+                  //   },
+                }
+              );
+              console.log(response);
+              if (response.ok) {
+                // const updatedComment = await response.json();
+                // Update the comment data in the UI
+                const commentElement = document.querySelector(
+                  `[data-comment-id="${commentID}"]`
+                );
+                if (commentElement) {
+                  commentElement.querySelector(".comment-likes").textContent =
+                    respone.json.likes;
+                  commentElement
+                    .querySelector(".like-icon")
+                    .classList.toggle("liked", response.json.liked);
+                }
+              } else {
+                console.error("Error creating the like:", response.statusText);
+              }
+              //   const data = await res.json();
+              return res;
+            }
 
-                likeBtn.addEventListener("click", () => {
-                    if (likeBtn.getAttribute("src") === noheart) {
-                        likeBtn.setAttribute("src", heart);
-                        console.log("liked");
-                        // add other like event
-                    } else {
-                        likeBtn.setAttribute("src", noheart);
-                        console.log("unliked");
-                        // add other unlike event
-                    }
+            async function likeCommentWrapper(comment) {
+              console.log(comment.uuid);
 
-                    try {
-                        async function likeComment(commentID) {
-                            const res = await fetch(BACKENDURL + `/likeComment/` + commentID, {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    Comment_id: commentID,
-                                    // User_id: userId,
-                                }),
-                                credentials: "include",
-                                //   headers: {
-                                //       "Content-Type": "application/json",
-                                //   },
-                            });
-                            console.log(response);
-                            if (response.ok) {
-                                // const updatedComment = await response.json();
-                                // Update the comment data in the UI
-                                const commentElement = document.querySelector(`[data-comment-id="${commentID}"]`);
-                                if (commentElement) {
-                                    commentElement.querySelector('.comment-likes').textContent = respone.json.likes;
-                                    commentElement.querySelector('.like-icon').classList.toggle('liked', response.json.liked);
-                                }
-                            } else {
-                                console.error('Error creating the like:', response.statusText);
-                            }
-                            //   const data = await res.json();
-                            return res;
-                        }
+              const res = await likeComment(comment.uuid);
 
-                        async function likeCommentWrapper(comment) {
-                            console.log(comment.uuid);
+              if (res.status === 200) {
+                // window.location.reload();
+              } else {
+                throw new Error(res.status, res.statusText);
+              }
+            }
 
-                            const res = await likeComment(comment.uuid);
-
-                            if (res.status === 200) {
-                                // window.location.reload();
-                            } else {
-                                throw new Error(res.status, res.statusText);
-                            }
-                        }
-
-                        likeCommentWrapper(comment);
-                    } catch (error) {
-                        console.error('Error creating the like2:', error);
-                        alert('Failed to create comment like. Please try again later.');
-                    }
-                });
-            });
+            likeCommentWrapper(comment);
+          } catch (error) {
+            console.error("Error creating the like2:", error);
+            alert("Failed to create comment like. Please try again later.");
+          }
         });
-    } else {
-        console.error('No comments data received');
-        commentsDiv.innerHTML = `<h4 style="color:white;"> This Post Have No Comments. </h4>`
-    }
+      });
+    });
+  } else {
+    console.error("No comments data received");
+    commentsDiv.innerHTML = `<h4 style="color:white;"> This Post Have No Comments. </h4>`;
+  }
 }

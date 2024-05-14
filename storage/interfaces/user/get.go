@@ -41,7 +41,6 @@ To be used in the API to authenticate web requests. It accepts username / email
 */
 func Authenticate(credential string, password string) (types.User, error) {
 	authorized_user := types.User{}
-
 	// Query based on credentials
 	var err error
 	if utils.IsValidEmail(credential) {

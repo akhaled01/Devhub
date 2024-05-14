@@ -1,6 +1,6 @@
 import { BACKENDURL } from "./vars";
 import { EncodeBase64Image, SetSessionStorage } from "./utils";
-
+import { Flogin } from "./utils";
 /**
  * Validates signup form data
  * @returns error string if there is
@@ -100,7 +100,7 @@ export const HandleSignup = async () => {
             break;
         }
       } else {
-        window.location.assign("/login"); //TODO: If you can, remimplement FLogin
+        await Flogin(formData.username, formData.password);
       }
     } catch (error) {
       console.error("Signup error:", error);

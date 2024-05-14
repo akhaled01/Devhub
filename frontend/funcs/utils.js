@@ -20,6 +20,7 @@ export const Flogin = async (email, pass) => {
       credential: email,
       password: pass,
     }),
+    credentials:"include",
   });
 
   if (res.ok) {
@@ -215,8 +216,8 @@ export function convertImageToBase64(file) {
 
 /**
  * Sorts online user as per required
- * @param {*} arr 
- * @returns 
+ * @param {*} arr
+ * @returns
  */
 export const sortByOnlineAndName = (arr) => {
   return arr.req_Content.sort((a, b) => {

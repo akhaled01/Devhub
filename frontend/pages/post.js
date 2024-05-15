@@ -1,4 +1,4 @@
-import { fetchComments } from "../funcs/comments";
+import { render_comments } from "../funcs/comments";
 import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import comment from "../assets/comment.svg";
@@ -88,7 +88,7 @@ export const Post = () => {
   </main>
   `;
             fetchPost(postId);
-            fetchComments(postId);
+            render_comments(postId);
             const likeImages = document.querySelectorAll(".p-likeBtn img");
 
             console.log(likeImages);
@@ -146,7 +146,7 @@ export const Post = () => {
                     </div>
                     <div class="p-stats">
                         <div class="p-likeCount">
-                            <div class="p-likeBtn">
+                            <div class="p-likeBtnP">
                                 <img src="${noheart}" alt="like"/>
                             </div>
                             <div class="p-likeStat">${data.likes}</div>
@@ -188,7 +188,7 @@ export const Post = () => {
                   </div>
                   <div class="p-stats">
                       <div class="p-likeCount">
-                          <div class="p-likeBtn">
+                          <div class="p-likeBtnP">
                               <img src="${noheart}" alt="like" />
                           </div>
                           <div class="p-likeStat">${data.likes}</div>

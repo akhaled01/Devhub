@@ -21,14 +21,15 @@ ws.onmessage = (e) => {
   console.log("RECIEVED MESSAGE:", JSON.parse(e.data));
   let data = JSON.parse(e.data);
   if (data.type === "message") {
-    if (sessionStorage.getItem("chat_user") == data.req_Content.sender) {
+    console.log("NEW MESSAGE");
+    if (data.req_Content.sender === sessionStorage.getItem("chat_user")) {
       NewChatMessage(
         data.req_Content.msg_content,
+        data.req_Content.sender === sessionStorage.getItem("username"),
         data.req_Content.sender,
-        data.req_Content.sender
+        new Date(data.req_Content.timestamp)
       );
-    } else{
-    }
+    } 
   } else if (data.type === "DMs") {
     if (document.getElementById("c-contacts")) {
       AssembleOnlineUsersChat(data);

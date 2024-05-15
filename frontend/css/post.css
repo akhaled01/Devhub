@@ -394,6 +394,12 @@ a {
   width: 40%;
 }
 
+.p-likeCountC {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .p-likeCount {
   display: flex;
   align-items: center;
@@ -415,18 +421,28 @@ a {
   transform: translateY(-5px);
 } */
 
-.p-likeBtn {
+.p-likeBtnC {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.p-likeBtn>img {
+.p-likeBtnC>img {
   cursor: pointer;
   transition: ease-out 0.9s;
   width: 20px;
 }
+.p-likeBtnP {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.p-likeBtnP>img {
+  cursor: pointer;
+  transition: ease-out 0.9s;
+  width: 20px;
+}
 /* .p-likeBtn > img:hover {
   transform: translateY(-5px);
 } */

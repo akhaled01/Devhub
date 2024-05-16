@@ -10,7 +10,7 @@ import (
 	"RTF/utils"
 )
 
-const QUERY_USER = `SELECT * FROM users WHERE %s = ?`
+const QUERY_USER = `SELECT  user_id,user_email,user_name,first_name,last_name,avatar_path,user_pwd,gender FROM users WHERE %s = ?`
 
 /*
 This Function recieves a field, and a wanted value and interfaces with the database to get
@@ -25,7 +25,7 @@ func GetSingleUser(field, val string) (types.User, error) {
 
 	user := types.User{}
 
-	if err := stmt.QueryRow(val).Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password); err != nil {
+	if err := stmt.QueryRow(val).Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password, &user.Gender); err != nil {
 		if err == sql.ErrNoRows {
 			return (types.User{}), types.ErrUserNotFound
 		}
@@ -65,7 +65,7 @@ func Authenticate(credential string, password string) (types.User, error) {
 
 // function to fetch all users from the DB
 func GetAllUsers() ([]types.User, error) {
-	query := "SELECT * FROM users ORDER BY user_name ASC"
+	query := "SELECT user_id,user_email,user_name,first_name,last_name,avatar_path,user_pwd,gender FROM users ORDER BY user_name ASC"
 	rows, err := storage.DB_Conn.Query(query)
 	if err != nil {
 		return nil, errors.Join(types.ErrExec, err)
@@ -75,7 +75,7 @@ func GetAllUsers() ([]types.User, error) {
 
 	for rows.Next() {
 		var user types.User
-		err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password)
+		err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.Avatar, &user.Password, &user.Gender)
 		if err != nil {
 			return nil, errors.Join(types.ErrScan, err)
 		}

@@ -1,7 +1,7 @@
 import { BACKENDURL } from "./vars";
 import noheart from "../assets/unliked.svg";
 import comment from "../assets/comment.svg";
-
+import heart from "../assets/liked.svg";
 /**
  *
  * Follow up login after signup
@@ -20,7 +20,7 @@ export const Flogin = async (email, pass) => {
       credential: email,
       password: pass,
     }),
-    credentials:"include",
+    credentials: "include",
   });
 
   if (res.ok) {
@@ -52,6 +52,11 @@ export const UpdateCSS = (stylesheet) => {
 export const AssemblePosts = (posts_in_json = []) => {
   document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
+    var gender = post_data.user.gender;
+    let liked_img = noheart;
+    if (post_data.liked) {
+      liked_img = heart;
+    }
     let text = post_data.content + "";
 
     if (text.length > 255) {
@@ -65,7 +70,7 @@ export const AssemblePosts = (posts_in_json = []) => {
     }>
   <div class="p-header">
     <div class="p-profileInfo">
-      <div class="p-profile-pic"></div>
+      <div class="p-profile-pic gender-M" ></div>
       <div class="p-nickname">${post_data.user.username}</div>
     </div>
     <div class="p-creationDate">${new Date(
@@ -86,7 +91,7 @@ export const AssemblePosts = (posts_in_json = []) => {
     <div class="p-stats">
       <div class="p-likeCount">
         <div class="p-likeBtn">
-          <img src="${noheart}" alt="like" />
+          <img src="${liked_img}" alt="like" />
         </div>
         <div class="p-likeStat">${post_data.likes}</div>
       </div>
@@ -99,6 +104,8 @@ export const AssemblePosts = (posts_in_json = []) => {
 </div>
 </a>
     `;
+    var profilePic = document.querySelector(".p-profile-pic");
+    profilePic.classList.add("gender-" + gender);
   });
 };
 
@@ -147,6 +154,7 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("username", json_data.username);
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
+  sessionStorage.setItem("gender", json_data.gender);
 };
 
 /**

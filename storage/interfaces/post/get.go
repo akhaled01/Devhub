@@ -50,6 +50,7 @@ func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
 	partial_creator := types.PartialUser{
 		ID:       creator.ID,
 		Username: creator.Username,
+		Gender:   creator.Gender,
 	}
 
 	// get post likes
@@ -60,6 +61,10 @@ func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
 	// get post comments
 	if p.Comments, err = comment.GetPostCommentsByID(req_user, id); err != nil {
 		return (types.Post{}), err
+	}
+
+	if p.Number_of_comments, err = comment.GetCommentsCount(id.String()); err != nil {
+		return (types.Post{}), errors.Join(types.ErrAppendPost, err)
 	}
 
 	// Get post categories

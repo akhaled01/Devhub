@@ -161,7 +161,7 @@ a {
 #btn-message {
   --text-color: rgb(255, 255, 255);
   --bg-color-sup: #5e5e5e;
-  --bg-color: #2b2b2b;
+  --bg-color: #0019f8;
   --bg-hover-color: #161616;
   --online-status: #00da00;
   --font-size: 16px;
@@ -205,6 +205,21 @@ a {
   margin: 0;
   transition: var(--btn-transition);
   position: relative;
+}
+
+.content-avatar.gender-M {
+  background-color: blue;
+  #btn-message {
+    background-color: blue;
+  }
+}
+
+.content-avatar.gender-F{
+  background-color: pink;
+}
+
+.content-avatar.gender-O{
+  background-color: gray;
 }
 
 .button-message:hover .content-avatar {
@@ -435,6 +450,18 @@ a {
   border-radius: 1000px;
 }
 
+.p-profile-pic.gender-M {
+  background-color: blue;
+}
+
+.p-profile-pic.gender-F {
+  background-color: pink;
+}
+
+.p-profile-pic.gender-O {
+  background-color: gray;
+}
+
 .p-main {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -537,11 +564,22 @@ a {
   gap: 10px;
 }
 
-#c-post-pfp {
+.c-post-pfp {
   width: 36px;
   height: 36px;
-  background-color: white;
   border-radius: 1000px;
+}
+
+.c-post-pfp.gender-M{
+  background-color: blue;
+}
+
+.c-post-pfp.gender-F{
+  background-color:pink;
+}
+
+.c-post-pfp.gender-O{
+  background-color: gray;
 }
 
 #img-upload {
@@ -681,7 +719,7 @@ height: 70px;
 border-radius: 50%;
 border: 3px solid white;
 position: absolute;
-/*     top: 45px; /* Adjust based on your header-background height  
+/*     top: 45px; /* Adjust based on your header-background height
 left: 50%;
 transform: translateX(-50%);
 } */

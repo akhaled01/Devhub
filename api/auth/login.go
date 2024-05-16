@@ -98,11 +98,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Username   string `json:"username"`
 		Email      string `json:"email"`
 		Avatar     string `json:"encoded_avatar"`
+		Gender     string `json:"gender"`
 	}{
 		Session_id: session.SessionID.String(),
 		Username:   authenticated_user.Username,
 		Email:      authenticated_user.Email,
 		Avatar:     encoded_avatar,
+		Gender:     authenticated_user.Gender,
 	}); err != nil {
 		utils.ErrorConsoleLog("error encoding json")
 		utils.PrintErrorTrace(err)

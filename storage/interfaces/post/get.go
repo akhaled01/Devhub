@@ -62,6 +62,10 @@ func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
 		return (types.Post{}), err
 	}
 
+	if p.Number_of_comments, err = comment.GetCommentsCount(id.String()); err != nil {
+		return (types.Post{}), errors.Join(types.ErrAppendPost, err)
+	}
+
 	// Get post categories
 	post_cats, _ := categories.GetPostCategories(p.ID)
 

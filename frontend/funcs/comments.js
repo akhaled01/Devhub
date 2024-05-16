@@ -17,9 +17,9 @@ export async function render_comments(postId) {
     console.error("postId is null");
     return;
   }
-  
+
   const commentsDiv = document.getElementById("comments"); // Get comments div
-  
+
   let data = await fetch_comments(postId);  // fetch post comments
 
   // Render comments
@@ -66,7 +66,7 @@ export const handle_action_like = async (event) => {
     likeBtn.setAttribute("src", noheart);
     like_counter_div.textContent = parseInt(like_counter_div.textContent) - 1;
   }
-}
+};
 
 export const fetch_like_comment_action_API = async (commentId) => {
   const response = await fetch(
@@ -83,10 +83,10 @@ export const fetch_like_comment_action_API = async (commentId) => {
 
 
 /**
- * 
- * @param {*} comment 
- * @param {SVGAElement} like_img 
- * @returns 
+ *
+ * @param {*} comment
+ * @param {SVGAElement} like_img
+ * @returns
  */
 /* Render comment card */
 export const render_comment_card = (comment, like_img) => {

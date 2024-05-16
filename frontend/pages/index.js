@@ -9,7 +9,7 @@ import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 
 export const post_component = () => {
-  return /*html*/`<div class="lower-div">
+  return /*html*/ `<div class="lower-div">
   <main>
     <div id="c-post-modal" class="modal">
       <div class="modal-content">
@@ -17,9 +17,7 @@ export const post_component = () => {
               <div id="c-post-pfp">
                   <img src="${sessionStorage.getItem("avatar")}">
               </div>
-              <p id="c-post-nickname">${sessionStorage.getItem(
-                "username"
-              )}</p>
+              <p id="c-post-nickname">${sessionStorage.getItem("username")}</p>
           </div>
           <textarea id="c-post-textArea"
               placeholder="What's on your mind?"></textarea>
@@ -68,7 +66,7 @@ export const post_component = () => {
   </div>
 </div>
 `;
-}
+};
 export const Home = async () => {
   if (!sessionStorage.getItem("user_token")) {
     window.location.assign("/login");
@@ -78,10 +76,7 @@ export const Home = async () => {
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     ${post_component()}
-    `
-  
-
-
+    `;
 
   // Modal Operations
   var modal = document.getElementById("c-post-modal");

@@ -1,7 +1,7 @@
 import { BACKENDURL } from "./vars";
 import noheart from "../assets/unliked.svg";
 import comment from "../assets/comment.svg";
-
+import heart from "../assets/liked.svg";
 /**
  *
  * Follow up login after signup
@@ -20,7 +20,7 @@ export const Flogin = async (email, pass) => {
       credential: email,
       password: pass,
     }),
-    credentials:"include",
+    credentials: "include",
   });
 
   if (res.ok) {
@@ -50,8 +50,13 @@ export const UpdateCSS = (stylesheet) => {
  * @param {any[]} posts_in_json
  */
 export const AssemblePosts = (posts_in_json = []) => {
+
   document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
+    let liked_img = noheart;
+    if (post_data.liked) {
+      liked_img = heart;
+    }
     let text = post_data.content + "";
 
     if (text.length > 255) {
@@ -86,7 +91,7 @@ export const AssemblePosts = (posts_in_json = []) => {
     <div class="p-stats">
       <div class="p-likeCount">
         <div class="p-likeBtn">
-          <img src="${noheart}" alt="like" />
+          <img src="${liked_img}" alt="like" />
         </div>
         <div class="p-likeStat">${post_data.likes}</div>
       </div>

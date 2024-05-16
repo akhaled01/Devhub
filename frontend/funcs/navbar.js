@@ -39,7 +39,6 @@ export const LoadNav = () => {
       <div class="content-avatar" id="c-avatar">
         <div class="status-user"></div>
       </div>
-  </button>
       <div class="notice-content">
         <div class="Logout-div">Logout</div>
         <div class="User-div">${sessionStorage.getItem("username")}</div>

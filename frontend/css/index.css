@@ -161,7 +161,7 @@ a {
 #btn-message {
   --text-color: rgb(255, 255, 255);
   --bg-color-sup: #5e5e5e;
-  --bg-color: #2b2b2b;
+  --bg-color: #0019f8;
   --bg-hover-color: #161616;
   --online-status: #00da00;
   --font-size: 16px;
@@ -205,6 +205,21 @@ a {
   margin: 0;
   transition: var(--btn-transition);
   position: relative;
+}
+
+.content-avatar.gender-M {
+  background-color: blue;
+  #btn-message {
+    background-color: blue;
+  }
+}
+
+.content-avatar.gender-F{
+  background-color: pink;
+}
+
+.content-avatar.gender-O{
+  background-color: gray;
 }
 
 .button-message:hover .content-avatar {

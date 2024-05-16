@@ -50,6 +50,7 @@ func GetPostByID(req_user *types.User, id uuid.UUID) (types.Post, error) {
 	partial_creator := types.PartialUser{
 		ID:       creator.ID,
 		Username: creator.Username,
+		Gender:   creator.Gender,
 	}
 
 	// get post likes

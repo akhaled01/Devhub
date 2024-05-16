@@ -435,6 +435,18 @@ a {
   border-radius: 1000px;
 }
 
+.p-profile-pic.gender-M {
+  background-color: blue;
+}
+
+.p-profile-pic.gender-F {
+  background-color: pink;
+}
+
+.p-profile-pic.gender-O {
+  background-color: gray;
+}
+
 .p-main {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -681,7 +693,7 @@ height: 70px;
 border-radius: 50%;
 border: 3px solid white;
 position: absolute;
-/*     top: 45px; /* Adjust based on your header-background height  
+/*     top: 45px; /* Adjust based on your header-background height
 left: 50%;
 transform: translateX(-50%);
 } */

@@ -107,7 +107,12 @@ nav {
   background-color: aliceblue;
   border-radius: 1000px;
 }
-
+.c-profile-pic.gender-M{
+  background-color: blue;
+}
+.c-profile-pic.gender-F{
+  background-color: pink;
+}
 .c-profileInfo {
   display: flex;
   gap: 10px;
@@ -374,6 +379,18 @@ a {
   height: 36px;
   background-color: aliceblue;
   border-radius: 1000px;
+}
+
+.p-profile-pic.gender-M {
+  background-color: blue;
+}
+
+.p-profile-pic.gender-F {
+  background-color: pink;
+}
+
+.p-profile-pic.gender-other {
+  background-color: gray;
 }
 
 .p-main {

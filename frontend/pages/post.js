@@ -136,6 +136,7 @@ export const fill_in_post = async (data) => {
   const content = document.querySelector(".p-content");
   const date = document.querySelector(".p-creationDate");
   let liked_img = noheart;
+  let gender = data.user.gender;
   if (data.liked) {
     liked_img = heart;
   }
@@ -144,7 +145,7 @@ export const fill_in_post = async (data) => {
                 <div class="f-post" id="${data.id}">
                     <div class="p-header">
                         <div class="p-profileInfo">
-                            <div class="p-profile-pic"></div>
+                            <div class="p-profile-pic gender-male"></div>
                             <div class="p-nickname">${data.user.username}</div>
                         </div>
                         <div class="p-creationDate">${new Date(
@@ -191,7 +192,7 @@ export const fill_in_post = async (data) => {
               <div class="f-post noimage">
                   <div class="p-header">
                       <div class="p-profileInfo">
-                          <div class="p-profile-pic"></div>
+                          <div class="p-profile-pic gender-M"></div>
                           <div class="p-nickname">${data.user.username}</div>
                       </div>
                       <div class="p-creationDate">${new Date(
@@ -231,6 +232,8 @@ export const fill_in_post = async (data) => {
     content.classList.add("noimage-c");
     date.innerHTML = `${new Date(data.creationDate).toDateString()}`;
   }
+  var profilePic = document.querySelector('.p-profile-pic');
+  profilePic.classList.add('gender-' + gender);
 };
 
 /**

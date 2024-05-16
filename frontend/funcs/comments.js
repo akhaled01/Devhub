@@ -25,10 +25,12 @@ export async function render_comments(postId) {
   // Render comments
   if (data) {
     data.forEach((comment) => {
+      console.log(comment,"----------------")
+      var gender = comment.user.gender;
       if (comment.liked) {
-        commentsDiv.innerHTML += `${render_comment_card(comment, heart)}`;
+        commentsDiv.innerHTML += `${render_comment_card(comment, heart,gender)}`;
       } else {
-        commentsDiv.innerHTML += `${render_comment_card(comment, noheart)}`;
+        commentsDiv.innerHTML += `${render_comment_card(comment, noheart,gender)}`;
       }
 
       // Like button click event
@@ -89,11 +91,11 @@ export const fetch_like_comment_action_API = async (commentId) => {
  * @returns
  */
 /* Render comment card */
-export const render_comment_card = (comment, like_img) => {
+export const render_comment_card = (comment, like_img,gender) => {
   return /*html*/`<div class="comment" id="${comment.uuid}">
   <div class="comment-header">
       <div class="c-profileInfo">
-          <div class="c-profile-pic"></div>
+          <div class="c-profile-pic gender-${gender}"></div>
           <div class="c-nickname">${comment.user.username}</div>
       </div>
       <div class="c-creationDate">${new Date(
@@ -110,4 +112,5 @@ export const render_comment_card = (comment, like_img) => {
     </div>
   </div>
 </div>`
+
 }

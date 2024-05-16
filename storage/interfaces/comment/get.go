@@ -49,6 +49,7 @@ func GetPostCommentsByID(req_user *types.User, postid uuid.UUID) ([]types.Commen
 		partial_user := types.PartialUser{
 			ID:       u.ID,
 			Username: u.Username,
+			Gender: u.Gender,
 		}
 
 		// check if the user liked the comment

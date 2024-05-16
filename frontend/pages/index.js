@@ -9,6 +9,7 @@ import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 
 export const post_component = () => {
+  console.log(sessionStorage.getItem("gender"),"gender");
   return /*html*/ `<div class="lower-div">
   <main>
     <div id="c-post-modal" class="modal">

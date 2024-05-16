@@ -21,4 +21,5 @@ type User struct {
 type PartialUser struct {
 	ID       uuid.UUID `json:"uuid"`
 	Username string    `json:"username"`
+	Gender    string          `json:"gender"`
 }

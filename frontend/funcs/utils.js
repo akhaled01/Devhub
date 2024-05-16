@@ -50,9 +50,9 @@ export const UpdateCSS = (stylesheet) => {
  * @param {any[]} posts_in_json
  */
 export const AssemblePosts = (posts_in_json = []) => {
-
   document.getElementById("posts").innerHTML = "";
   posts_in_json.forEach((post_data) => {
+    var gender = post_data.user.gender;
     let liked_img = noheart;
     if (post_data.liked) {
       liked_img = heart;
@@ -70,7 +70,7 @@ export const AssemblePosts = (posts_in_json = []) => {
     }>
   <div class="p-header">
     <div class="p-profileInfo">
-      <div class="p-profile-pic"></div>
+      <div class="p-profile-pic gender-M" ></div>
       <div class="p-nickname">${post_data.user.username}</div>
     </div>
     <div class="p-creationDate">${new Date(
@@ -104,6 +104,8 @@ export const AssemblePosts = (posts_in_json = []) => {
 </div>
 </a>
     `;
+    var profilePic = document.querySelector(".p-profile-pic");
+    profilePic.classList.add("gender-" + gender);
   });
 };
 
@@ -152,6 +154,7 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("username", json_data.username);
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
+  sessionStorage.setItem("gender", json_data.gender);
 };
 
 /**

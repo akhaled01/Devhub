@@ -15,9 +15,7 @@ export const post_component = () => {
     <div id="c-post-modal" class="modal">
       <div class="modal-content">
           <div id="c-post-userinfo">
-              <div id="c-post-pfp">
-                  <img src="${sessionStorage.getItem("avatar")}">
-              </div>
+              <div class="c-post-pfp gender-${sessionStorage.getItem("gender")}"></div>
               <p id="c-post-nickname">${sessionStorage.getItem("username")}</p>
           </div>
           <textarea id="c-post-textArea"

@@ -564,11 +564,22 @@ a {
   gap: 10px;
 }
 
-#c-post-pfp {
+.c-post-pfp {
   width: 36px;
   height: 36px;
-  background-color: white;
   border-radius: 1000px;
+}
+
+.c-post-pfp.gender-M{
+  background-color: blue;
+}
+
+.c-post-pfp.gender-F{
+  background-color:pink;
+}
+
+.c-post-pfp.gender-O{
+  background-color: gray;
 }
 
 #img-upload {

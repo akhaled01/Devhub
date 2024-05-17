@@ -7,11 +7,24 @@ import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
+import { SetSessionStorageStats } from "../funcs/utils";
+
+let Number_of_liked_comments = 0;
+let Number_of_comments = 0;
+let Number_of_liked_posts = 0;
+let Number_of_posts = 0;
+
+export const GetSessionStorageStats = async () => {
+  await SetSessionStorageStats();
+  Number_of_liked_comments = sessionStorage.getItem("Number_of_liked_comments");
+  Number_of_comments = sessionStorage.getItem("Number_of_comments");
+  Number_of_liked_posts = sessionStorage.getItem("Number_of_liked_posts");
+  Number_of_posts = sessionStorage.getItem("Number_of_posts");
+};
 
 export const post_component = () => {
   const img = new Image();
   img.src = `data:image/jpeg;base64,${sessionStorage.getItem("avatar")}`;
-
   return /*html*/ `<div class="lower-div">
   <main>
     <div id="c-post-modal" class="modal">
@@ -64,18 +77,10 @@ export const post_component = () => {
           "username"
         )}</p>
         <div class="user-stats" style="font-size: 12px;">
-        <p class="user-postd">Posts: ${sessionStorage.getItem(
-          "Number_of_posts"
-        )}</p>
-        <p class="user-likes">Liked Posts: ${sessionStorage.getItem(
-          "Number_of_liked_posts"
-        )}</p>
-        <p class="user-comments">Comments: ${sessionStorage.getItem(
-          "Number_of_comments"
-        )}</p>
-        <p class="user-comments">Liked Comments: ${sessionStorage.getItem(
-          "Number_of_liked_comments"
-        )}</p>
+        <p class="user-postd">Posts: ${Number_of_posts}</p>
+        <p class="user-likes">Liked Posts: ${Number_of_liked_posts}</p>
+        <p class="user-comments">Comments: ${Number_of_comments}</p>
+        <p class="user-comments">Liked Comments: ${Number_of_liked_comments}</p>
         </div>
       </div>
     </div>
@@ -92,7 +97,8 @@ export const Home = async () => {
     window.location.assign("/login");
     return;
   }
-
+  SetSessionStorageStats();
+  await GetSessionStorageStats();
   document.getElementById("app").innerHTML = /*html*/ `
     ${LoadNav()}
     ${post_component()}

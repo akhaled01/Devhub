@@ -1,5 +1,5 @@
 import { BACKENDURL } from "./vars";
-import { EncodeBase64Image, SetSessionStorage } from "./utils";
+import { EncodeBase64Image, SetSessionStorage,SetSessionStorageStats } from "./utils";
 import { Flogin } from "./utils";
 /**
  * Validates signup form data

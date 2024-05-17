@@ -28,5 +28,5 @@ type Counts struct {
 	Number_of_liked_comments int `json:"Number_of_liked_comments"`
 	Number_of_liked_posts    int `json:"Number_of_liked_posts"`
 	Number_of_comments       int `json:"Number_of_comments"`
-	Number_of_posts          int `json:"number_of_posts"`
+	Number_of_posts          int `json:"Number_of_posts"`
 }

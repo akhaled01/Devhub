@@ -156,10 +156,22 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
   sessionStorage.setItem("gender", json_data.gender);
-  sessionStorage.setItem("Number_of_liked_comments", json_data.Number_of_liked_comments);
-  sessionStorage.setItem("Number_of_liked_posts", json_data.Number_of_liked_posts);
-  sessionStorage.setItem("Number_of_comments", json_data.Number_of_comments);
-  sessionStorage.setItem("Number_of_posts", json_data.Number_of_posts);
+};
+
+export const SetSessionStorageStats = async () => {
+  const res = await fetch(BACKENDURL + "/userstats", {
+    credentials: "include",
+  });
+  if (res.ok) {
+    const json_data = await res.json();
+    console.log("Fetching user stats",json_data);
+    sessionStorage.setItem("Number_of_liked_comments", json_data.Number_of_liked_comments);
+    sessionStorage.setItem("Number_of_liked_posts", json_data.Number_of_liked_posts);
+    sessionStorage.setItem("Number_of_comments", json_data.Number_of_comments);
+    sessionStorage.setItem("Number_of_posts", json_data.Number_of_posts);
+  } else {
+    console.error("Error fetching user stats");
+  }
 };
 
 /**

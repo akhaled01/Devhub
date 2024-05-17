@@ -60,10 +60,23 @@ export const post_component = () => {
         </div>
       </div>
       <div class="UserInfo-div">
-        <p class="UserName-p">${sessionStorage.getItem("username")}</p>
-        <p class="user-likes">likes</p>
-        <p class="user-postd">posts</p>
-        <p class="user-comments">comments</p>
+        <p class="UserName-p" style="font-size:20px">${sessionStorage.getItem(
+          "username"
+        )}</p>
+        <div class="user-stats" style="font-size: 12px;">
+        <p class="user-postd">Posts: ${sessionStorage.getItem(
+          "Number_of_posts"
+        )}</p>
+        <p class="user-likes">Liked Posts: ${sessionStorage.getItem(
+          "Number_of_liked_posts"
+        )}</p>
+        <p class="user-comments">Comments: ${sessionStorage.getItem(
+          "Number_of_comments"
+        )}</p>
+        <p class="user-comments">Liked Comments: ${sessionStorage.getItem(
+          "Number_of_liked_comments"
+        )}</p>
+        </div>
       </div>
     </div>
     <div class="online-user-section">

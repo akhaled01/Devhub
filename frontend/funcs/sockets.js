@@ -64,12 +64,13 @@ export const AssembleOnlineUsersChat = (data) => {
 };
 
 export const AssembleOnlineUsersIndex = (data) => {
+
   const list_div = document.getElementById("online-user-list");
   //let mdata = sortByOnlineAndName(data);
   console.log("MDATA",data);
   if (!list_div) return;
   list_div.innerHTML = "";
-  console.log(data);
+  console.log(data,"------------------- under AssembleOnlineUsersIndex");
   data.req_Content.forEach((user_obj) => {
     let user = user_obj;
     if (user.username !== sessionStorage.getItem("username")) {

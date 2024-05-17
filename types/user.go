@@ -21,5 +21,12 @@ type User struct {
 type PartialUser struct {
 	ID       uuid.UUID `json:"uuid"`
 	Username string    `json:"username"`
-	Gender    string          `json:"gender"`
+	Gender   string    `json:"gender"`
+}
+
+type Counts struct {
+	Number_of_liked_comments int `json:"Number_of_liked_comments"`
+	Number_of_liked_posts    int `json:"Number_of_liked_posts"`
+	Number_of_comments       int `json:"Number_of_comments"`
+	Number_of_posts          int `json:"number_of_posts"`
 }

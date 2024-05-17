@@ -3,6 +3,7 @@ package comment
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"RTF/storage"
@@ -13,8 +14,13 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-const COMMENT_LIKES_QUERY = `SELECT count(like_id) FROM comment_likes WHERE comment_id = ?`
+const query_all_user_stats = `SELECT
+(SELECT COUNT(*) FROM comment_likes WHERE user_id =  ?) AS number_of_liked_comments,
+(SELECT COUNT(*) FROM post_likes WHERE user_id =  ?) AS number_of_liked_posts,
+(SELECT COUNT(*) FROM posts WHERE user_id =  ?) AS number_of_posts,
+(SELECT COUNT(*) FROM comments WHERE user_id =  ?) AS number_of_comments LIMIT 100`
 
+const COMMENT_LIKES_QUERY = `SELECT count(like_id) FROM comment_likes WHERE comment_id = ?`
 const QueryPostComments = "SELECT comm_id, user_id, SUBSTR(comment_date, '%Y-%m-%d') AS Date, comment FROM comments WHERE post_id = ?"
 
 // function to return an array of post comments by id
@@ -46,10 +52,11 @@ func GetPostCommentsByID(req_user *types.User, postid uuid.UUID) ([]types.Commen
 		if err != nil {
 			return nil, errors.Join(types.ErrGetCommentDetails, err)
 		}
+
 		partial_user := types.PartialUser{
 			ID:       u.ID,
 			Username: u.Username,
-			Gender: u.Gender,
+			Gender:   u.Gender,
 		}
 
 		// check if the user liked the comment
@@ -101,7 +108,6 @@ func GetCommentLikes(commentID uuid.UUID) (int64, error) {
 // GetCommentsCount retrieves the count of comments for a given post ID.
 func GetCommentsCount(postID string) (int, error) {
 	var count int
-
 	// Prepare the SQL query
 	query := "SELECT COUNT(*) FROM comments WHERE post_id = ?"
 	row := storage.DB_Conn.QueryRow(query, postID)
@@ -111,8 +117,24 @@ func GetCommentsCount(postID string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-
+	fmt.Println(count, "comments found number")
 	return count, nil
+}
+
+// GetCommentsCount_byuser retrieves the count of comments for a given post ID.
+func GetUserCounts(user_id uuid.UUID) (types.Counts, error) {
+	UserCounts := types.Counts{}
+	stmt, err := storage.DB_Conn.Prepare(query_all_user_stats)
+	if err != nil {
+		return UserCounts, errors.Join(types.ErrPrepare, err)
+	}
+	defer stmt.Close()
+
+	if err := stmt.QueryRow(user_id, user_id, user_id, user_id).Scan(&UserCounts.Number_of_liked_comments, &UserCounts.Number_of_liked_posts, &UserCounts.Number_of_posts, &UserCounts.Number_of_comments); err != nil {
+		return UserCounts, errors.Join(types.ErrExec, err)
+	}
+	
+	return UserCounts, nil
 }
 
 func GetCommentByID(commentID uuid.UUID) (*types.Comment, error) {

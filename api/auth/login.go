@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"net/http"
 
+	"RTF/storage/interfaces/comment"
 	"RTF/storage/interfaces/user"
 	"RTF/types"
 	"RTF/utils"
@@ -85,6 +87,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	UserCounts, err := comment.GetUserCounts(authenticated_user.ID)
+	if err != nil {
+		utils.ErrorConsoleLog("error getting user's staristics")
+		utils.PrintErrorTrace(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",
 		Path:    "/",
@@ -94,17 +103,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(struct {
-		Session_id string `json:"session_id"`
-		Username   string `json:"username"`
-		Email      string `json:"email"`
-		Avatar     string `json:"encoded_avatar"`
-		Gender     string `json:"gender"`
+		Session_id               string `json:"session_id"`
+		Username                 string `json:"username"`
+		Email                    string `json:"email"`
+		Avatar                   string `json:"encoded_avatar"`
+		Gender                   string `json:"gender"`
+		Number_of_liked_comments int    `json:"Number_of_liked_comments"`
+		Number_of_liked_posts    int    `json:"Number_of_liked_posts"`
+		Number_of_comments       int    `json:"Number_of_comments"`
+		Number_of_posts          int    `json:"Number_of_posts"`
 	}{
-		Session_id: session.SessionID.String(),
-		Username:   authenticated_user.Username,
-		Email:      authenticated_user.Email,
-		Avatar:     encoded_avatar,
-		Gender:     authenticated_user.Gender,
+		Session_id:               session.SessionID.String(),
+		Username:                 authenticated_user.Username,
+		Email:                    authenticated_user.Email,
+		Avatar:                   encoded_avatar,
+		Gender:                   authenticated_user.Gender,
+		Number_of_liked_comments: UserCounts.Number_of_liked_comments,
+		Number_of_liked_posts:    UserCounts.Number_of_liked_posts,
+		Number_of_comments:       UserCounts.Number_of_comments,
+		Number_of_posts:          UserCounts.Number_of_posts,
 	}); err != nil {
 		utils.ErrorConsoleLog("error encoding json")
 		utils.PrintErrorTrace(err)

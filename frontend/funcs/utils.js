@@ -75,17 +75,17 @@ export const AssemblePosts = (posts_in_json = []) => {
       </div>
       <div class="p-creationDate">${new Date(
         post_data.creationDate
-        ).toDateString()}</div>
+      ).toDateString()}</div>
         </div>
         <div class="p-main">
         <div class="p-content">
         ${text}
         ${
           post_data.Image_Path
-          ? `<div class="p-image">
+            ? `<div class="p-image">
           <img src=${post_data.Image_Path} alt="post image">
           </div>`
-          : ""
+            : ""
         }
         </div>
         <div class="p-stats">
@@ -156,6 +156,10 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
   sessionStorage.setItem("gender", json_data.gender);
+  sessionStorage.setItem("Number_of_liked_comments", json_data.Number_of_liked_comments);
+  sessionStorage.setItem("Number_of_liked_posts", json_data.Number_of_liked_posts);
+  sessionStorage.setItem("Number_of_comments", json_data.Number_of_comments);
+  sessionStorage.setItem("Number_of_posts", json_data.Number_of_posts);
 };
 
 /**

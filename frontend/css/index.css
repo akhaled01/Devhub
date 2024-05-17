@@ -684,9 +684,9 @@ a {
   background: rgb(35, 0, 60);
   color: white;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 10px 30px;
   /* overflow: hidden; */
-  margin: 20px auto;
+  margin: 10px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* width: 210px; */
   height: 33%;
@@ -844,10 +844,13 @@ button:hover {
 .UserInfo-div {
   width: 76%;
   text-align: left;
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  /* gap: 10px; */
+  align-items: flex-start;
+}
+
+.UserInfo-div > * {
+  text-align: left;
 }
 
 .UserName-p {
@@ -884,4 +887,10 @@ transition-duration: .5s;
   color: white;
   text-align: left;
   font-size: small;
+}
+
+
+.user-stats{
+  font-size: 12px;
+  /* Slightly lighter dark background for stats */
 }

@@ -25,7 +25,6 @@ export async function render_comments(postId) {
   // Render comments
   if (data) {
     data.forEach((comment) => {
-      console.log(comment,"----------------")
       var gender = comment.user.gender;
       if (comment.liked) {
         commentsDiv.innerHTML += `${render_comment_card(comment, heart,gender)}`;

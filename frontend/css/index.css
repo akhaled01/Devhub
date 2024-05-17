@@ -878,3 +878,10 @@ transition-duration: .5s;
 .online-text{
   color: #b19af7;
 }
+
+/* category style */
+.p-Category {
+  color: white;
+  text-align: left;
+  font-size: small;
+}

@@ -140,12 +140,13 @@ export const fill_in_post = async (data) => {
   if (data.liked) {
     liked_img = heart;
   }
+  console.log(data);
   if (data.image) {
     postDiv.innerHTML = /*html*/ `
                 <div class="f-post" id="${data.id}">
                     <div class="p-header">
                         <div class="p-profileInfo">
-                            <div class="p-profile-pic gender-male"></div>
+                            <div class="p-profile-pic gender-${gender}"></div>
                             <div class="p-nickname">${data.user.username}</div>
                         </div>
                         <div class="p-creationDate">${new Date(
@@ -175,6 +176,9 @@ export const fill_in_post = async (data) => {
                                 }</div>
                             </div>
                         </div>
+                        <div class="p-Category">
+                        <p>#${data.category}</p>
+                        </div>
                     </div>
                 </div>
             `;
@@ -192,7 +196,7 @@ export const fill_in_post = async (data) => {
               <div class="f-post noimage">
                   <div class="p-header">
                       <div class="p-profileInfo">
-                          <div class="p-profile-pic gender-M"></div>
+                          <div class="p-profile-pic gender-${gender}"></div>
                           <div class="p-nickname">${data.user.username}</div>
                       </div>
                       <div class="p-creationDate">${new Date(
@@ -220,20 +224,20 @@ export const fill_in_post = async (data) => {
                               }
                               </div>
                           </div>
-                      </div>
+                          </div>
+                          <div class="p-Category" style="padding:10px">
+                          <p>#${data.category}</p>
+                          </div>
                   </div>
               </div>
           `;
     content.innerHTML = `
           <p style="margin: 0;">
-
           </p>`;
 
     content.classList.add("noimage-c");
     date.innerHTML = `${new Date(data.creationDate).toDateString()}`;
   }
-  var profilePic = document.querySelector('.p-profile-pic');
-  profilePic.classList.add('gender-' + gender);
 };
 
 /**

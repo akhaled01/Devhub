@@ -70,42 +70,43 @@ export const AssemblePosts = (posts_in_json = []) => {
     }>
   <div class="p-header">
     <div class="p-profileInfo">
-      <div class="p-profile-pic gender-M" ></div>
+      <div class="p-profile-pic gender-${post_data.user.gender}" ></div>
       <div class="p-nickname">${post_data.user.username}</div>
-    </div>
-    <div class="p-creationDate">${new Date(
-      post_data.creationDate
-    ).toDateString()}</div>
-  </div>
-  <div class="p-main">
-    <div class="p-content">
-      ${text}
-      ${
-        post_data.Image_Path
+      </div>
+      <div class="p-creationDate">${new Date(
+        post_data.creationDate
+        ).toDateString()}</div>
+        </div>
+        <div class="p-main">
+        <div class="p-content">
+        ${text}
+        ${
+          post_data.Image_Path
           ? `<div class="p-image">
-        <img src=${post_data.Image_Path} alt="post image">
-      </div>`
+          <img src=${post_data.Image_Path} alt="post image">
+          </div>`
           : ""
-      }
-    </div>
-    <div class="p-stats">
-      <div class="p-likeCount">
+        }
+        </div>
+        <div class="p-stats">
+        <div class="p-likeCount">
         <div class="p-likeBtn">
-          <img src="${liked_img}" alt="like" />
+        <img src="${liked_img}" alt="like" />
         </div>
         <div class="p-likeStat">${post_data.likes}</div>
-      </div>
-      <div class="p-commentCount">
+        </div>
+        <div class="p-commentCount">
         <img src="${comment}" alt="comment" />
         <div class="p-comment-Stat">${post_data.number_of_comments}</div>
-      </div>
-    </div>
-  </div>
+        </div>
+        </div>
+        </div>
+        <div class="p-Category">
+        <p>#${post_data.category}</p>
+        </div>
 </div>
 </a>
     `;
-    var profilePic = document.querySelector(".p-profile-pic");
-    profilePic.classList.add("gender-" + gender);
   });
 };
 

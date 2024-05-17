@@ -9,13 +9,17 @@ import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 
 export const post_component = () => {
-  console.log(sessionStorage.getItem("gender"),"gender");
+  const img = new Image();
+  img.src = `data:image/jpeg;base64,${sessionStorage.getItem("avatar")}`;
+
   return /*html*/ `<div class="lower-div">
   <main>
     <div id="c-post-modal" class="modal">
       <div class="modal-content">
           <div id="c-post-userinfo">
-              <div class="c-post-pfp gender-${sessionStorage.getItem("gender")}"></div>
+              <div class="c-post-pfp gender-${sessionStorage.getItem(
+                "gender"
+              )}"></div>
               <p id="c-post-nickname">${sessionStorage.getItem("username")}</p>
           </div>
           <textarea id="c-post-textArea"
@@ -50,12 +54,16 @@ export const post_component = () => {
     <div class="profile-card">
       <div class="profile-header">
         <div class="profileImage">
-          <img src="${sessionStorage.getItem("avatar")}" alt="">
+          <img src="${img.src}" style="width: 150px;
+          height: 150px;
+          border-radius: inherit;"alt="">
         </div>
       </div>
       <div class="UserInfo-div">
         <p class="UserName-p">${sessionStorage.getItem("username")}</p>
-        <p class="profile-title">Profile</p>
+        <p class="user-likes">likes</p>
+        <p class="user-postd">posts</p>
+        <p class="user-comments">comments</p>
       </div>
     </div>
     <div class="online-user-section">

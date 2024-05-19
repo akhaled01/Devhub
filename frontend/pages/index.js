@@ -136,8 +136,9 @@ export const Home = async () => {
     create_post_Btn.addEventListener("click", async () => {
       const post_text = document.getElementById("c-post-textArea").value;
       const raw_image_file = document.getElementById("c-img-upload").value;
-      const post_category = document.getElementById("cat-choose-Btn").value;
-
+      const post_category = document.getElementById("c-post-cat-select").value;
+      let post_cat_int_arr = [];
+      post_cat_int_arr.push(parseInt(post_category));
       const Image_Converstion_wrapper = async () => {
         return await convertImageToBase64(raw_image_file);
       };
@@ -148,7 +149,7 @@ export const Home = async () => {
         user_token: sessionStorage.getItem("user_token"),
         post_text: post_text,
         post_image_base64: postImage,
-        post_category: post_category,
+        post_category: post_cat_int_arr,
       };
 
       try {

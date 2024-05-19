@@ -36,9 +36,6 @@ export const LoadNav = () => {
   <div>
     <a href="/logout">
     <button id="btn-message" class="button-message">
-      <div class="content-avatar gender-${sessionStorage.getItem("gender")}" id="c-avatar">
-        <div class="status-user"></div>
-      </div>
       <div class="notice-content">
         <div class="Logout-div">Logout</div>
         <div class="User-div">${sessionStorage.getItem("username")}</div>

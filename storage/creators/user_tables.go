@@ -9,6 +9,7 @@ func CreateUserTables(DB *sql.DB) error {
 			user_name               VARCHAR(50)  NOT NULL,
 			first_name              VARCHAR(50),
 			last_name               VARCHAR(50),
+			gender                  VARCHAR(10),
 			avatar_path             VARCHAR(255),
 			user_pwd                VARCHAR NOT NULL,
 			CONSTRAINT unq_emails   UNIQUE ( user_email ),

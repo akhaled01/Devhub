@@ -97,7 +97,9 @@ export const post_component = () => {
 `;
 };
 export const Home = async () => {
-  if (!sessionStorage.getItem("user_token")) {
+  const myCookie = getCookie('session_id');
+  // console.log(myCookie);  // Logs the value of 'myCookieName' cookie, if it exists
+  if (!sessionStorage.getItem("user_token") && !myCookie) {
     window.location.assign("/login");
     return;
   }
@@ -220,3 +222,26 @@ export const Home = async () => {
     })
   );
 };
+
+export function getCookie(name) {
+  // Create a string to search for the cookie name followed by an equal sign
+  const nameEQ = name + "=";
+  
+  // Split the document.cookie string into an array of individual cookies
+  const ca = document.cookie.split(';');
+  
+  // Loop through each cookie in the array
+  for (let i = 0; i < ca.length; i++) {
+    // Get the current cookie, trimming any leading whitespace
+    let c = ca[i].trim();
+    
+    // Check if the current cookie starts with the name we are looking for
+    if (c.indexOf(nameEQ) === 0) {
+      // If so, return the value of the cookie (everything after the equal sign)
+      return c.substring(nameEQ.length, c.length);
+    }
+  }
+  
+  // If the cookie was not found, return null
+  return null;
+}

@@ -25,6 +25,7 @@ func GetUserCounts(w http.ResponseWriter, r *http.Request) {
 
 	}
 	user_id := types.Sessions[uuid.FromStringOrNil(session_id.Value)].GetUserID()
+	user := types.Sessions[uuid.FromStringOrNil(session_id.Value)].User
 
 	UserCounts := types.Counts{}
 	stmt, err := storage.DB_Conn.Prepare(query_all_user_stats)
@@ -41,6 +42,23 @@ func GetUserCounts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Getting user's avatar
+	encoded_avatar, err := utils.EncodeImage(user.Avatar)
+	if err != nil {
+		utils.ErrorConsoleLog("error getting user's avatar")
+		utils.PrintErrorTrace(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Filling user details
+	UserCounts.SessionID = uuid.FromStringOrNil(session_id.Value)
+	UserCounts.Username = user.Username
+	UserCounts.Email = user.Email
+	UserCounts.Avatar = encoded_avatar
+	UserCounts.Gender = user.Gender
+
+	// Returning user counts
 	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(UserCounts); err != nil {
 		utils.ErrorConsoleLog("error encoding all posts")

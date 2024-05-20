@@ -167,6 +167,11 @@ export const SetSessionStorageStats = async () => {
   if (res.ok) {
     const json_data = await res.json();
     console.log("Fetching user stats",json_data);
+    sessionStorage.setItem("user_token", json_data.session_id);
+  sessionStorage.setItem("username", json_data.username);
+  sessionStorage.setItem("email", json_data.email);
+  sessionStorage.setItem("avatar", json_data.encoded_avatar);
+  sessionStorage.setItem("gender", json_data.gender);
     sessionStorage.setItem("Number_of_liked_comments", json_data.Number_of_liked_comments);
     sessionStorage.setItem("Number_of_liked_posts", json_data.Number_of_liked_posts);
     sessionStorage.setItem("Number_of_comments", json_data.Number_of_comments);

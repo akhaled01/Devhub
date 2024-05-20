@@ -71,7 +71,7 @@ const OrgChatHTML = (username) => {
   main_wrapper.innerHTML = "";
   const recipient_div = document.createElement("div");
   recipient_div.id = "r-profile";
-  recipient_div.innerText = username;
+  recipient_div.innerHTML = username;
   main_wrapper.appendChild(recipient_div);
 
   const message_div = document.createElement("div");
@@ -109,6 +109,20 @@ const OrgChatHTML = (username) => {
     );
     NewChatMessage(message, true); // Add as self message
     message_input.value = "";
+  });
+
+  document.addEventListener('scroll', function(e) {
+    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 50) {
+      ws.send(
+        JSON.stringify({
+          type: "get_msg",
+          req_Content: {
+            sender: "",
+            recipient: username,
+          },
+        })
+      );
+    }
   });
 
   ws.send(

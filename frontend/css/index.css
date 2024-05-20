@@ -393,7 +393,7 @@ a {
 
 .f-post {
   cursor: pointer;
-  background-color: #2c3342;
+  background-color: #383838;
   width: 50vw;
   font-family: var(--main-font-family);
   min-height: 10vh;
@@ -745,6 +745,8 @@ button:hover {
 
 #contacts > div {
   width: 100%;
+  color: whitesmoke;
+  font-weight: 700;
 }
 
 #profile {

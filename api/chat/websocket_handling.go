@@ -130,7 +130,12 @@ func Send_Message(sender_user *types.User, request string) error {
 		return err
 	}
 
-	sender_user.Conn.WriteMessage(websocket.TextMessage, []byte("Message sent!"))
+	json_msg, _ = json.Marshal(&ser.WS_Request{
+		Type:    "message_success",
+		Content: "",
+	})
+
+	sender_user.Conn.WriteMessage(websocket.TextMessage, json_msg)
 
 	return nil
 }

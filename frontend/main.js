@@ -18,17 +18,15 @@ ws.onclose = () => {
 
 // handle websocket events from backend
 ws.onmessage = (e) => {
-  // console.log("RECIEVED MESSAGE:", JSON.parse(e.data));
+  console.log("RECIEVED MESSAGE:", e.data);
   let data = JSON.parse(e.data);
   if (data.type === "message") {
-    if (data.req_Content.sender === sessionStorage.getItem("chat_user")) {
-      NewChatMessage(
-        data.req_Content.msg_content,
-        data.req_Content.sender === sessionStorage.getItem("username"),
-        data.req_Content.sender,
-        new Date(data.req_Content.timestamp)
-      );
-    } 
+    NewChatMessage(
+      data.req_Content.msg_content,
+      data.req_Content.sender === sessionStorage.getItem("username"),
+      data.req_Content.sender,
+      new Date(data.req_Content.timestamp)
+    );
   } else if (data.type === "DMs") {
     if (document.getElementById("c-contacts")) {
       AssembleOnlineUsersChat(data);
@@ -38,8 +36,6 @@ ws.onmessage = (e) => {
   } else if (data.type === "open_chat_response") {
     // window.location.reload();
     let data = JSON.parse(e.data);
-    document.getElementById("r-profile").innerText =
-      sessionStorage.getItem("chat_user");
     console.log(data.type);
     data.req_Content.forEach((m) => {
       NewChatMessage(

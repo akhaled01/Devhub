@@ -26,6 +26,7 @@ export const post_component = () => {
   const img = new Image();
   img.src = `data:image/jpeg;base64,${sessionStorage.getItem("avatar")}`;
   return /*html*/ `<div class="lower-div">
+  
   <main>
     <div id="c-post-modal" class="modal">
       <div class="modal-content">
@@ -62,7 +63,6 @@ export const post_component = () => {
     </div>
     <div id="posts"></div>
   </main>
-
   <div class="side-divs">
     <div class="profile-card">
       <div class="profile-header">

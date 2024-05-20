@@ -497,10 +497,6 @@ a {
   transition: ease-out 0.3s;
 }
 
-.p-commentCount > img:hover {
-  transform: translateY(-5px);
-}
-
 .p-likeBtn {
   display: flex;
   align-items: center;
@@ -511,10 +507,6 @@ a {
   cursor: pointer;
   transition: ease-out 0.9s;
   width: 20px;
-}
-
-.p-likeBtn > img:hover {
-  transform: translateY(-5px);
 }
 
 /*Test*/

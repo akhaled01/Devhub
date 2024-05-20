@@ -8,6 +8,7 @@ import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 import { SetSessionStorageStats } from "../funcs/utils";
+import { side_div } from "./components/side_div";
 
 let Number_of_liked_comments = 0;
 let Number_of_comments = 0;
@@ -25,8 +26,8 @@ export const GetSessionStorageStats = async () => {
 export const post_component = () => {
   const img = new Image();
   img.src = `data:image/jpeg;base64,${sessionStorage.getItem("avatar")}`;
-  return /*html*/ `<div class="lower-div">
-  
+  return /*html*/ `
+  <div class="lower-div">
   <main>
     <div id="c-post-modal" class="modal">
       <div class="modal-content">
@@ -64,31 +65,14 @@ export const post_component = () => {
     <div id="posts"></div>
   </main>
   <div class="side-divs">
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profileImage">
-          <img src="${img.src}" style="width: 150px;
-          height: 150px;
-          border-radius: inherit;"alt="">
-        </div>
-      </div>
-      <div class="UserInfo-div">
-        <p class="UserName-p" style="font-size:20px">${sessionStorage.getItem(
-          "username"
-        )}</p>
-        <div class="user-stats" style="font-size: 12px;">
-        <p class="user-postd">Posts: ${Number_of_posts}</p>
-        <p class="user-likes">Liked Posts: ${Number_of_liked_posts}</p>
-        <p class="user-comments">Comments: ${Number_of_comments}</p>
-        <p class="user-comments">Liked Comments: ${Number_of_liked_comments}</p>
-        </div>
-      </div>
-    </div>
-    <div class="online-user-section">
-      <h2 class="online-text">Users</h2>
-      <ul class="user-list" id="online-user-list"> </ul>
-    </div>
-  </div>
+  ${side_div(
+    sessionStorage.getItem("avatar"),
+    sessionStorage.getItem("username"),
+    Number_of_posts,
+    Number_of_liked_posts,
+    Number_of_comments,
+    Number_of_liked_comments
+  )}
 </div>
 `;
 };

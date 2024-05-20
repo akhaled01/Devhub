@@ -18,10 +18,9 @@ ws.onclose = () => {
 
 // handle websocket events from backend
 ws.onmessage = (e) => {
-  console.log("RECIEVED MESSAGE:", JSON.parse(e.data));
+  // console.log("RECIEVED MESSAGE:", JSON.parse(e.data));
   let data = JSON.parse(e.data);
   if (data.type === "message") {
-    console.log("NEW MESSAGE");
     if (data.req_Content.sender === sessionStorage.getItem("chat_user")) {
       NewChatMessage(
         data.req_Content.msg_content,
@@ -39,7 +38,7 @@ ws.onmessage = (e) => {
   } else if (data.type === "open_chat_response") {
     // window.location.reload();
     let data = JSON.parse(e.data);
-    document.getElementById("r-name").innerText =
+    document.getElementById("r-profile").innerText =
       sessionStorage.getItem("chat_user");
     console.log(data.type);
     data.req_Content.forEach((m) => {

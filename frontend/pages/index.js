@@ -3,6 +3,7 @@ import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
+import logout from "../assets/logout.svg";
 import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
@@ -60,7 +61,14 @@ export const post_component = () => {
           <div id="c-post-Btn">Create Post</div>
       </div>
     </div>
-    <div id="posts"></div>
+    <div id="contacts">
+      <div id="profile">
+        <div id="profile-name">Online Users</div>
+      </div>
+      <div id="c-title"></div>
+      <div id="c-contacts"></div>
+  </div>
+    <div id="main_wrapper"></div>
   </main>
 
   <div class="side-divs">
@@ -84,10 +92,6 @@ export const post_component = () => {
         </div>
       </div>
     </div>
-    <div class="online-user-section">
-      <h2 class="online-text">Users</h2>
-      <ul class="user-list" id="online-user-list"> </ul>
-    </div>
   </div>
 </div>
 `;
@@ -110,12 +114,12 @@ export const Home = async () => {
 
   const encodedImage = sessionStorage.getItem("avatar"); // replace with the encoded image string
 
-  const img = new Image();
-  let url = "data:image/png;base64," + encodedImage;
-  fetch(url)
-    .then((res) => res.blob())
-    .then((blob) => {});
-  document.getElementById("c-avatar").appendChild(img);
+  // const img = new Image();
+  // let url = "data:image/png;base64," + encodedImage;
+  // fetch(url)
+  //   .then((res) => res.blob())
+  //   .then((blob) => {});
+  // document.getElementById("c-avatar").appendChild(img);
 
   if (modalOpenBtn && modal) {
     modalOpenBtn.onclick = function () {

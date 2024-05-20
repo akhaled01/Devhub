@@ -24,17 +24,17 @@ html {
 }
 
 #app {
-  background-color: #150023;
+  background-color: #191716;
   display: flex;
-  flex-direction: column;
   align-items: center;
   margin: 0;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 25px;
 }
 
 nav {
   /* background-color: var(--bg-nav-color); */
-  background-image: rgba(16, 16, 16, 0.85);
+  background-image: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(28.5px);
   -webkit-backdrop-filter: blur(28.5px);
   width: 100%;
@@ -103,13 +103,14 @@ main {
   height: 90vh;
 }
 
-#posts {
+#main_wrapper {
   height: 90vh;
   width: 50vw;
   display: flex;
   overflow-y: auto;
   flex-direction: column;
   align-items: center;
+  margin-left: 30px;
 }
 
 .p-cats {
@@ -173,26 +174,27 @@ a {
   justify-content: center;
   align-items: center;
   font: 400 var(--font-size) Helvetica Neue, sans-serif;
-  box-shadow: 0 0 2.17382px rgba(0, 0, 0, 0.049),
-    0 1.75px 6.01034px rgba(0, 0, 0, 0.07),
-    0 3.63px 14.4706px rgba(0, 0, 0, 0.091), 0 22px 48px rgba(0, 0, 0, 0.14);
-  background-color: var(--bg-color);
+  background-color: white;
   border-radius: 68px;
   cursor: pointer;
-  padding: 6px 10px 6px 6px;
   width: fit-content;
   height: 40px;
   border: 0;
+  border: 1px solid white;
   overflow: hidden;
   position: relative;
   transition: var(--btn-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button-message:hover {
   /* height: 56px; */
   /* padding: 8px 20px 8px 8px; */
-  background-color: var(--bg-hover-color);
+  background-color: transparent;
   transition: var(--btn-transition);
+  color: white;
 }
 
 .button-message:active {
@@ -214,11 +216,11 @@ a {
   }
 }
 
-.content-avatar.gender-F{
+.content-avatar.gender-F {
   background-color: pink;
 }
 
-.content-avatar.gender-O{
+.content-avatar.gender-O {
   background-color: gray;
 }
 
@@ -263,13 +265,8 @@ a {
 }
 
 .notice-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding-left: 8px;
   text-align: initial;
-  color: var(--text-color);
+  color: #000;
 }
 
 .Logout-div {
@@ -302,6 +299,7 @@ a {
   letter-spacing: normal;
   opacity: 1;
   transform: translateY(0);
+  color: white;
   transition: var(--btn-transition);
 }
 
@@ -317,6 +315,7 @@ a {
   height: 0;
   transform: scaleY(0);
   transition: var(--btn-transition);
+  color: white;
 }
 
 .User-div,
@@ -394,7 +393,7 @@ a {
 
 .f-post {
   cursor: pointer;
-  background-color: rgb(35, 0, 60);
+  background-color: #2c3342;
   width: 50vw;
   font-family: var(--main-font-family);
   min-height: 10vh;
@@ -426,8 +425,8 @@ a {
 }
 
 .p-nickname {
-  font-weight: 800;
-  color: #b19af7;
+  font-weight: 900;
+  color: #ffffff;
 }
 
 .p-image > img {
@@ -446,16 +445,20 @@ a {
 .p-profile-pic {
   width: 36px;
   height: 36px;
-  background-color: aliceblue;
   border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: whitesmoke;
+  font-weight: 800;
 }
 
 .p-profile-pic.gender-M {
-  background-color: blue;
+  background-color: #0000b8;
 }
 
 .p-profile-pic.gender-F {
-  background-color: pink;
+  background-color: #b800c9;
 }
 
 .p-profile-pic.gender-O {
@@ -522,27 +525,20 @@ a {
 /* The Modal (background) */
 .modal {
   display: none;
-  /* Hidden by default */
   position: fixed;
-  /* Stay in place */
   z-index: 9999;
-  /* Sit on top of other content */
   left: 0;
   top: 0;
   width: 100%;
-  /* Full width */
   height: 100%;
-  /* Full height */
-  overflow: hidden;
   /* Enable scroll if needed */
   background-color: rgba(0, 0, 0, 0.4);
-  /* Black with opacity */
 }
 
 /* Modal Content */
 .modal-content {
   background-color: #181818;
-  margin: 20% auto;
+  margin: 15% auto;
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
@@ -570,15 +566,15 @@ a {
   border-radius: 1000px;
 }
 
-.c-post-pfp.gender-M{
+.c-post-pfp.gender-M {
   background-color: blue;
 }
 
-.c-post-pfp.gender-F{
-  background-color:pink;
+.c-post-pfp.gender-F {
+  background-color: pink;
 }
 
-.c-post-pfp.gender-O{
+.c-post-pfp.gender-O {
   background-color: gray;
 }
 
@@ -679,20 +675,11 @@ a {
 }
 
 .profile-card {
-  /* width: 300px; */
-  /* flex-basis: 20%; */
-  background: rgb(35, 0, 60);
   color: white;
   border-radius: 10px;
   padding: 10px 30px;
-  /* overflow: hidden; */
   margin: 10px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* width: 210px; */
   height: 33%;
-  /* background: rgb(39, 39, 39); */
-  /* border-radius: 12px; */
-  /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.123); */
   transition-duration: 0.5s;
   min-height: 222px;
 }
@@ -713,23 +700,11 @@ a {
   object-fit: cover;
 }
 
-/* .profile-pic {
-width: 70px;
-height: 70px;
-border-radius: 50%;
-border: 3px solid white;
-position: absolute;
-/*     top: 45px; /* Adjust based on your header-background height
-left: 50%;
-transform: translateX(-50%);
-} */
-
 .profile-stats {
   display: flex;
   justify-content: space-around;
   padding: 20px;
   background: #333;
-  /* Slightly lighter dark background for stats */
 }
 
 .profile-stats div {
@@ -756,6 +731,64 @@ button {
 button:hover {
   background-color: #c2185b;
   /* Darker pink on hover */
+}
+
+#contacts {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+#contacts > div {
+  width: 100%;
+}
+
+#profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: white;
+  padding-top: 36px;
+  padding-bottom: 12px;
+  font-size: 31px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: 700;
+}
+
+.contact {
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  padding: 10px 10px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.contact:hover {
+  background-color: #333;
+}
+
+.profile-pic {
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pfp {
+  width: 56px;
+  height: 56px;
+  border-radius: 1000px;
+  background-color: #333;
 }
 
 .side-divs {
@@ -810,7 +843,6 @@ button:hover {
   background-color: #150023;
 }
 
-
 .categories-text {
   /* font-size: 1.2em; */
   /* font-weight: 600; */
@@ -838,7 +870,6 @@ button:hover {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.329);
 }
 
 .UserInfo-div {
@@ -878,7 +909,7 @@ transition-duration: .5s;
   height: 90vh;
 }
 
-.online-text{
+.online-text {
   color: #b19af7;
 }
 
@@ -889,8 +920,124 @@ transition-duration: .5s;
   font-size: small;
 }
 
+.user-stats {
+  font-size: 13px;
+}
 
-.user-stats{
-  font-size: 12px;
-  /* Slightly lighter dark background for stats */
+#r-profile {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  font-weight: 700;
+  padding-top: 36px;
+  padding-bottom: 12px;
+  font-size: 15px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+#message_space {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  gap: 10px;
+}
+
+#mdiv {
+  width: 100%;
+  height: 20vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+#user-text {
+  width: 70%;
+  height: 15%;
+  outline: none;
+  border-radius: 200px;
+  resize: none;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  padding: 25px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.5s;
+
+}
+
+#user-text:focus {
+  border: 0.5px solid rgba(74, 64, 255, 0.775);
+  border-radius: 10px;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(68, 99, 255);
+  width: 30%;
+  color: white;
+  min-height: 10px;
+  margin-top: 30px;
+  margin-right: 30px;
+  overflow-y: auto;
+}
+
+.message.self {
+  background-color: #333;
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+.message p {
+  margin: 0;
+  font-size: 1rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  align-self: flex-start;
+  margin-top: 10px;
+  /* overflow-wrap: break-word; */
+  word-wrap: break-word; /* Allow long words to break */
+  word-break: break-word;
+}
+
+.m,
+.mself {
+  width: 100%;
+  display: flex;
+}
+
+.m {
+  justify-content: flex-end;
+}
+
+.sender-info {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+#sendTextBtn {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  transition-duration: 0.4s;
+}
+
+#sendTextBtn:hover {
+  transform: translateY(-3px);
 }

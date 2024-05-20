@@ -39,9 +39,6 @@ export const Post = async () => {
     // Modal Operations
     var modal = document.querySelector(".modal");
     var modalcon = document.querySelector(".modal-content");
-    if (!data.image && modalcon) {
-      modalcon.style.minHeight = "260px";
-    }
     var modalOpenBtn = document.querySelector(".p-commentCount");
     if (modalOpenBtn && modal) {
       modalOpenBtn.onclick = function () {
@@ -94,21 +91,14 @@ ${LoadNav()}
     <p id="c-com-nickname"></p>
     <div class="p-creationDate"></div>
   </div>
-  <div class="p-content">
-  </div>
   <div class="PostComment_Contaiar">
-    <div class="shakta"></div>
     <div class="com2ent">
       <div id="c-com-userinfo">
-        <div id="c-com-pfp">
-          <img src="" alt="">
-        </div>
-        <p id="c-com-nickname"></p>
       </div>
       <textarea id="c-com-textArea" placeholder="What's on your mind?"></textarea>
     </div>
   </div>
-  <div id="c-com-Btn">Create a Replay</div>
+  <div id="c-com-Btn">Add Comment</div>
 </div>
 </div>
 <div id="post-page">

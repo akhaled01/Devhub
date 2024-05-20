@@ -1,32 +1,8 @@
 import { ws } from "../main";
-import { sortByOnlineAndName } from "./utils";
+import schat from "../assets/sendChat.svg";
+import { NewChatMessage, sortByOnlineAndName } from "./utils";
 
 export let CurrentChatUser = null;
-
-/**
- * Registers a new user chat sess
- * @param {*} username
- */
-export const SaveCurrentChatUser = async (username) => {
-  console.log(username);
-  if (
-    sessionStorage.getItem("chat_user_selected") &&
-    username === sessionStorage.getItem("chat_user")
-  )
-    return;
-  sessionStorage.setItem("chat_user", username);
-  sessionStorage.setItem("chat_user_selected", "true");
-  document.getElementById("message-space").innerHTML = "";
-  ws.send(
-    JSON.stringify({
-      type: "Open_chat",
-      req_Content: {
-        user_id: sessionStorage.getItem("chat_user"),
-      },
-    })
-  );
-  CurrentChatUser = username;
-};
 
 /**
  *  Takes JSON data and assembles online users
@@ -34,12 +10,11 @@ export const SaveCurrentChatUser = async (username) => {
  */
 export const AssembleOnlineUsersChat = (data) => {
   const contact_div = document.getElementById("c-contacts");
-  // let mdata = sortByOnlineAndName(data);
   if (!contact_div) return;
   contact_div.innerHTML = "";
-  console.log(data);
   data.req_Content.forEach((user_obj) => {
     //let user = user_obj.user;
+    console.log(user_obj);
     if (user_obj.username !== sessionStorage.getItem("username")) {
       const contactDiv = document.createElement("div");
       contactDiv.classList.add("contact");
@@ -56,21 +31,19 @@ export const AssembleOnlineUsersChat = (data) => {
         nameDiv.classList.add("online");
       }
 
-      document.getElementById(user_obj.username).addEventListener("click", () => {
-        SaveCurrentChatUser(user_obj.username);
-      });
+      document
+        .getElementById(user_obj.username)
+        .addEventListener("click", () => {
+          OrgChatHTML(user_obj.username);
+        });
     }
   });
 };
 
 export const AssembleOnlineUsersIndex = (data) => {
-
-  const list_div = document.getElementById("online-user-list");
-  //let mdata = sortByOnlineAndName(data);
-  console.log("MDATA",data);
+  const list_div = document.getElementById("c-contacts");
   if (!list_div) return;
   list_div.innerHTML = "";
-  console.log(data,"------------------- under AssembleOnlineUsersIndex");
   data.req_Content.forEach((user_obj) => {
     let user = user_obj;
     if (user.username !== sessionStorage.getItem("username")) {
@@ -88,4 +61,62 @@ export const AssembleOnlineUsersIndex = (data) => {
       });
     }
   });
+};
+
+/**
+ * Assembles the chat HTML in the index
+ */
+const OrgChatHTML = (username) => {
+  const main_wrapper = document.getElementById("main_wrapper");
+  main_wrapper.innerHTML = "";
+  const recipient_div = document.createElement("div");
+  recipient_div.id = "r-profile";
+  recipient_div.innerText = username;
+  main_wrapper.appendChild(recipient_div);
+
+  const message_div = document.createElement("div");
+  message_div.id = "message_space";
+  main_wrapper.appendChild(message_div);
+
+  const mdiv = document.createElement("div");
+  mdiv.id = "mdiv";
+
+  const message_input = document.createElement("textarea");
+  message_input.id = "user-text";
+  message_input.placeholder = "Write a msg :)";
+  mdiv.appendChild(message_input);
+
+  const send_btn = document.createElement("img");
+  send_btn.src = schat;
+  send_btn.id = "sendTextBtn";
+  send_btn.title = "Send";
+  mdiv.appendChild(send_btn);
+
+  main_wrapper.appendChild(mdiv);
+
+  document.getElementById("sendTextBtn").addEventListener("click", function () {
+    const message = message_input.value;
+    if (!message.trim()) return;
+    ws.send(
+      JSON.stringify({
+        type: "send_msg",
+        req_Content: {
+          sender: "",
+          recipient: username,
+          msg_content: message,
+        },
+      })
+    );
+    NewChatMessage(message, true); // Add as self message
+    message_input.value = "";
+  });
+
+  ws.send(
+    JSON.stringify({
+      type: "Open_chat",
+      req_Content: {
+        user_id: username,
+      },
+    })
+  );
 };

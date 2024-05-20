@@ -50,7 +50,7 @@ export const UpdateCSS = (stylesheet) => {
  * @param {any[]} posts_in_json
  */
 export const AssemblePosts = (posts_in_json = []) => {
-  document.getElementById("posts").innerHTML = "";
+  document.getElementById("main_wrapper").innerHTML = "";
   posts_in_json.forEach((post_data) => {
     var gender = post_data.user.gender;
     let liked_img = noheart;
@@ -60,17 +60,19 @@ export const AssemblePosts = (posts_in_json = []) => {
     let text = post_data.content + "";
 
     if (text.length > 255) {
-      text = text.slice(0, 255 - "...".length) + "...";
+      text = text.slice(0, 255 - "...".length) + "..."; // turncate
     }
 
-    document.getElementById("posts").innerHTML += `<a href="/post/${
+    document.getElementById("main_wrapper").innerHTML += `<a href="/post/${
       post_data.id
     }"><div class="f-post ${!post_data.Image_Path ? "noimage" : ""}" id=${
       post_data.id
     }>
   <div class="p-header">
     <div class="p-profileInfo">
-      <div class="p-profile-pic gender-${post_data.user.gender}" ></div>
+      <div class="p-profile-pic gender-${post_data.user.gender}">${
+      post_data.user.username[0].toUpperCase()
+    }</div>
       <div class="p-nickname">${post_data.user.username}</div>
       </div>
       <div class="p-creationDate">${new Date(
@@ -209,7 +211,7 @@ export const NewChatMessage = (
   actualMessage.classList.add("message");
 
   const content = document.createElement("p");
-  const chatArea = document.getElementById("message-space");
+  const chatArea = document.getElementById("message_space");
   content.textContent = message;
   actualMessage.appendChild(content);
   messageElement.appendChild(actualMessage);

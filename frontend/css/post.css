@@ -78,9 +78,6 @@ nav {
   gap: 20px;
 }
 
-.modal-contentt {
-  height: 42%;
-}
 
 .comment {
   padding: 10px;
@@ -638,7 +635,7 @@ a {
   padding: 20px;
   border: 1px solid #888;
   width: 620px;
-  min-height: 440px;
+  min-height: 200px;
   border-radius: 16px;
   border: 0.6px solid rgba(243, 245, 247, 0.15);
   display: flex;
@@ -767,16 +764,15 @@ a {
   display: flex;
   flex-direction: row;
   width: 98%;
-  border-top: 1px solid #ffffff7d;
   padding-top: inherit;
 }
 
-.shakta {
+/* .shakta {
   width: 1px;
   background-color: #f5fffa;
   height: 75%;
   margin-left: 40px;
-}
+} */
 
 .noimage-c {
   margin: 13px 0;

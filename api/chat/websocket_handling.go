@@ -189,15 +189,22 @@ func EvalOnlineUsers() error {
 }
 
 func Get_DMs(req_user *types.User, request string) error {
+	// get the users that have a message with the user
 	DMs, err := chat.Get_Users_By_Last_Message(req_user.Username)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
 		return err
 	}
 
+	// check if the user has a session
 	for idx, u := range DMs {
-		if _, ok := types.UserHasSessions(u.ID); ok {
-			DMs[idx].Is_Online = true
+		if user_session, ok := types.UserHasSessions(u.ID); ok {
+			// check if the user is connected
+			if _, ok := ws_server.conns[user_session.User]; ok {
+				DMs[idx].Is_Online = true
+			} else {
+				DMs[idx].Is_Online = false
+			}
 		} else {
 			DMs[idx].Is_Online = false
 		}

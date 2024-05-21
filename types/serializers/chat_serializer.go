@@ -35,5 +35,4 @@ type Open_chat_request struct {
 type Load_Messages_Request struct {
 	User_id  string `json:"user_id"`
 	Begin_id int    `json:"begin_id"`
-	End_id   int    `json:"end_id"`
 }

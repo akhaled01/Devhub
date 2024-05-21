@@ -23,7 +23,8 @@ const (
 						ORDER BY last_message_time DESC;`
 	LOAD_MESSAGES_IN_BETWEEN = `SELECT * FROM chat_messages
             WHERE ((recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?))
-            AND id BETWEEN ? AND ?`
+            AND id < ?
+            LIMIT 10`
 )
 
 func Get_chat(user_name string, requested_user_name string) ([]serializers.Message, error) {
@@ -81,7 +82,7 @@ func Get_Users_By_Last_Message(user_name string) ([]serializers.DMs_User, error)
 }
 
 /* A function to Load_Messages in between begin_id and end_id */
-func Load_Messages(user_name string, requested_user_name string, begin_id int, end_id int) ([]serializers.Message, error) {
+func Load_Messages(user_name string, requested_user_name string, begin_id int) ([]serializers.Message, error) {
 	chat_messages := []serializers.Message{}
 	stmt, err := storage.DB_Conn.Prepare(LOAD_MESSAGES_IN_BETWEEN)
 	if err != nil {
@@ -89,7 +90,7 @@ func Load_Messages(user_name string, requested_user_name string, begin_id int, e
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(user_name, requested_user_name, requested_user_name, user_name, begin_id, end_id)
+	rows, err := stmt.Query(user_name, requested_user_name, requested_user_name, user_name, begin_id)
 	if err != nil {
 		return nil, errors.Join(types.ErrExec, err)
 	}

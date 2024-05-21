@@ -264,7 +264,7 @@ func Load_Messages(user *types.User, request string) error {
 	message_contents := &ser.Load_Messages_Request{}
 	json.Unmarshal([]byte(request), message_contents)
 
-	chat_messages, err := chat.Load_Messages(user.Username, message_contents.User_id, message_contents.Begin_id, message_contents.End_id)
+	chat_messages, err := chat.Load_Messages(user.Username, message_contents.User_id, message_contents.Begin_id)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
 		return err

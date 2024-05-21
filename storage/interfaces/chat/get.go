@@ -20,8 +20,10 @@ const (
 						LEFT JOIN chat_messages ON (users.user_name = chat_messages.sender OR users.user_name = chat_messages.recipient)
 						WHERE chat_messages.sender = ? OR chat_messages.recipient = ?
 						GROUP BY users.user_name
-						ORDER BY last_message_time DESC;
-						`
+						ORDER BY last_message_time DESC;`
+	LOAD_MESSAGES_IN_BETWEEN = `SELECT * FROM chat_messages
+            WHERE ((recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?))
+            AND id BETWEEN ? AND ?`
 )
 
 func Get_chat(user_name string, requested_user_name string) ([]serializers.Message, error) {
@@ -76,4 +78,32 @@ func Get_Users_By_Last_Message(user_name string) ([]serializers.DMs_User, error)
 	}
 
 	return dm_users, nil
+}
+
+/* A function to Load_Messages in between begin_id and end_id */
+func Load_Messages(user_name string, requested_user_name string, begin_id int, end_id int) ([]serializers.Message, error) {
+	chat_messages := []serializers.Message{}
+	stmt, err := storage.DB_Conn.Prepare(LOAD_MESSAGES_IN_BETWEEN)
+	if err != nil {
+		return nil, errors.Join(types.ErrPrepare, err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(user_name, requested_user_name, requested_user_name, user_name, begin_id, end_id)
+	if err != nil {
+		return nil, errors.Join(types.ErrExec, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		chat_message := serializers.Message{}
+
+		if err := rows.Scan(&chat_message.Id, &chat_message.Msg_Content, &chat_message.Timestamp, &chat_message.Sender, &chat_message.Recipient); err != nil {
+			return nil, errors.Join(types.ErrScan, err)
+		}
+
+		chat_messages = append(chat_messages, chat_message)
+	}
+
+	return chat_messages, nil
 }

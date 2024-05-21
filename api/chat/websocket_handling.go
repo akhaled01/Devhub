@@ -256,3 +256,28 @@ func Get_DMs(req_user *types.User, request string) error {
 
 	return nil
 }
+
+// END of function
+
+// This function loads messages in between ids
+func Load_Messages(user *types.User, request string) error {
+	message_contents := &ser.Load_Messages_Request{}
+	json.Unmarshal([]byte(request), message_contents)
+
+	chat_messages, err := chat.Load_Messages(user.Username, message_contents.User_id, message_contents.Begin_id, message_contents.End_id)
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return err
+	}
+
+	response_capusl := &ser.WS_Request{
+		Type:    "open_chat_response",
+		Content: chat_messages,
+	}
+
+	json_msg, _ := json.Marshal(&response_capusl)
+	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
+
+	return nil
+
+}

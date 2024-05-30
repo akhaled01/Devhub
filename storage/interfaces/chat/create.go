@@ -25,12 +25,12 @@ func SaveChatInDB(chat serializers.Message) error {
 	for _, s := range types.Sessions {
 		if s.User.Username == chat.Recipient {
 			session_id = s.SessionID
+			if types.Sessions[session_id].ChatPartnerID == chat.Sender {
+				msg_Status = true
+			}
 		}
 	}
 
-	if types.Sessions[session_id].ChatPartnerID == chat.Sender {
-		msg_Status = true
-	}
 
 	stmt, err := storage.DB_Conn.Prepare(INSERT_MESSAGE)
 	if err != nil {

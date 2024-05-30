@@ -51,11 +51,13 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id.Value)
 	sessionID, err := uuid.FromString(session_id.Value)
-    if err != nil {
-        fmt.Printf("Error parsing UUID: %v\n", err)
-        return
-    }
-	types.Sessions[sessionID].ChatPartnerID = ""
+	if err != nil {
+		fmt.Printf("Error parsing UUID: %v\n", err)
+		return
+	}
+	if sessionID == uuid.Nil {
+		types.Sessions[sessionID].ChatPartnerID = ""
+	}
 	// Validating the session to extract the user
 	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id.Value))
 	if err != nil {

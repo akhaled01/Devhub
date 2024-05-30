@@ -91,17 +91,17 @@ body > div {
   font-size: 1rem;
 }
 
-.name {
+/* .name {
   width: 85%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: white;
+  color: rgb(107, 107, 107);
   font-weight: 800;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 15px;
   margin-left: 10px;
-}
+} */
 
 #messageArea {
   width: 70vw;
@@ -245,7 +245,22 @@ body > div {
 .sname {
   font-weight: 600;
 }
+
 .online {
   color: rgb(121, 255, 121);
   font-weight: 600;
+}
+
+.offline {
+  color: rgb(90, 90, 90);
+  font-weight: 600;
+}
+
+.red-circle {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
 }

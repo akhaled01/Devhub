@@ -11,12 +11,14 @@ type Message struct {
 	Recipient   string    `json:"recipient"`
 	Timestamp   time.Time `json:"timestamp"`
 	Msg_Content string    `json:"msg_content"`
+	Msg_Status  bool      `json:"msg_status"`
 }
 
 // Message struct with interface field
 type WS_Request struct {
-	Type    string      `json:"type"`
-	Content interface{} `json:"req_Content"`
+	Type        string      `json:"type"`
+	Content     interface{} `json:"req_Content"`
+	ChatingWith string      `json:"string"`
 }
 
 func (msg Message) To_String() string {

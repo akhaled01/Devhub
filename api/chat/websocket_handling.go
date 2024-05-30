@@ -50,7 +50,12 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("WebSocket connection established with session ID: %s\n", session_id.Value)
-
+	sessionID, err := uuid.FromString(session_id.Value)
+    if err != nil {
+        fmt.Printf("Error parsing UUID: %v\n", err)
+        return
+    }
+	types.Sessions[sessionID].ChatPartnerID = ""
 	// Validating the session to extract the user
 	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id.Value))
 	if err != nil {
@@ -143,6 +148,16 @@ func Open_chat(user *types.User, request string) error {
 	message_contents := &ser.Open_chat_request{}
 	json.Unmarshal([]byte(request), message_contents)
 
+	var session_id uuid.UUID
+
+	for _, s := range types.Sessions {
+		if s.User.ID == user.ID {
+			session_id = s.SessionID
+		}
+	}
+
+	types.Sessions[session_id].ChatPartnerID = message_contents.User_id
+
 	chat_messages, err := chat.Get_chat(user.Username, message_contents.User_id)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
@@ -150,8 +165,9 @@ func Open_chat(user *types.User, request string) error {
 	}
 
 	response_capusl := &ser.WS_Request{
-		Type:    "open_chat_response",
-		Content: chat_messages,
+		Type:        "open_chat_response",
+		ChatingWith: user.Username,
+		Content:     chat_messages,
 	}
 
 	json_msg, _ := json.Marshal(&response_capusl)
@@ -262,9 +278,6 @@ func Get_DMs(req_user *types.User, request string) error {
 func Load_Messages(user *types.User, request string) error {
 	message_contents := &ser.Load_Messages_Request{}
 	json.Unmarshal([]byte(request), message_contents)
-	fmt.Println(message_contents)
-	fmt.Println("====================================")
-	fmt.Println(message_contents.Begin_id,"----------",message_contents.User_id,"------------------",user.Username,"================")
 	chat_messages, err := chat.Load_Messages(user.Username, message_contents.User_id, message_contents.Begin_id)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())

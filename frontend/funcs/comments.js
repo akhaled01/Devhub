@@ -20,7 +20,7 @@ export async function render_comments(postId) {
   }
 
   const commentsDiv = document.getElementById("comments-wrapper"); // Get comments div
-
+  commentsDiv.innerHTML = ""; // Clear comments div you are double rendering
   let data = await fetch_comments(postId); // fetch post comments
 
   // Render comments

@@ -13,8 +13,8 @@ export const AssembleOnlineUsersChat = (data) => {
   const contact_div = document.getElementById("c-contacts");
   if (!contact_div) return;
   contact_div.innerHTML = "";
+  console.log(data);
   data.req_Content.forEach((user_obj) => {
-    //let user = user_obj.user;
     if (user_obj.username !== sessionStorage.getItem("username")) {
       const contactDiv = document.createElement("div");
       contactDiv.classList.add("contact");
@@ -24,12 +24,24 @@ export const AssembleOnlineUsersChat = (data) => {
       nameDiv.classList.add("name");
       nameDiv.textContent = user_obj.username;
 
-      contactDiv.appendChild(nameDiv);
-      contact_div.appendChild(contactDiv);
-
       if (user_obj.is_online) {
         nameDiv.classList.add("online");
+      } else {
+        nameDiv.classList.add("offline");
       }
+
+      if (
+        user_obj.msg_status === false &&
+        user_obj.last_message_time !== "" &&
+        user_obj.msg_sender !== sessionStorage.getItem("username")
+      ) {
+        const redCircle = document.createElement("div");
+        redCircle.classList.add("red-circle");
+        nameDiv.appendChild(redCircle);
+      }
+
+      contactDiv.appendChild(nameDiv);
+      contact_div.appendChild(contactDiv);
 
       document
         .getElementById(user_obj.username)
@@ -44,19 +56,23 @@ export const AssembleOnlineUsersIndex = (data) => {
   const list_div = document.getElementById("c-contacts");
   if (!list_div) return;
   list_div.innerHTML = "";
+
   data.req_Content.forEach((user_obj) => {
-    let user = user_obj;
-    if (user.username !== sessionStorage.getItem("username")) {
+    if (user_obj.username !== sessionStorage.getItem("username")) {
       const user_div = document.createElement("li");
-      user_div.textContent = user.username;
-      user_div.id = user.username;
+      user_div.textContent = user_obj.username;
+      user_div.id = user_obj.username;
+
       if (user_obj.is_online) {
         user_div.classList.add("online");
+      } else {
+        user_div.classList.add("offline");
       }
+
       list_div.appendChild(user_div);
 
-      document.getElementById(user.username).addEventListener("click", () => {
-        SaveCurrentChatUser(user.username);
+      document.getElementById(user_obj.username).addEventListener("click", () => {
+        SaveCurrentChatUser(user_obj.username);
         window.location.assign("/chat");
       });
     }
@@ -111,8 +127,8 @@ const OrgChatHTML = (username) => {
     message_input.value = "";
   });
 
-  const message_Box = document.getElementById("message_space")
-  message_Box.addEventListener('scroll', function(e) {
+  const message_Box = document.getElementById("message_space");
+  message_Box.addEventListener("scroll", function (e) {
     if (e.target.scrollTop === 0) {
       let beginid = parseInt(sessionStorage.getItem("begin_id"));
       ws.send(

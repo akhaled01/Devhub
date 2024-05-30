@@ -12,10 +12,11 @@ import (
 )
 
 type Session struct {
-	SessionID uuid.UUID
-	User      *User
-	Expiry    time.Time
-	Conn      *websocket.Conn
+	SessionID     uuid.UUID
+	User          *User
+	Expiry        time.Time
+	Conn          *websocket.Conn
+	ChatPartnerID string
 }
 
 // Map sessionID to session

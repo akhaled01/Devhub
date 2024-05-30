@@ -18,7 +18,7 @@ ws.onclose = () => {
 
 // handle websocket events from backend
 ws.onmessage = (e) => {
-  let data = JSON.parse(e.data);
+  const data = JSON.parse(e.data);
   if (data.type === "message") {
     NewChatMessage(
       data.req_Content.msg_content,
@@ -33,9 +33,13 @@ ws.onmessage = (e) => {
       AssembleOnlineUsersIndex(data);
     }
   } else if (data.type === "open_chat_response") {
-    // window.location.reload();
-    let data = JSON.parse(e.data);
-    sessionStorage.setItem("begin_id", data.req_Content[0].id);
+    console.log(data,"im in chat with",data.req_Content);
+    if (data.req_Content.length === 0) {
+      sessionStorage.setItem("begin_id", 0);
+      return;
+    } else {
+      sessionStorage.setItem("begin_id", data.req_Content[0].id);
+    }
     data.req_Content.forEach((m) => {
       NewChatMessage(
         m.msg_content,
@@ -44,10 +48,14 @@ ws.onmessage = (e) => {
         new Date(m.timestamp)
       );
     });
-  }
-  else {
+  } else {
     let data = JSON.parse(e.data);
-    sessionStorage.setItem("begin_id", data.req_Content[0].id);
+    if (data.req_Content.length === 0) {
+      sessionStorage.setItem("begin_id", 0);
+      return;
+    } else {
+      sessionStorage.setItem("begin_id", data.req_Content[0].id);
+    }
     data.req_Content.forEach((m) => {
       NewChatMessage(
         m.msg_content,

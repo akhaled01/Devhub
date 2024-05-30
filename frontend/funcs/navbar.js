@@ -25,13 +25,6 @@ export const LoadNav = () => {
           <img src="${plus}" alt="New Post" title="New Post">
         </div>
     </li>
-    <li>
-      <a href="/chat">
-        <div class="actionItem">
-          <img src="${DM}" alt="New Chat" title="Chat">
-        </div>
-      </a>
-    </li>
   </ul>
   <div>
     <a href="/logout">

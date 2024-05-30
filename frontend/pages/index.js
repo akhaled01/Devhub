@@ -3,12 +3,14 @@ import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
-import logout from "../assets/logout.svg";
+import comment from "../assets/comment.svg";
 import { OrgIndexPosts } from "../funcs/posts";
 import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 import { SetSessionStorageStats } from "../funcs/utils";
+import { creat_comment, fetch_post } from "./post";
+import { RedoStats, render_comments } from "../funcs/comments";
 
 let Number_of_liked_comments = 0;
 let Number_of_comments = 0;
@@ -80,7 +82,7 @@ export const post_component = () => {
           border-radius: inherit;"alt="">
         </div>
       </div>
-      <div class="UserInfo-div">
+      <div class="UserInfo-div" id="UserInfo-div">
         <p class="UserName-p" style="font-size:20px">${sessionStorage.getItem(
           "username"
         )}</p>
@@ -89,15 +91,127 @@ export const post_component = () => {
         <p class="user-likes">Liked Posts: ${Number_of_liked_posts}</p>
         <p class="user-comments">Comments: ${Number_of_comments}</p>
         <p class="user-comments">Liked Comments: ${Number_of_liked_comments}</p>
-        </div>
+      </div>
       </div>
     </div>
   </div>
 </div>
 `;
 };
+
+/**
+ * returns a modal for all post information
+ *
+ * @returns {string} the html code for the post modal
+ */
+export const PostModal = async (postID) => {
+  if (!sessionStorage.getItem("user_token")) {
+    window.location.assign("/login");
+    return;
+  }
+
+  let data = await fetch_post(postID);
+
+  var gender = data.user.gender;
+  let liked_img = noheart;
+  if (data.liked) {
+    liked_img = heart;
+  }
+
+  if (data) {
+    document.getElementById("main_wrapper").insertAdjacentHTML(
+      "afterbegin",
+      /*html*/ `
+  <div id="d-post-modal" class="modal">
+  <div class="modal-content post-modal">
+    <div id="d-post-wrapper">
+      <div id="post-side">
+        <div id="top-bar">
+          <div id="author-profile">
+            <div id="author-profile-img" class="author-${gender}">${data.user.username[0].toUpperCase()}</div>
+            <div id="author-profile-info">
+              <p id="author-name">${data.user.username}</p>
+            </div>
+          </div>
+          <div id="post-creation-date">${new Date(
+            data.creationDate
+          ).toDateString()}</div>
+        </div>
+        <div id="post-content">
+          ${data.content}
+          ${
+            data.Image_Path
+              ? `<div class="p-image">
+            <img src=${data.Image_Path} alt="post image">
+          </div>`
+              : ""
+          }
+        </div>
+        <div class="p-stats">
+          <div class="p-likeCount">
+            <div class="p-likeBtn">
+              <img src="${liked_img}" alt="like" />
+            </div>
+            <div class="p-likeStat">${data.likes}</div>
+          </div>
+          <div class="p-commentCount">
+            <img src="${comment}" alt="comment" />
+            <div class="p-comment-Stat">${data.number_of_comments}</div>
+          </div>
+        </div>
+      </div>
+      <div id="comment-side">
+        <div id="comment-header">
+          <div id="comment-header-text">Comments</div>
+        </div>
+        <div id="comments-wrapper"></div>
+        <textarea id="comment-input" placeholder="Care to Comment?"></textarea>
+        <button id="d-c-comment-btn">Create Comment!</button>
+      </div>
+    </div>
+  </div>
+  `
+    );
+
+    let post_modal = document.getElementById("d-post-modal");
+    post_modal.style.display = "flex";
+
+    // When user clicks outside window, remove modal. Account for c-post-modal too
+    window.onclick = function (event) {
+      if (event.target == post_modal) {
+        post_modal.style.display = "none";
+      } else if (event.target == document.getElementById("c-post-modal")) {
+        document.getElementById("c-post-modal").style.display = "none";
+      }
+    };
+
+    document
+      .getElementById("d-c-comment-btn")
+      .addEventListener("click", async () => {
+        console.log("submit-comment");
+        let comment = document.getElementById("comment-input").value;
+        let post_id = postID;
+        await creat_comment({
+          comment_text: comment,
+          post_id: post_id,
+        });
+
+        document.getElementById("no-comments")
+          ? document.getElementById("no-comments").remove()
+          : "";
+
+        document.getElementById("comment-input").value = "";
+        render_comments(postID);
+
+        await RedoStats()
+      });
+
+    render_comments(postID);
+  }
+};
+
 export const Home = async () => {
-  const myCookie = getCookie('session_id');
+  const myCookie = getCookie("session_id");
   if (!sessionStorage.getItem("user_token") && !myCookie) {
     window.location.assign("/login");
     return;
@@ -143,7 +257,9 @@ export const Home = async () => {
       const raw_image_file = document.getElementById("c-img-upload").value;
       // stop removing the fix for category value capture
       let post_cat_arr = [];
-      const post_category = parseInt(document.getElementById("c-post-cat-select").value);
+      const post_category = parseInt(
+        document.getElementById("c-post-cat-select").value
+      );
       post_cat_arr.push(post_category);
       // end!!!
       const Image_Converstion_wrapper = async () => {
@@ -199,9 +315,7 @@ export const Home = async () => {
 
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
-
   likeImages.forEach((likeBtn) => {
-
     likeBtn.addEventListener("click", () => {
       if (likeBtn.getAttribute("src") === noheart) {
         likeBtn.setAttribute("src", heart);
@@ -226,7 +340,7 @@ export function getCookie(name) {
   const nameEQ = name + "=";
 
   // Split the document.cookie string into an array of individual cookies
-  const ca = document.cookie.split(';');
+  const ca = document.cookie.split(";");
 
   // Loop through each cookie in the array
   for (let i = 0; i < ca.length; i++) {

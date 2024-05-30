@@ -5,7 +5,7 @@ import comment from "../assets/comment.svg";
 import { BACKENDURL } from "../funcs/vars";
 import { LoadNav } from "../funcs/navbar";
 
-const fetch_post = async (postId) => {
+export const fetch_post = async (postId) => {
   const response = await fetch(`${BACKENDURL}/post/${postId}`, {
     credentials: "include",
   });
@@ -234,7 +234,7 @@ export const fill_in_post = async (data) => {
  * @param {*} comment_data
  * @param {*} modal
  */
-export const creat_comment = async (comment_data, modal) => {
+export const creat_comment = async (comment_data) => {
   const res = await fetch(BACKENDURL + "/comment/create", {
     method: "POST",
     body: JSON.stringify(comment_data),
@@ -243,14 +243,6 @@ export const creat_comment = async (comment_data, modal) => {
       "Content-Type": "application/json",
     },
   });
-
-  modal.style.display = "none";
-
-  if (res.status === 201) {
-    window.location.reload();
-  } else {
-    throw new Error(res.status, res.statusText);
-  }
 };
 
 export const handle_action_like = async (event) => {

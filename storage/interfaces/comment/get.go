@@ -3,7 +3,6 @@ package comment
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"RTF/storage"
@@ -117,7 +116,6 @@ func GetCommentsCount(postID string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	fmt.Println(count, "comments found number")
 	return count, nil
 }
 
@@ -133,7 +131,7 @@ func GetUserCounts(user_id uuid.UUID) (types.Counts, error) {
 	if err := stmt.QueryRow(user_id, user_id, user_id, user_id).Scan(&UserCounts.Number_of_liked_comments, &UserCounts.Number_of_liked_posts, &UserCounts.Number_of_posts, &UserCounts.Number_of_comments); err != nil {
 		return UserCounts, errors.Join(types.ErrExec, err)
 	}
-	
+
 	return UserCounts, nil
 }
 

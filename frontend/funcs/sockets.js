@@ -1,6 +1,7 @@
 import { ws } from "../main";
 import schat from "../assets/sendChat.svg";
 import { NewChatMessage, sortByOnlineAndName } from "./utils";
+import { GetSessionStorageStats } from "../pages";
 
 export let CurrentChatUser = null;
 
@@ -111,14 +112,16 @@ const OrgChatHTML = (username) => {
     message_input.value = "";
   });
 
-  document.addEventListener('scroll', function(e) {
-    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 50) {
+  const message_Box = document.getElementById("message_space")
+  message_Box.addEventListener('scroll', function(e) {
+    if (e.target.scrollTop === 0) {
+      let beginid = parseInt(sessionStorage.getItem("begin_id"));
       ws.send(
         JSON.stringify({
-          type: "get_msg",
+          type: "load_messages",
           req_Content: {
-            sender: "",
-            recipient: username,
+            User_id: username,
+            Begin_id: beginid,
           },
         })
       );

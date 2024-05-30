@@ -53,7 +53,6 @@ func ChatRequestUpgrader(w http.ResponseWriter, r *http.Request) {
 
 	// Validating the session to extract the user
 	user_session, err := types.ValidateSession(uuid.FromStringOrNil(session_id.Value))
-	fmt.Println(user_session)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
 		conn.Close()
@@ -263,15 +262,16 @@ func Get_DMs(req_user *types.User, request string) error {
 func Load_Messages(user *types.User, request string) error {
 	message_contents := &ser.Load_Messages_Request{}
 	json.Unmarshal([]byte(request), message_contents)
-
+	fmt.Println(message_contents)
+	fmt.Println("====================================")
+	fmt.Println(message_contents.Begin_id,"----------",message_contents.User_id,"------------------",user.Username,"================")
 	chat_messages, err := chat.Load_Messages(user.Username, message_contents.User_id, message_contents.Begin_id)
 	if err != nil {
 		utils.ErrorConsoleLog(err.Error())
 		return err
 	}
-
 	response_capusl := &ser.WS_Request{
-		Type:    "open_chat_response",
+		Type:    "open_chat_response_from_load_messages",
 		Content: chat_messages,
 	}
 

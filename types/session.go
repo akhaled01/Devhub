@@ -2,7 +2,6 @@ package types
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -62,8 +61,6 @@ func GenSession(u User) *Session {
 	if err != nil {
 		utils.ErrorConsoleLog("error generating session -> %s", err)
 	}
-
-	fmt.Println(uuid.FromStringOrNil(session_id.String()))
 
 	Sessions[session_id] = &Session{
 		SessionID: session_id,

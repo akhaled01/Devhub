@@ -2,7 +2,6 @@ package likes
 
 import (
 	"errors"
-	"fmt"
 
 	"RTF/storage"
 	"RTF/types"
@@ -15,12 +14,11 @@ const (
 		WHERE post_id = ? AND user_id = ?) `
 	IS_LIKED_QUERY_COMMENT = `SELECT EXISTS(SELECT 1 FROM comment_likes
 			WHERE comment_id = ? AND user_id = ?) `
-	POST_LIKES_QUERY    = `SELECT count(*) FROM post_likes WHERE post_id = ?`
+	POST_LIKES_QUERY = `SELECT count(*) FROM post_likes WHERE post_id = ?`
 )
 
 // Takes in a user's id and a post's id and checks if the user liked the post
 func CheckUserPostLike(postid uuid.UUID, userid uuid.UUID) (bool, error) {
-	fmt.Println(postid, "postid", userid, "userid")
 	stmt, err := storage.DB_Conn.Prepare(IS_LIKED_QUERY_POST)
 	if err != nil {
 		return false, errors.Join(types.ErrPrepare, err)

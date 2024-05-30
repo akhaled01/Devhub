@@ -18,7 +18,6 @@ ws.onclose = () => {
 
 // handle websocket events from backend
 ws.onmessage = (e) => {
-  console.log("RECIEVED MESSAGE:", e.data);
   let data = JSON.parse(e.data);
   if (data.type === "message") {
     NewChatMessage(
@@ -36,7 +35,19 @@ ws.onmessage = (e) => {
   } else if (data.type === "open_chat_response") {
     // window.location.reload();
     let data = JSON.parse(e.data);
-    console.log(data.type);
+    sessionStorage.setItem("begin_id", data.req_Content[0].id);
+    data.req_Content.forEach((m) => {
+      NewChatMessage(
+        m.msg_content,
+        m.sender === sessionStorage.getItem("username"),
+        m.sender,
+        new Date(m.timestamp)
+      );
+    });
+  }
+  else {
+    let data = JSON.parse(e.data);
+    sessionStorage.setItem("begin_id", data.req_Content[0].id);
     data.req_Content.forEach((m) => {
       NewChatMessage(
         m.msg_content,

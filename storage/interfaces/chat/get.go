@@ -11,9 +11,16 @@ import (
 // EXAMPLE CODE
 
 const (
-	GET_CHAT = `SELECT * FROM chat_messages
-				WHERE (recipient = ? and sender = ? or recipient = ? and sender = ?)
-				ORDER BY id`
+	GET_CHAT = `SELECT *
+	FROM (
+		SELECT *
+		FROM chat_messages
+		WHERE (recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?)
+		ORDER BY id DESC
+		LIMIT 10
+	) AS last_10
+	ORDER BY id ASC;
+	;`
 
 	GET_LATEST_DMS = `SELECT users.user_name, users.user_id, MAX(chat_messages.created_at) AS last_message_time
 						FROM users
@@ -21,10 +28,16 @@ const (
 						WHERE chat_messages.sender = ? OR chat_messages.recipient = ?
 						GROUP BY users.user_name
 						ORDER BY last_message_time DESC;`
-	LOAD_MESSAGES_IN_BETWEEN = `SELECT * FROM chat_messages
-            WHERE ((recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?))
-            AND id < ?
-            LIMIT 10`
+	LOAD_MESSAGES_IN_BETWEEN = `SELECT *
+	FROM (
+		SELECT *
+		FROM chat_messages
+		WHERE ((recipient = ? AND sender = ?) OR (recipient = ? AND sender = ?)) AND id < ?
+		ORDER BY id DESC
+		LIMIT 10
+	) AS last_10
+	ORDER BY id ASC;
+	;`
 )
 
 func Get_chat(user_name string, requested_user_name string) ([]serializers.Message, error) {

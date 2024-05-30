@@ -12,6 +12,5 @@ export const OrgIndexPosts = async () => {
     credentials: "include",
   });
   const posts_in_json = await response.json();
-  console.log(posts_in_json);
   AssemblePosts(posts_in_json);
 };

@@ -98,7 +98,6 @@ export const post_component = () => {
 };
 export const Home = async () => {
   const myCookie = getCookie('session_id');
-  // console.log(myCookie);  // Logs the value of 'myCookieName' cookie, if it exists
   if (!sessionStorage.getItem("user_token") && !myCookie) {
     window.location.assign("/login");
     return;
@@ -142,8 +141,11 @@ export const Home = async () => {
     create_post_Btn.addEventListener("click", async () => {
       const post_text = document.getElementById("c-post-textArea").value;
       const raw_image_file = document.getElementById("c-img-upload").value;
-      const post_category = document.getElementById("cat-choose-Btn").value;
-
+      // stop removing the fix for category value capture
+      let post_cat_arr = [];
+      const post_category = parseInt(document.getElementById("c-post-cat-select").value);
+      post_cat_arr.push(post_category);
+      // end!!!
       const Image_Converstion_wrapper = async () => {
         return await convertImageToBase64(raw_image_file);
       };
@@ -154,7 +156,7 @@ export const Home = async () => {
         user_token: sessionStorage.getItem("user_token"),
         post_text: post_text,
         post_image_base64: postImage,
-        post_category: post_category,
+        post_category: post_cat_arr,
       };
 
       try {
@@ -197,19 +199,15 @@ export const Home = async () => {
 
   const likeImages = document.querySelectorAll(".p-likeBtn img");
 
-  console.log(likeImages);
 
   likeImages.forEach((likeBtn) => {
-    console.log(likeBtn.getAttribute("src"));
 
     likeBtn.addEventListener("click", () => {
       if (likeBtn.getAttribute("src") === noheart) {
         likeBtn.setAttribute("src", heart);
-        console.log("liked");
         // add other like event
       } else {
         likeBtn.setAttribute("src", noheart);
-        console.log("unliked");
         // add other unlike event
       }
     });
@@ -226,22 +224,22 @@ export const Home = async () => {
 export function getCookie(name) {
   // Create a string to search for the cookie name followed by an equal sign
   const nameEQ = name + "=";
-  
+
   // Split the document.cookie string into an array of individual cookies
   const ca = document.cookie.split(';');
-  
+
   // Loop through each cookie in the array
   for (let i = 0; i < ca.length; i++) {
     // Get the current cookie, trimming any leading whitespace
     let c = ca[i].trim();
-    
+
     // Check if the current cookie starts with the name we are looking for
     if (c.indexOf(nameEQ) === 0) {
       // If so, return the value of the cookie (everything after the equal sign)
       return c.substring(nameEQ.length, c.length);
     }
   }
-  
+
   // If the cookie was not found, return null
   return null;
 }

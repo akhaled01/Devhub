@@ -79,8 +79,6 @@ export const HandleSignup = async () => {
     formData["image"] = EncodedAvatar;
     formData["age"] = parseInt(formData["age"]);
 
-    console.log(formData);
-
     try {
       const response = await fetch(BACKENDURL + "/auth/signup", {
         method: "POST",

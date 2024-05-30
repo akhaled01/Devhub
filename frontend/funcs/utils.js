@@ -126,7 +126,6 @@ export const EncodeBase64Image = (callback) => {
 
     reader.onload = function (e) {
       const bs64str = e.target.result;
-      console.log("Base64 Image:", bs64str);
       callback(bs64str); // Call the callback function with the base64 string
     };
 
@@ -139,7 +138,6 @@ export const EncodeBase64Image = (callback) => {
         const reader = new FileReader();
         reader.onload = function (e) {
           const bs64str = e.target.result;
-          console.log("Default Base64 Image:", bs64str);
           callback(bs64str); // Call the callback function with the base64 string of the custom image
         };
         reader.readAsDataURL(blob);
@@ -166,7 +164,6 @@ export const SetSessionStorageStats = async () => {
   });
   if (res.ok) {
     const json_data = await res.json();
-    console.log("Fetching user stats", json_data);
     sessionStorage.setItem("user_token", json_data.session_id);
     sessionStorage.setItem("username", json_data.username);
     sessionStorage.setItem("email", json_data.email);
@@ -241,7 +238,6 @@ export function convertImageToBase64(file) {
     reader.onloadend = function () {
       if (reader.readyState === FileReader.DONE) {
         const base64String = reader.result;
-        console.log(base64String);
         resolve(base64String);
       } else {
         reject(new Error("Error reading file"));

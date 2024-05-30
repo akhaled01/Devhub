@@ -130,7 +130,6 @@ export const fill_in_post = async (data) => {
   if (data.liked) {
     liked_img = heart;
   }
-  console.log(data);
   if (data.image) {
     postDiv.innerHTML = /*html*/ `
                 <div class="f-post" id="${data.id}">

@@ -15,7 +15,6 @@ export const AssembleOnlineUsersChat = (data) => {
   contact_div.innerHTML = "";
   data.req_Content.forEach((user_obj) => {
     //let user = user_obj.user;
-    console.log(user_obj);
     if (user_obj.username !== sessionStorage.getItem("username")) {
       const contactDiv = document.createElement("div");
       contactDiv.classList.add("contact");

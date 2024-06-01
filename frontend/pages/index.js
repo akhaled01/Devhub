@@ -157,7 +157,9 @@ export const PostModal = async (postID) => {
           </div>
           <div class="p-commentCount">
             <img src="${comment}" alt="comment" />
-            <div class="p-comment-Stat">${data.number_of_comments}</div>
+            <div class="p-comment-Stat" id="p-comment-Stat-num">${
+              data.number_of_comments
+            }</div>
           </div>
         </div>
       </div>
@@ -243,6 +245,16 @@ export const PostModal = async (postID) => {
         document.getElementById("no-comments")
           ? document.getElementById("no-comments").remove()
           : "";
+
+        document.getElementById("p-comment-Stat-num").innerText =
+          parseInt(document.getElementById("p-comment-Stat-num").innerText) + 1;
+
+        document
+          .getElementById(`post_${postID}`)
+          .getElementsByClassName("p-comment-Stat")
+          .item(0).innerText = parseInt(
+          document.getElementById("p-comment-Stat-num").innerText
+        );
 
         document.getElementById("comment-input").value = "";
         render_comments(postID);

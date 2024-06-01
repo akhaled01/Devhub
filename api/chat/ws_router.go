@@ -9,4 +9,5 @@ var ws_routes = map[string]func(ws *types.User, request string) error{
 	"Open_chat":     Open_chat,
 	"get_dms":       Get_DMs,
 	"load_messages": Load_Messages,
+	"typing-event":  TIP,
 }

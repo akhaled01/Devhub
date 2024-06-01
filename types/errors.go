@@ -16,4 +16,5 @@ var (
 	ErrCats              = errors.New("error getting full category details")
 	ErrImage             = errors.New("error dealing with images correctly")
 	ErrSessionNotFound   = errors.New("session not found")
+	ErrNoConn            = errors.New("user not connected")
 )

@@ -197,12 +197,35 @@ export const PostModal = async (postID) => {
       await RedoStats();
       if (likeBtn.getAttribute("src") === noheart) {
         likeBtn.setAttribute("src", heart);
+
         document.getElementById("p-likeStat").innerText =
           parseInt(document.getElementById("p-likeStat").innerText) + 1;
+
+        document
+          .getElementById(`post_${postID}`)
+          .querySelector(".p-likeBtn>img").src = heart;
+
+        document
+          .getElementById(`post_${postID}`)
+          .getElementsByClassName("p-likeStat")
+          .item(0).innerText = parseInt(
+          document.getElementById("p-likeStat").innerText
+        );
       } else {
         likeBtn.setAttribute("src", noheart);
         document.getElementById("p-likeStat").innerText =
           parseInt(document.getElementById("p-likeStat").innerText) - 1;
+
+        document
+          .getElementById(`post_${postID}`)
+          .querySelector(".p-likeBtn>img").src = noheart;
+
+        document
+          .getElementById(`post_${postID}`)
+          .getElementsByClassName("p-likeStat")
+          .item(0).innerText = parseInt(
+          document.getElementById("p-likeStat").innerText
+        );
       }
     });
 

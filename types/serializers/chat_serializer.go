@@ -38,3 +38,9 @@ type Load_Messages_Request struct {
 	User_id  string `json:"user_id"`
 	Begin_id int    `json:"begin_id"`
 }
+
+type TIP_Request struct {
+	Sender_name    string `json:"sender_name"`
+	Recipient_name string `json:"recipient_name"`
+	SignalType     string `json:"signal_type"` // can be "start" or "stop"
+}

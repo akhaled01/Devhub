@@ -29,8 +29,6 @@ ws.onmessage = (e) => {
   } else if (data.type === "DMs") {
     if (document.getElementById("c-contacts")) {
       AssembleOnlineUsersChat(data);
-    } else {
-      AssembleOnlineUsersIndex(data);
     }
   } else if (data.type === "open_chat_response") {
     console.log(data,"im in chat with",data.req_Content);
@@ -48,6 +46,9 @@ ws.onmessage = (e) => {
         new Date(m.timestamp)
       );
     });
+  } else if (data.type === "typing_in_progress") {
+    let data = JSON.parse(e.data);
+    
   } else {
     let data = JSON.parse(e.data);
     if (data.req_Content.length === 0) {

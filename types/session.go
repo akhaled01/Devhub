@@ -100,3 +100,12 @@ func UserHasSessions(user_id uuid.UUID) (*Session, bool) {
 	}
 	return (&Session{}), false
 }
+
+func UserHasSessionByName(username string) (*Session, bool) {
+	for _, s := range Sessions {
+		if s.User.Username == username {
+			return s, true
+		}
+	}
+	return (&Session{}), false
+}

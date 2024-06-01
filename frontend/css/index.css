@@ -808,6 +808,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   cursor: pointer;
   transition-duration: 0.3s;
   padding: 10px 10px;
@@ -872,8 +873,7 @@ button:hover {
   font-weight: 600;
 }
 
-.offline
-{
+.offline {
   color: rgb(81, 77, 77);
   font-weight: 600;
 }
@@ -886,7 +886,6 @@ button:hover {
   display: inline-block;
   margin-left: 5px;
 }
-
 
 .user-list > li {
   cursor: pointer;
@@ -1198,3 +1197,101 @@ transition-duration: .5s;
   margin-top: 1em;
 }
 
+.typing-indicator {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  z-index: 4;
+}
+
+#TIP_sender {
+  color: white;
+}
+
+.typing-circle {
+  width: 4px;
+  height: 4px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #fff;
+  left: 15%;
+  transform-origin: 50%;
+  animation: typing-circle7124 0.5s alternate infinite ease;
+}
+
+@keyframes typing-circle7124 {
+  0% {
+    top: 20px;
+    height: 5px;
+    border-radius: 50px 50px 25px 25px;
+    transform: scaleX(1.7);
+  }
+
+  40% {
+    height: 8px;
+    border-radius: 50%;
+    transform: scaleX(1);
+  }
+
+  100% {
+    top: 0%;
+  }
+}
+
+.typing-circle:nth-child(2) {
+  left: 45%;
+  animation-delay: 0.2s;
+}
+
+.typing-circle:nth-child(3) {
+  left: auto;
+  right: 15%;
+  animation-delay: 0.3s;
+}
+
+.typing-shadow {
+  width: 5px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 30px;
+  transform-origin: 50%;
+  z-index: 3;
+  left: 15%;
+  filter: blur(1px);
+  animation: typing-shadow046 0.5s alternate infinite ease;
+}
+
+@keyframes typing-shadow046 {
+  0% {
+    transform: scaleX(1.5);
+  }
+
+  40% {
+    transform: scaleX(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scaleX(0.2);
+    opacity: 0.4;
+  }
+}
+
+.typing-shadow:nth-child(4) {
+  left: 45%;
+  animation-delay: 0.2s;
+}
+
+.typing-shadow:nth-child(5) {
+  left: auto;
+  right: 15%;
+  animation-delay: 0.3s;
+}
+
+#TIP_indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

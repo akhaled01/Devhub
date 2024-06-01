@@ -42,7 +42,7 @@ export const AssembleOnlineUsersChat = (data) => {
 
       contactDiv.appendChild(nameDiv);
       contact_div.appendChild(contactDiv);
-
+      
       document
         .getElementById(user_obj.username)
         .addEventListener("click", () => {
@@ -71,10 +71,12 @@ export const AssembleOnlineUsersIndex = (data) => {
 
       list_div.appendChild(user_div);
 
-      document.getElementById(user_obj.username).addEventListener("click", () => {
-        SaveCurrentChatUser(user_obj.username);
-        window.location.assign("/chat");
-      });
+      document
+        .getElementById(user_obj.username)
+        .addEventListener("click", () => {
+          SaveCurrentChatUser(user_obj.username);
+          window.location.assign("/chat");
+        });
     }
   });
 };

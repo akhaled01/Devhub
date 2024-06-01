@@ -294,5 +294,58 @@ func Load_Messages(user *types.User, request string) error {
 	user.Conn.WriteMessage(websocket.TextMessage, json_msg)
 
 	return nil
+}
 
+/*
+This is the `typing-in-progress` engine, it sends a signal to the recipient
+
+"start" == user typing
+
+"stop" == user not typing / stopped typing
+
+json sample (sender):
+
+	{
+		"type": "typing_in_progress",
+		"sender_name": "user_name",
+		"signal_type": "start"
+	}
+
+json sample (recipient):
+
+	{
+		"type": "typing_in_progress",
+		"sender": "user_name",
+		"is_typing": true
+	}
+*/
+func TIP(user *types.User, request string) error {
+	message_contents := ser.TIP_Request{}
+
+	if err := json.Unmarshal([]byte(request), &message_contents); err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		return err
+	}
+
+	is_typing := false
+
+	if recp, ok := types.UserHasSessionByName(message_contents.Recipient_name); ok {
+		if message_contents.SignalType == "start" {
+			is_typing = true
+		}
+
+		recp.Conn.WriteJSON(struct {
+			Type     string `json:"type"`
+			Sender   string `json:"sender"`
+			IsTyping bool   `json:"is_typing"`
+		}{
+			Type:     "typing_in_progress",
+			Sender:   user.Username,
+			IsTyping: is_typing,
+		})
+	} else {
+		return types.ErrNoConn
+	}
+
+	return nil
 }

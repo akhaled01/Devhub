@@ -261,3 +261,6 @@ export const sortByOnlineAndName = (arr) => {
     return a.username.localeCompare(b.username);
   });
 };
+
+const AddTypingIndicator = (username) => {
+};

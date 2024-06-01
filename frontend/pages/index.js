@@ -11,6 +11,7 @@ import { ws } from "../main";
 import { SetSessionStorageStats } from "../funcs/utils";
 import { creat_comment, fetch_post } from "./post";
 import { RedoStats, render_comments } from "../funcs/comments";
+import { RecordPostLikeEvent } from "../funcs/likes";
 
 let Number_of_liked_comments = 0;
 let Number_of_comments = 0;
@@ -150,9 +151,9 @@ export const PostModal = async (postID) => {
         <div class="p-stats">
           <div class="p-likeCount">
             <div class="p-likeBtn">
-              <img src="${liked_img}" alt="like" />
+              <img src="${liked_img}" id="d-post-likeBtn" alt="like" />
             </div>
-            <div class="p-likeStat">${data.likes}</div>
+            <div class="p-likeStat" id="p-likeStat">${data.likes}</div>
           </div>
           <div class="p-commentCount">
             <img src="${comment}" alt="comment" />
@@ -185,6 +186,26 @@ export const PostModal = async (postID) => {
       }
     };
 
+    // handle post likes
+
+    let likeBtn = document.getElementById("d-post-likeBtn");
+
+    likeBtn.addEventListener("click", async () => {
+      console.log("like-post");
+      let post_id = postID;
+      await RecordPostLikeEvent(post_id);
+      await RedoStats();
+      if (likeBtn.getAttribute("src") === noheart) {
+        likeBtn.setAttribute("src", heart);
+        document.getElementById("p-likeStat").innerText =
+          parseInt(document.getElementById("p-likeStat").innerText) + 1;
+      } else {
+        likeBtn.setAttribute("src", noheart);
+        document.getElementById("p-likeStat").innerText =
+          parseInt(document.getElementById("p-likeStat").innerText) - 1;
+      }
+    });
+
     document
       .getElementById("d-c-comment-btn")
       .addEventListener("click", async () => {
@@ -203,7 +224,7 @@ export const PostModal = async (postID) => {
         document.getElementById("comment-input").value = "";
         render_comments(postID);
 
-        await RedoStats()
+        await RedoStats();
       });
 
     render_comments(postID);
@@ -226,15 +247,6 @@ export const Home = async () => {
   // Modal Operations
   var modal = document.getElementById("c-post-modal");
   var modalOpenBtn = document.getElementById("c-post-start");
-
-  const encodedImage = sessionStorage.getItem("avatar"); // replace with the encoded image string
-
-  // const img = new Image();
-  // let url = "data:image/png;base64," + encodedImage;
-  // fetch(url)
-  //   .then((res) => res.blob())
-  //   .then((blob) => {});
-  // document.getElementById("c-avatar").appendChild(img);
 
   if (modalOpenBtn && modal) {
     modalOpenBtn.onclick = function () {

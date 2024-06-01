@@ -16,9 +16,9 @@ type Message struct {
 
 // Message struct with interface field
 type WS_Request struct {
-	Type        string      `json:"type"`
-	Content     interface{} `json:"req_Content"`
-	ChatingWith string      `json:"string"`
+	Type         string      `json:"type"`
+	Content      interface{} `json:"req_Content"`
+	Chating_With string      `json:"string"`
 }
 
 func (msg Message) To_String() string {

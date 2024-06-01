@@ -42,7 +42,7 @@ export const AssembleOnlineUsersChat = (data) => {
 
       contactDiv.appendChild(nameDiv);
       contact_div.appendChild(contactDiv);
-      
+
       document
         .getElementById(user_obj.username)
         .addEventListener("click", () => {
@@ -104,6 +104,21 @@ const OrgChatHTML = (username) => {
   message_input.placeholder = "Write a msg :)";
   mdiv.appendChild(message_input);
 
+  message_input.addEventListener("input", () => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          type: "typing-event",
+          req_Content: {
+            user_id: username,
+          },
+        })
+      );
+    } else {
+      console.error("WebSocket is not open. Ready state is:", ws.readyState);
+    }
+  });
+  
   const send_btn = document.createElement("img");
   send_btn.src = schat;
   send_btn.id = "sendTextBtn";

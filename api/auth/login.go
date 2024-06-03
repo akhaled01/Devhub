@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 	"errors"
-
 	"net/http"
 
 	"RTF/storage/interfaces/comment"
@@ -70,13 +69,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check if a session with this user exists. logout if thats the case
-	if s, has_sessions := types.UserHasSessions(authenticated_user.ID); has_sessions {
-		types.LogOutBySessionToken(w, s.SessionID)
-	}
-
-	session := types.GenSession(authenticated_user)
-
 	encoded_avatar, err := utils.EncodeImage(authenticated_user.Avatar)
 	if err != nil {
 		utils.ErrorConsoleLog("error getting user's avatar")
@@ -84,6 +76,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// check if a session with this user exists. logout if thats the case
+	if s, has_sessions := types.UserHasSessions(authenticated_user.ID); has_sessions {
+		types.LogOutBySessionToken(w, s.SessionID)
+	}
+
+	session := types.GenSession(authenticated_user)
 
 	UserCounts, err := comment.GetUserCounts(authenticated_user.ID)
 	if err != nil {

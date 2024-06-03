@@ -262,5 +262,23 @@ export const sortByOnlineAndName = (arr) => {
   });
 };
 
-const AddTypingIndicator = (username) => {
+/**
+ *
+ * Marks typing in progress
+ *
+ * @param {string} username - username of the typer
+ * @param {bool} is_typing - status of typing
+ */
+export const MarkTyping = (is_typing = false) => {
+  const profileDiv = document.getElementById("r-profile");
+
+  if (is_typing) {
+    const tipDiv = document.createElement("p");
+    tipDiv.id = "typing_in_progress";
+    tipDiv.innerText = "Typing..";
+
+    profileDiv.append(tipDiv);
+  } else {
+    profileDiv.querySelector("#typing_in_progress").remove();
+  }
 };

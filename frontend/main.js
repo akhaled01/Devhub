@@ -31,7 +31,6 @@ ws.onmessage = (e) => {
       AssembleOnlineUsersChat(data);
     }
   } else if (data.type === "open_chat_response") {
-    console.log(data,"im in chat with",data.req_Content);
     if (data.req_Content.length === 0) {
       sessionStorage.setItem("begin_id", 0);
       return;

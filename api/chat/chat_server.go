@@ -9,6 +9,8 @@ import (
 	"RTF/types"
 	ser "RTF/types/serializers"
 	"RTF/utils"
+
+	"github.com/gofrs/uuid"
 )
 
 var mutex sync.Mutex
@@ -55,6 +57,14 @@ func (s *Chat_Server) HandleWS(
 					break
 				}
 				fmt.Println("read error:", err)
+				var session_id uuid.UUID
+
+				for _, s := range types.Sessions {
+					if s.User.ID == user.ID {
+						session_id = s.SessionID
+					}
+				}
+				types.Sessions[session_id].ChatPartnerID = ""
 				break
 			}
 

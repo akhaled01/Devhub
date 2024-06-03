@@ -149,7 +149,6 @@ func Send_Message(sender_user *types.User, request string) error {
 func Open_chat(user *types.User, request string) error {
 	message_contents := &ser.Open_chat_request{}
 	json.Unmarshal([]byte(request), message_contents)
-
 	var session_id uuid.UUID
 
 	for _, s := range types.Sessions {
@@ -167,9 +166,9 @@ func Open_chat(user *types.User, request string) error {
 	}
 
 	response_capusl := &ser.WS_Request{
-		Type:        "open_chat_response",
-		ChatingWith: user.Username,
-		Content:     chat_messages,
+		Type:         "open_chat_response",
+		Chating_With: types.Sessions[session_id].ChatPartnerID,
+		Content:      chat_messages,
 	}
 
 	json_msg, _ := json.Marshal(&response_capusl)

@@ -166,6 +166,7 @@ const OrgChatHTML = (username) => {
       req_Content: {
         user_id: username,
       },
-    })
+    }),
+    sessionStorage.setItem("chat_partner", username),
   );
 };

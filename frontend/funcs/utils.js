@@ -226,8 +226,10 @@ export const NewChatMessage = (
   content.textContent = message;
   actualMessage.appendChild(content);
   messageElement.appendChild(actualMessage);
-  chatArea.appendChild(messageElement);
-  chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+  if (chatArea){
+    chatArea.appendChild(messageElement);
+    chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+  }
 };
 
 export function convertImageToBase64(file) {

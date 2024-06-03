@@ -2,6 +2,7 @@ package chat
 
 import (
 	"errors"
+	"fmt"
 
 	"RTF/storage"
 	"RTF/types"
@@ -57,40 +58,40 @@ func Get_chat(user_name string, requested_user_name string) ([]serializers.Messa
 		return nil, errors.Join(types.ErrExec, err)
 	}
 	defer rows.Close()
-
 	for rows.Next() {
 		chat_message := serializers.Message{}
 
 		if err := rows.Scan(&chat_message.Id, &chat_message.Msg_Content, &chat_message.Timestamp, &chat_message.Sender, &chat_message.Recipient, &chat_message.Msg_Status); err != nil {
 			return nil, errors.Join(types.ErrScan, err)
 		}
-
 		chat_messages = append(chat_messages, chat_message)
 	}
 
-	stmt, err = storage.DB_Conn.Prepare(UPDATE_MESSAGE_STATUS)
+	if len(chat_messages) > 0 {
+		stmt, err = storage.DB_Conn.Prepare(UPDATE_MESSAGE_STATUS)
 
-	if err != nil {
-		return nil, errors.Join(types.ErrPrepare, err)
+		if err != nil {
+			return nil, errors.Join(types.ErrPrepare, err)
+		}
+		defer stmt.Close()
+		fmt.Println(requested_user_name, user_name)
+		result, err := stmt.Exec(requested_user_name, user_name)
+
+		if err != nil {
+			return nil, errors.Join(types.ErrExec, err)
+		}
+
+		// Check the number of affected rows
+		rowsAffected, err := result.RowsAffected()
+		if err != nil {
+			return nil, errors.Join(types.ErrExec, err)
+		}
+
+		if rowsAffected == 0 {
+			fmt.Println("no rows updated")
+		}
 	}
-	defer stmt.Close()
 
-	result, err := stmt.Exec(requested_user_name, user_name)
-
-	if err != nil {
-		return nil, errors.Join(types.ErrExec, err)
-	}
-
-	// Check the number of affected rows
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return nil, errors.Join(types.ErrExec, err)
-	}
-
-	if rowsAffected == 0 {
-		// Handle the case where no rows were updated
-		return nil, errors.New("no rows were updated")
-	}
 	return chat_messages, nil
 }
 

@@ -1,6 +1,12 @@
 import { ws } from "../main";
 import schat from "../assets/sendChat.svg";
-import { NewChatMessage, sortByOnlineAndName } from "./utils";
+import {
+  NewChatMessage,
+  delay,
+  sendTypingStart,
+  sendTypingStop,
+  sortByOnlineAndName,
+} from "./utils";
 import { GetSessionStorageStats } from "../pages";
 
 export let CurrentChatUser = null;
@@ -47,7 +53,9 @@ export const AssembleOnlineUsersChat = (data) => {
       document
         .getElementById(user_obj.username)
         .addEventListener("click", () => {
-          document.querySelector(".red-circle").remove();
+          if (document.querySelector(".red-circle")) {
+            document.querySelector(".red-circle").remove();
+          }
           OrgChatHTML(user_obj.username);
         });
     }
@@ -108,14 +116,13 @@ const OrgChatHTML = (username) => {
 
   message_input.addEventListener("input", () => {
     if (ws.readyState === WebSocket.OPEN) {
-      ws.send(
-        JSON.stringify({
-          type: "typing-event",
-          req_Content: {
-            user_id: username,
-          },
-        })
-      );
+      document.addEventListener("keydown", () => {
+        sendTypingStart();
+      });
+
+      document.addEventListener("keyup", () => {
+        sendTypingStop();
+      });
     } else {
       console.error("WebSocket is not open. Ready state is:", ws.readyState);
     }

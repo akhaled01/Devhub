@@ -4,7 +4,10 @@ import {
   AssembleOnlineUsersIndex,
   currentScrollHeight,
 } from "./funcs/sockets";
-import { NewChatMessage, PaginateHistoricalMessage } from "./funcs/utils";
+import {
+  NewChatMessage,
+  PaginateHistoricalMessage,
+} from "./funcs/utils";
 
 // handle websocket connection
 export const ws = new WebSocket("ws://localhost:8080/ws");
@@ -52,7 +55,33 @@ ws.onmessage = (e) => {
       );
     });
   } else if (data.type === "typing_in_progress") {
-    let data = JSON.parse(e.data);
+    console.log(data);
+    if (document.getElementById("r-profile")) {
+      if (
+        data.is_typing &&
+        !document.getElementById("r-profile").querySelector(".typing-indicator") &&
+        data.sender === sessionStorage.getItem("chat_partner")
+      ) {
+        document.getElementById("r-profile").innerHTML += `
+      <div class="typing-indicator">
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+        <div class="typing-circle"></div>
+      </div>
+      `;
+      } else {
+        if (
+          document
+            .getElementById("r-profile")
+            .querySelector(".typing-indicator")
+        ) {
+          document
+            .getElementById("r-profile")
+            .querySelector(".typing-indicator")
+            .remove();
+        }
+      }
+    }
   } else {
     let data = JSON.parse(e.data);
     if (data.req_Content.length === 0) {

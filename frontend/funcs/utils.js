@@ -3,6 +3,7 @@ import noheart from "../assets/unliked.svg";
 import comment from "../assets/comment.svg";
 import heart from "../assets/liked.svg";
 import { PostModal } from "../pages";
+import { ws } from "../main";
 /**
  *
  * Follow up login after signup
@@ -229,9 +230,6 @@ export const NewChatMessage = (
   if (chatArea) {
     chatArea.appendChild(messageElement);
     chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
-
-
-
   }
 };
 
@@ -329,3 +327,56 @@ export const MarkTyping = (is_typing = false) => {
     profileDiv.querySelector("#typing_in_progress").remove();
   }
 };
+
+export function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+export const throttle = (func, limit) => {
+  let lastFunc;
+  let lastRan;
+  return function (...args) {
+    const context = this;
+    if (!lastRan) {
+      func.apply(context, args);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function () {
+        if (Date.now() - lastRan >= limit) {
+          func.apply(context, args);
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
+    }
+  };
+};
+
+export const sendTypingStart = throttle(() => {
+  console.log("send");
+  ws.send(
+    JSON.stringify({
+      type: "typing-event",
+      req_Content: {
+        recipient_name: sessionStorage.getItem("chat_partner"),
+        signal_type: "start",
+        Sender_name: sessionStorage.getItem("username"),
+      },
+    })
+  );
+}, 2000);
+
+// Throttled function to send the "stop" typing event
+export const sendTypingStop = throttle(() => {
+  console.log("stop");
+  ws.send(
+    JSON.stringify({
+      type: "typing-event",
+      req_Content: {
+        recipient_name: sessionStorage.getItem("chat_partner"),
+        signal_type: "stop",
+        Sender_name: sessionStorage.getItem("username"),
+      },
+    })
+  );
+}, 3000);

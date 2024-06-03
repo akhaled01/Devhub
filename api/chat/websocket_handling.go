@@ -319,7 +319,10 @@ json sample (recipient):
 	}
 */
 func TIP(user *types.User, request string) error {
+	fmt.Println("RECV typing event")
 	message_contents := ser.TIP_Request{}
+
+	fmt.Println(request)
 
 	if err := json.Unmarshal([]byte(request), &message_contents); err != nil {
 		utils.ErrorConsoleLog(err.Error())
@@ -328,12 +331,18 @@ func TIP(user *types.User, request string) error {
 
 	is_typing := false
 
+	// fmt.Println(message_contents.Recipient_name)
+	// fmt.Println(message_contents.Sender_name)
+	// fmt.Println(message_contents.SignalType)
+
 	if recp, ok := types.UserHasSessionByName(message_contents.Recipient_name); ok {
 		if message_contents.SignalType == "start" {
 			is_typing = true
 		}
 
-		recp.Conn.WriteJSON(struct {
+		fmt.Println("check_U_name")
+
+		recp.User.Conn.WriteJSON(struct {
 			Type     string `json:"type"`
 			Sender   string `json:"sender"`
 			IsTyping bool   `json:"is_typing"`

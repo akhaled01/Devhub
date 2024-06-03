@@ -8,9 +8,9 @@
   --bg-component-color: #1c1818;
 }
 
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar {
   display: none;
-}
+} */
 
 *::selection {
   color: #82f5ff;
@@ -479,6 +479,8 @@ a {
   color: white;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   text-align: justify;
+  text-wrap: wrap;
+  word-break: break-all;
 }
 
 .p-stats {
@@ -1007,6 +1009,10 @@ transition-duration: .5s;
   gap: 10px;
 }
 
+/* #message_space::-webkit-scrollbar {
+  display: block;
+} */
+
 #mdiv {
   width: 100%;
   height: 20vh;
@@ -1176,6 +1182,11 @@ transition-duration: .5s;
 
 #post-creation-date {
   font-style: italic;
+}
+
+#post-content {
+  text-wrap: wrap;
+  word-break: break-all;
 }
 
 .comment {

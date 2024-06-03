@@ -64,7 +64,9 @@ func (s *Chat_Server) HandleWS(
 						session_id = s.SessionID
 					}
 				}
-				types.Sessions[session_id].ChatPartnerID = ""
+				if types.Sessions[session_id] != nil {
+					types.Sessions[session_id].ChatPartnerID = ""
+				}
 				break
 			}
 

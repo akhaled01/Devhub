@@ -4,6 +4,7 @@ import { NewChatMessage, sortByOnlineAndName } from "./utils";
 import { GetSessionStorageStats } from "../pages";
 
 export let CurrentChatUser = null;
+export let currentScrollHeight = undefined;
 
 /**
  *  Takes JSON data and assembles online users
@@ -46,6 +47,7 @@ export const AssembleOnlineUsersChat = (data) => {
       document
         .getElementById(user_obj.username)
         .addEventListener("click", () => {
+          document.querySelector(".red-circle").remove();
           OrgChatHTML(user_obj.username);
         });
     }
@@ -118,7 +120,7 @@ const OrgChatHTML = (username) => {
       console.error("WebSocket is not open. Ready state is:", ws.readyState);
     }
   });
-  
+
   const send_btn = document.createElement("img");
   send_btn.src = schat;
   send_btn.id = "sendTextBtn";
@@ -148,6 +150,9 @@ const OrgChatHTML = (username) => {
   message_Box.addEventListener("scroll", function (e) {
     if (e.target.scrollTop === 0) {
       let beginid = parseInt(sessionStorage.getItem("begin_id"));
+
+      currentScrollHeight = e.target.scrollHeight;
+
       ws.send(
         JSON.stringify({
           type: "load_messages",
@@ -167,6 +172,6 @@ const OrgChatHTML = (username) => {
         user_id: username,
       },
     }),
-    sessionStorage.setItem("chat_partner", username),
+    sessionStorage.setItem("chat_partner", username)
   );
 };

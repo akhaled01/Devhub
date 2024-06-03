@@ -226,10 +226,55 @@ export const NewChatMessage = (
   content.textContent = message;
   actualMessage.appendChild(content);
   messageElement.appendChild(actualMessage);
-  if (chatArea){
+  if (chatArea) {
     chatArea.appendChild(messageElement);
     chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+
+
+
   }
+};
+
+/**
+ * Ensure correct pagination of historical messages
+ */
+export const PaginateHistoricalMessage = (
+  message,
+  is_self,
+  name = "",
+  time = new Date()
+) => {
+  const chatArea = document.getElementById("message_space");
+  const messageElement = document.createElement("div");
+  const actualMessage = document.createElement("div");
+  let prev_scroll_pos = chatArea.scrollTop;
+  // is_self checks if the message came from the current user, not the
+  // other one
+  if (is_self) {
+    messageElement.classList.add("mself");
+    actualMessage.classList.add("self");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">You</div>
+              <div class="date">${time.toDateString()}</div>
+            </div>`;
+  } else {
+    messageElement.classList.add("m");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">${name}</div>
+              <div class="date">${time.toDateString()}</div>
+            </div>`;
+  }
+
+  const content = document.createElement("p");
+  content.textContent = message;
+  actualMessage.appendChild(content);
+
+  actualMessage.classList.add("message");
+
+  messageElement.appendChild(actualMessage);
+
+  chatArea.insertAdjacentElement("afterbegin", messageElement);
+  chatArea.scrollTop = prev_scroll_pos;
 };
 
 export function convertImageToBase64(file) {

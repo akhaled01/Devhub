@@ -11,6 +11,9 @@ export const OrgIndexPosts = async () => {
   const response = await fetch(BACKENDURL + "/post/all", {
     credentials: "include",
   });
+  if (response.status == 401) {
+    window.location.assign("/login")
+  }
   const posts_in_json = await response.json();
   AssemblePosts(posts_in_json);
 };

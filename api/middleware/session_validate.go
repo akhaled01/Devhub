@@ -24,7 +24,7 @@ func SessionValidationMiddleware(next http.Handler) http.Handler {
 			}
 			utils.ErrorConsoleLog("error extracting session_id cookie")
 			utils.PrintErrorTrace(err)
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
@@ -32,7 +32,7 @@ func SessionValidationMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			utils.ErrorConsoleLog("error extracting session_id cookie")
 			utils.PrintErrorTrace(err)
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 

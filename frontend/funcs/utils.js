@@ -82,7 +82,7 @@ export const AssemblePosts = (posts_in_json = []) => {
           </div>
           <div class="p-creationDate">${new Date(
             post_data.creationDate
-          ).toDateString()}</div>
+          ).toLocaleDateString()}</div>
         </div>
         <div class="p-main">
           <div class="p-content">
@@ -217,13 +217,13 @@ export const NewChatMessage = (
     actualMessage.classList.add("self");
     actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">You</div>
-              <div class="date">${time.toDateString()}</div>
+              <div class="date">${time.toLocaleDateString()}</div>
             </div>`;
   } else {
     messageElement.classList.add("m");
     actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">${name}</div>
-              <div class="date">${time.toDateString()}</div>
+              <div class="date">${time.toLocaleDateString()}</div>
             </div>`;
   }
 
@@ -260,13 +260,13 @@ export const PaginateHistoricalMessage = (
     actualMessage.classList.add("self");
     actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">You</div>
-              <div class="date">${time.toDateString()}</div>
+              <div class="date">${time.toLocaleDateString()}</div>
             </div>`;
   } else {
     messageElement.classList.add("m");
     actualMessage.innerHTML += `<div class="sender-info">
               <div class="sname">${name}</div>
-              <div class="date">${time.toDateString()}</div>
+              <div class="date">${time.toLocaleDateString()}</div>
             </div>`;
   }
 

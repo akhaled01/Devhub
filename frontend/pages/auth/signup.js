@@ -25,7 +25,7 @@ export const Signup = () => {
       <label for="gender" >Gender:</label><br>
       </div>
       <div style="color:white;" required >
-      <input id="gender" type="radio" name="gender" value="M"> Male
+      <input id="gender" type="radio" name="gender" value="M" checked> Male
       <input id="gender" type="radio" name="gender" value="F"> Female
       </div>
     </div>

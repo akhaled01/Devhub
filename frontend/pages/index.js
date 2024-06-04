@@ -241,7 +241,8 @@ export const PostModal = async (postID) => {
       .getElementById("d-c-comment-btn")
       .addEventListener("click", async () => {
         console.log("submit-comment");
-        let comment = document.getElementById("comment-input").value;
+        let comment = document.getElementById("comment-input").value.trim();
+        if (!comment) return;
         let post_id = postID;
         await creat_comment({
           comment_text: comment,
@@ -306,6 +307,9 @@ export const Home = async () => {
 
   if (create_post_Btn) {
     create_post_Btn.addEventListener("click", async () => {
+      if (!document.getElementById("c-post-textArea").value.trim()) {
+        return;
+      }
       const post_text = encodeURIComponent(
         document.getElementById("c-post-textArea").value
       );

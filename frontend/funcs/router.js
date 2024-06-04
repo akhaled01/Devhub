@@ -35,8 +35,6 @@ export const ForumRouter = () => {
     route.component();
     UpdateCSS(route.stylesheet);
   } else {
-    Home(); // Default route
-    SetSessionStorageStats();
-    UpdateCSS("/css/index.css"); // Default stylesheet
+    window.location.assign("/")
   }
 };

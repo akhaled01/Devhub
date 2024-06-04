@@ -1,5 +1,9 @@
 import { BACKENDURL } from "./vars";
-import { EncodeBase64Image, SetSessionStorage,SetSessionStorageStats } from "./utils";
+import {
+  EncodeBase64Image,
+  SetSessionStorage,
+  SetSessionStorageStats,
+} from "./utils";
 import { Flogin } from "./utils";
 /**
  * Validates signup form data
@@ -38,6 +42,10 @@ const ValidateData = () => {
 
   if (username.length > 20 || email.length > 30) {
     return "Username and email should each be up to 20 and 30 characters long, respectively.";
+  }
+
+  if (!email.endsWith("@gmail.com")) {
+    return "invalid email";
   }
 
   if (password.length < 6) {

@@ -1193,6 +1193,10 @@ transition-duration: .5s;
   font-style: italic;
 }
 
+.sname {
+  font-weight: 900;
+}
+
 #post-content {
   text-wrap: wrap;
   word-break: break-all;

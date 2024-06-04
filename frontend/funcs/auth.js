@@ -1,6 +1,6 @@
 import { BACKENDURL } from "./vars";
-import { EncodeBase64Image, SetSessionStorage } from "./utils";
-
+import { EncodeBase64Image, SetSessionStorage,SetSessionStorageStats } from "./utils";
+import { Flogin } from "./utils";
 /**
  * Validates signup form data
  * @returns error string if there is
@@ -79,8 +79,6 @@ export const HandleSignup = async () => {
     formData["image"] = EncodedAvatar;
     formData["age"] = parseInt(formData["age"]);
 
-    console.log(formData);
-
     try {
       const response = await fetch(BACKENDURL + "/auth/signup", {
         method: "POST",
@@ -100,7 +98,7 @@ export const HandleSignup = async () => {
             break;
         }
       } else {
-        window.location.assign("/login"); //TODO: If you can, remimplement FLogin
+        await Flogin(formData.username, formData.password);
       }
     } catch (error) {
       console.error("Signup error:", error);

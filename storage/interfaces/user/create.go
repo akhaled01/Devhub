@@ -11,8 +11,8 @@ import (
 	"github.com/mattn/go-sqlite3"
 )
 
-const NEWUSERQUERY = `INSERT INTO users (user_id, user_email, user_name, 
-	first_name, last_name, avatar_path, user_pwd) VALUES (?, ?, ?, ?, ?, ?, ?)`
+const NEWUSERQUERY = `INSERT INTO users (user_id, user_email, user_name,
+	first_name, last_name, avatar_path, user_pwd, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
 var ErrUserExist = errors.New("a user with either either the username/email already exists")
 
@@ -39,7 +39,7 @@ func SaveUserInDB(u types.SignupRequest) error {
 		return errors.Join(errors.New("error creating uuid"), err)
 	}
 
-	if _, err := stmt.Exec(new_user_id.String(), u.Email, u.Username, u.FirstName, u.LastName, u.Avatar, hashedPass); err != nil {
+	if _, err := stmt.Exec(new_user_id.String(), u.Email, u.Username, u.FirstName, u.LastName, u.Avatar, hashedPass, u.Gender); err != nil {
 		sqliteErr, ok := err.(sqlite3.Error) // extract constraint violation error
 		if ok && sqliteErr.Code == sqlite3.ErrConstraint {
 			return ErrUserExist

@@ -9,6 +9,8 @@ import (
 	"RTF/types"
 	ser "RTF/types/serializers"
 	"RTF/utils"
+
+	"github.com/gofrs/uuid"
 )
 
 var mutex sync.Mutex
@@ -28,7 +30,7 @@ func NewServer() *Chat_Server {
 /* Do what you want to do with the connection */
 func (s *Chat_Server) HandleWS(
 	user *types.User,
-	ws_routes map[string]func(user *types.User, request string),
+	ws_routes map[string]func(user *types.User, request string) error,
 ) {
 	utils.InfoConsoleLog(fmt.Sprint("New connection from client: ", user.Conn.RemoteAddr()))
 	ListenerChan <- true
@@ -48,12 +50,23 @@ func (s *Chat_Server) HandleWS(
 
 		msg := &ser.WS_Request{}
 		for {
+			// Listen for messages (blocking)
 			err := user.Conn.ReadJSON(msg)
 			if err != nil {
 				if err == io.EOF {
 					break
 				}
 				fmt.Println("read error:", err)
+				var session_id uuid.UUID
+
+				for _, s := range types.Sessions {
+					if s.User.ID == user.ID {
+						session_id = s.SessionID
+					}
+				}
+				if types.Sessions[session_id] != nil {
+					types.Sessions[session_id].ChatPartnerID = ""
+				}
 				break
 			}
 

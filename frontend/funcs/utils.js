@@ -1,7 +1,9 @@
 import { BACKENDURL } from "./vars";
 import noheart from "../assets/unliked.svg";
 import comment from "../assets/comment.svg";
-
+import heart from "../assets/liked.svg";
+import { PostModal } from "../pages";
+import { ws } from "../main";
 /**
  *
  * Follow up login after signup
@@ -20,6 +22,7 @@ export const Flogin = async (email, pass) => {
       credential: email,
       password: pass,
     }),
+    credentials: "include",
   });
 
   if (res.ok) {
@@ -49,55 +52,67 @@ export const UpdateCSS = (stylesheet) => {
  * @param {any[]} posts_in_json
  */
 export const AssemblePosts = (posts_in_json = []) => {
-  document.getElementById("posts").innerHTML = "";
+  const mainWrapper = document.getElementById("main_wrapper");
+  mainWrapper.innerHTML = "";
+
   posts_in_json.forEach((post_data) => {
+    const gender = post_data.user.gender;
+    const liked_img = post_data.liked ? heart : noheart;
     let text = post_data.content + "";
 
-    if (text.length > 255) {
-      text = text.slice(0, 255 - "...".length) + "...";
+    if (text.length > 100) {
+      text = text.slice(0, 103 - "...".length) + "..."; // truncate
     }
 
-    document.getElementById("posts").innerHTML += `<a href="/post/${
+    const postHTML = `
+      <div class="f-post ${!post_data.Image_Path ? " noimage" : ""}" id="post_${
       post_data.id
-    }"><div class="f-post ${!post_data.Image_Path ? "noimage" : ""}" id=${
-      post_data.id
-    }>
-  <div class="p-header">
-    <div class="p-profileInfo">
-      <div class="p-profile-pic"></div>
-      <div class="p-nickname">${post_data.user.username}</div>
-    </div>
-    <div class="p-creationDate">${new Date(
-      post_data.creationDate
-    ).toDateString()}</div>
-  </div>
-  <div class="p-main">
-    <div class="p-content">
-      ${text}
-      ${
-        post_data.Image_Path
-          ? `<div class="p-image">
-        <img src=${post_data.Image_Path} alt="post image">
-      </div>`
-          : ""
-      }
-    </div>
-    <div class="p-stats">
-      <div class="p-likeCount">
-        <div class="p-likeBtn">
-          <img src="${noheart}" alt="like" />
+    }">
+        <div class="p-header">
+          <div class="p-profileInfo">
+            <div class="p-profile-pic gender-${gender}">${post_data.user.username[0].toUpperCase()}</div>
+            <div class="p-nickname">${post_data.user.username}</div>
+          </div>
+          <div class="p-creationDate">${new Date(
+            post_data.creationDate
+          ).toDateString()}</div>
         </div>
-        <div class="p-likeStat">${post_data.likes}</div>
+        <div class="p-main">
+          <div class="p-content">
+            ${text}
+            ${
+              post_data.Image_Path
+                ? `<div class="p-image"><img src=${post_data.Image_Path} alt="post image"></div>`
+                : ""
+            }
+          </div>
+          <div class="p-stats">
+            <div class="p-likeCount">
+              <div class="p-likeBtn"><img src="${liked_img}" alt="like" /></div>
+              <div class="p-likeStat">${post_data.likes}</div>
+            </div>
+            <div class="p-commentCount">
+              <img src="${comment}" alt="comment" />
+              <div class="p-comment-Stat">${post_data.number_of_comments}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-Category">
+          <p>#${post_data.category}</p>
+        </div>
       </div>
-      <div class="p-commentCount">
-        <img src="${comment}" alt="comment" />
-        <div class="p-comment-Stat">${post_data.number_of_comments}</div>
-      </div>
-    </div>
-  </div>
-</div>
-</a>
     `;
+
+    mainWrapper.innerHTML += postHTML;
+  });
+
+  posts_in_json.forEach((post_data) => {
+    const postElement = document.getElementById(`post_${post_data.id}`);
+    if (postElement) {
+      postElement.addEventListener("click", (e) => {
+        PostModal(post_data.id);
+      });
+    }
   });
 };
 
@@ -115,7 +130,6 @@ export const EncodeBase64Image = (callback) => {
 
     reader.onload = function (e) {
       const bs64str = e.target.result;
-      console.log("Base64 Image:", bs64str);
       callback(bs64str); // Call the callback function with the base64 string
     };
 
@@ -128,7 +142,6 @@ export const EncodeBase64Image = (callback) => {
         const reader = new FileReader();
         reader.onload = function (e) {
           const bs64str = e.target.result;
-          console.log("Default Base64 Image:", bs64str);
           callback(bs64str); // Call the callback function with the base64 string of the custom image
         };
         reader.readAsDataURL(blob);
@@ -146,6 +159,33 @@ export const SetSessionStorage = (json_data) => {
   sessionStorage.setItem("username", json_data.username);
   sessionStorage.setItem("email", json_data.email);
   sessionStorage.setItem("avatar", json_data.encoded_avatar);
+  sessionStorage.setItem("gender", json_data.gender);
+};
+
+export const SetSessionStorageStats = async () => {
+  const res = await fetch(BACKENDURL + "/userstats", {
+    credentials: "include",
+  });
+  if (res.ok) {
+    const json_data = await res.json();
+    sessionStorage.setItem("user_token", json_data.session_id);
+    sessionStorage.setItem("username", json_data.username);
+    sessionStorage.setItem("email", json_data.email);
+    sessionStorage.setItem("avatar", json_data.encoded_avatar);
+    sessionStorage.setItem("gender", json_data.gender);
+    sessionStorage.setItem(
+      "Number_of_liked_comments",
+      json_data.Number_of_liked_comments
+    );
+    sessionStorage.setItem(
+      "Number_of_liked_posts",
+      json_data.Number_of_liked_posts
+    );
+    sessionStorage.setItem("Number_of_comments", json_data.Number_of_comments);
+    sessionStorage.setItem("Number_of_posts", json_data.Number_of_posts);
+  } else {
+    console.error("Error fetching user stats");
+  }
 };
 
 /**
@@ -183,12 +223,56 @@ export const NewChatMessage = (
   actualMessage.classList.add("message");
 
   const content = document.createElement("p");
-  const chatArea = document.getElementById("message-space");
+  const chatArea = document.getElementById("message_space");
   content.textContent = message;
   actualMessage.appendChild(content);
   messageElement.appendChild(actualMessage);
-  chatArea.appendChild(messageElement);
-  chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+  if (chatArea) {
+    chatArea.appendChild(messageElement);
+    chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
+  }
+};
+
+/**
+ * Ensure correct pagination of historical messages
+ */
+export const PaginateHistoricalMessage = (
+  message,
+  is_self,
+  name = "",
+  time = new Date()
+) => {
+  const chatArea = document.getElementById("message_space");
+  const messageElement = document.createElement("div");
+  const actualMessage = document.createElement("div");
+  let prev_scroll_pos = chatArea.scrollTop;
+  // is_self checks if the message came from the current user, not the
+  // other one
+  if (is_self) {
+    messageElement.classList.add("mself");
+    actualMessage.classList.add("self");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">You</div>
+              <div class="date">${time.toDateString()}</div>
+            </div>`;
+  } else {
+    messageElement.classList.add("m");
+    actualMessage.innerHTML += `<div class="sender-info">
+              <div class="sname">${name}</div>
+              <div class="date">${time.toDateString()}</div>
+            </div>`;
+  }
+
+  const content = document.createElement("p");
+  content.textContent = message;
+  actualMessage.appendChild(content);
+
+  actualMessage.classList.add("message");
+
+  messageElement.appendChild(actualMessage);
+
+  chatArea.insertAdjacentElement("afterbegin", messageElement);
+  chatArea.scrollTop = prev_scroll_pos;
 };
 
 export function convertImageToBase64(file) {
@@ -202,7 +286,6 @@ export function convertImageToBase64(file) {
     reader.onloadend = function () {
       if (reader.readyState === FileReader.DONE) {
         const base64String = reader.result;
-        console.log(base64String);
         resolve(base64String);
       } else {
         reject(new Error("Error reading file"));
@@ -212,3 +295,89 @@ export function convertImageToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+/**
+ * Sorts online user as per required
+ * @param {*} arr
+ * @returns
+ */
+export const sortByOnlineAndName = (arr) => {
+  return arr.req_Content.sort((a, b) => {
+    return a.username.localeCompare(b.username);
+  });
+};
+
+/**
+ *
+ * Marks typing in progress
+ *
+ * @param {string} username - username of the typer
+ * @param {bool} is_typing - status of typing
+ */
+export const MarkTyping = (is_typing = false) => {
+  const profileDiv = document.getElementById("r-profile");
+
+  if (is_typing) {
+    const tipDiv = document.createElement("p");
+    tipDiv.id = "typing_in_progress";
+    tipDiv.innerText = "Typing..";
+
+    profileDiv.append(tipDiv);
+  } else {
+    profileDiv.querySelector("#typing_in_progress").remove();
+  }
+};
+
+export function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+export const throttle = (func, limit) => {
+  let lastFunc;
+  let lastRan;
+  return function (...args) {
+    const context = this;
+    if (!lastRan) {
+      func.apply(context, args);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function () {
+        if (Date.now() - lastRan >= limit) {
+          console.log(lastRan);
+          func.apply(context, args);
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
+    }
+  };
+};
+
+export const sendTypingStart = throttle(() => {
+  console.log("send");
+  ws.send(
+    JSON.stringify({
+      type: "typing-event",
+      req_Content: {
+        recipient_name: sessionStorage.getItem("chat_partner"),
+        signal_type: "start",
+        Sender_name: sessionStorage.getItem("username"),
+      },
+    })
+  );
+}, 1000);
+
+// Throttled function to send the "stop" typing event
+export const sendTypingStop = throttle(() => {
+  console.log("stop");
+  ws.send(
+    JSON.stringify({
+      type: "typing-event",
+      req_Content: {
+        recipient_name: sessionStorage.getItem("chat_partner"),
+        signal_type: "stop",
+        Sender_name: sessionStorage.getItem("username"),
+      },
+    })
+  );
+}, 2000);

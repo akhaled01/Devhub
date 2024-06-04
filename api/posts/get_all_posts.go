@@ -5,7 +5,10 @@ import (
 	"net/http"
 
 	"RTF/storage/interfaces/post"
+	"RTF/types"
 	"RTF/utils"
+
+	"github.com/gofrs/uuid"
 )
 
 /*
@@ -54,7 +57,24 @@ Responds with a json array
 	]
 */
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
-	posts, err := post.AllPostsFromDB()
+	// get the session id from the cookie
+	session_id, err := r.Cookie("session_id")
+	if err != nil {
+		utils.ErrorConsoleLog(err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+
+	}
+
+	// get the session from the global sessions map
+	requester_session, ok := types.Sessions[uuid.FromStringOrNil(session_id.Value)]
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// get all posts from the database
+	posts, err := post.AllPostsFromDB(requester_session.User)
 	if err != nil {
 		utils.ErrorConsoleLog("error getting all posts")
 		utils.PrintErrorTrace(err)

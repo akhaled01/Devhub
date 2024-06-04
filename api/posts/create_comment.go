@@ -24,6 +24,7 @@ json body it accepts
 returns 201 on success, 500 on error and 400 on bad request
 */
 func CreateComment(w http.ResponseWriter, r *http.Request) {
+	utils.InfoConsoleLog("recieved comment creation request")
 	comment_creation_request := types.CommentCreationRequest{}
 
 	session_id, err := r.Cookie("session_id")

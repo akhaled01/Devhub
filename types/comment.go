@@ -13,4 +13,5 @@ type Comment struct {
 	CreationDate time.Time   `json:"creationDate"`
 	Content      string      `json:"content"`
 	Likes        int64       `json:"likes"`
+	Liked        bool        `json:"liked"`
 }

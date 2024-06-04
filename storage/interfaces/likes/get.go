@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	IS_LIKED_QUERY_POST = `SELECT EXISTS(SELECT 1 FROM post_likes 
+	IS_LIKED_QUERY_POST = `SELECT EXISTS(SELECT 1 FROM post_likes
 		WHERE post_id = ? AND user_id = ?) `
-	IS_LIKED_QUERY_COMMENT = `SELECT EXISTS(SELECT 1 FROM comment_likes 
+	IS_LIKED_QUERY_COMMENT = `SELECT EXISTS(SELECT 1 FROM comment_likes
 			WHERE comment_id = ? AND user_id = ?) `
-	POST_LIKES_QUERY = `SELECT like_count FROM posts WHERE post_id = ?`
+	POST_LIKES_QUERY = `SELECT count(*) FROM post_likes WHERE post_id = ?`
 )
 
 // Takes in a user's id and a post's id and checks if the user liked the post
@@ -46,7 +46,6 @@ func CheckUserCommentLike(commentid uuid.UUID, userid uuid.UUID) (bool, error) {
 	if err := stmt.QueryRow(commentid.String(), userid.String()).Scan(&isLiked); err != nil {
 		return false, errors.Join(types.ErrExec, err)
 	}
-
 	return isLiked, nil
 }
 

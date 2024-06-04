@@ -24,7 +24,7 @@ func SaveImage(encode string, img_type string) (string, error) {
 	}
 
 	syscall.Umask(0)
-	err = os.MkdirAll("images", 0777)
+	err = os.MkdirAll("images", 0o777)
 	if err != nil {
 		return "", err
 	}

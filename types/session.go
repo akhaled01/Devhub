@@ -2,7 +2,6 @@ package types
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -13,10 +12,11 @@ import (
 )
 
 type Session struct {
-	SessionID uuid.UUID
-	User      *User
-	Expiry    time.Time
-	Conn      *websocket.Conn
+	SessionID     uuid.UUID
+	User          *User
+	Expiry        time.Time
+	Conn          *websocket.Conn
+	ChatPartnerID string
 }
 
 // Map sessionID to session
@@ -63,8 +63,6 @@ func GenSession(u User) *Session {
 		utils.ErrorConsoleLog("error generating session -> %s", err)
 	}
 
-	fmt.Println(uuid.FromStringOrNil(session_id.String()))
-
 	Sessions[session_id] = &Session{
 		SessionID: session_id,
 		User:      &u,
@@ -97,6 +95,15 @@ func LogOutBySessionToken(w http.ResponseWriter, sessionToken uuid.UUID) {
 func UserHasSessions(user_id uuid.UUID) (*Session, bool) {
 	for _, s := range Sessions {
 		if s.User.ID == user_id {
+			return s, true
+		}
+	}
+	return (&Session{}), false
+}
+
+func UserHasSessionByName(username string) (*Session, bool) {
+	for _, s := range Sessions {
+		if s.User.Username == username {
 			return s, true
 		}
 	}

@@ -7,13 +7,15 @@ import (
 )
 
 var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
-	"GET /post/all":        GetAllPosts,
-	"OPTIONS /post/all":    GetAllPosts,
-	"GET /post/{id}":       GetPostByID,
-	"POST /post/create":    CreatePost,
-	"OPTIONS /post/create": CreatePost,
-	"POST /comment/create": CreateComment,
-	"GET /comments/{id}":   GetCommentsByPostID,
+	"GET /post/all":           GetAllPosts,
+	"GET /post/{id}":          GetPostByID,
+	"GET /comments/{id}":      GetCommentsByPostID,
+	"POST /post/create":       CreatePost,
+	"POST /comment/create":    CreateComment,
+	"OPTIONS /post/all":       GetAllPosts,
+	"OPTIONS /post/create":    CreatePost,
+	"OPTIONS /comment/create": CreateComment,
+	"OPTIONS /comments/{id}":  GetCommentsByPostID,
 }
 
 // Register Post Routes with middleware validation

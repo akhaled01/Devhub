@@ -7,8 +7,12 @@ import (
 )
 
 var Routes = map[string]func(w http.ResponseWriter, r *http.Request){
-	"POST /likePost/{id}":    LikePost,
-	"POST /likeComment/{id}": LikeComment,
+	"POST /likePost/{id}":       LikePost,
+	"OPTIONS /likePost/{id}":    LikePost,
+	"GET /userstats":            GetUserCounts,
+	"POST /likeComment/{id}":    LikeComment,
+	"OPTIONS /likeComment/{id}": LikeComment,
+	"OPTIONS /userstats":        GetUserCounts,
 }
 
 // Register Post Routes with middleware validation

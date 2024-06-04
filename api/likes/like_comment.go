@@ -2,9 +2,12 @@ package likes
 
 import (
 	"RTF/storage/interfaces/likes"
+
 	"RTF/types"
 	"RTF/utils"
 	"net/http"
+
+	"encoding/json" // Add this line to import the "encoding/json" package
 
 	"github.com/gofrs/uuid"
 )
@@ -32,6 +35,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var updatedComment *types.Comment
 	if !like_bool {
 		err = likes.CreateLikeRecordComment(uuid.FromStringOrNil(comment_id), user_id)
 		if err != nil {
@@ -47,4 +51,6 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(updatedComment)
 }

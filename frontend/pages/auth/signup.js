@@ -17,9 +17,17 @@ export const Signup = () => {
       <input name="username" placeholder="Username" type="text" id="uname" required />
       <input name="email" placeholder="Email" type="text" id="email" required />
     </div>
-    <div class="authgroup">
+    <div class="authgroup" >
+      <div>
       <input name="age" placeholder="Age" type="number" id="age" required />
-      <input name="gender" placeholder="Gender" type="text" id="gender" required />
+      </div>
+      <div style="color:white;">
+      <label for="gender" >Gender:</label><br>
+      </div>
+      <div style="color:white;" required >
+      <input id="gender" type="radio" name="gender" value="M"> Male
+      <input id="gender" type="radio" name="gender" value="F"> Female
+      </div>
     </div>
     <div class="authgroup">
       <input name="password" placeholder="Password" type="password" id="pass" required />

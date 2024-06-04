@@ -1,16 +1,12 @@
 import { Home } from "../pages";
 import { Login } from "../pages/auth/login";
 import { Signup } from "../pages/auth/signup";
-import { Chat } from "../pages/chat";
-import { Post } from "../pages/post";
 import { Logout } from "./logout";
 import { UpdateCSS } from "./utils";
 
 const routes = {
-  "/post": { component: Post, stylesheet: "/css/post.css" },
   "/signup": { component: Signup, stylesheet: "/css/auth.css" },
   "/login": { component: Login, stylesheet: "/css/auth.css" },
-  "/chat": { component: Chat, stylesheet: "/css/chat.css" },
   "/": { component: Home, stylesheet: "/css/index.css" },
 };
 

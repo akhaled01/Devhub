@@ -2,6 +2,7 @@ package posts
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -52,7 +53,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	post_creation_request.Post_text = decodedPostText
 
-	post_creation_request.Post_text = strings.ReplaceAll(post_creation_request.Post_text, "\n", "\r\n")
+	post_creation_request.Post_text = strings.ReplaceAll(post_creation_request.Post_text, "\n", "@")
+
+	fmt.Println(post_creation_request.Post_text)
 
 	new_post_object, err := post.ConstructNewPostFromRequest(post_creation_request)
 	if err != nil {

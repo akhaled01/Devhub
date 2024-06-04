@@ -58,11 +58,18 @@ export const AssemblePosts = (posts_in_json = []) => {
   posts_in_json.forEach((post_data) => {
     const gender = post_data.user.gender;
     const liked_img = post_data.liked ? heart : noheart;
+    let text_html = ``;
     let text = post_data.content + "";
+
+    // console.log(text);
 
     if (text.length > 100) {
       text = text.slice(0, 103 - "...".length) + "..."; // truncate
     }
+
+    text.split("@").forEach((str) => {
+      text_html += str + `<br />`;
+    });
 
     const postHTML = `
       <div class="f-post ${!post_data.Image_Path ? " noimage" : ""}" id="post_${
@@ -79,7 +86,7 @@ export const AssemblePosts = (posts_in_json = []) => {
         </div>
         <div class="p-main">
           <div class="p-content">
-            ${text}
+            ${text_html}
             ${
               post_data.Image_Path
                 ? `<div class="p-image"><img src=${post_data.Image_Path} alt="post image"></div>`

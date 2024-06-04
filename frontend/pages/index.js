@@ -113,6 +113,12 @@ export const PostModal = async (postID) => {
 
   let data = await fetch_post(postID);
 
+  let text = data.content + "";
+  let text_html = ``;
+  text.split("@").forEach((str) => {
+    text_html += str + `<br />`;
+  });
+
   var gender = data.user.gender;
   let liked_img = noheart;
   if (data.liked) {
@@ -139,7 +145,7 @@ export const PostModal = async (postID) => {
           ).toDateString()}</div>
         </div>
         <div id="post-content">
-          ${data.content}
+          ${text_html}
           ${
             data.Image_Path
               ? `<div class="p-image">

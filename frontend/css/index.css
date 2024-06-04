@@ -524,7 +524,8 @@ h4 {
 
 .p-content {
   margin-bottom: 1em;
-  /* white-space: pre-wrap; */
+  max-height: 40px;
+  overflow-y: scroll;
 }
 
 .p-comment-Stat {
@@ -1196,6 +1197,8 @@ transition-duration: .5s;
   text-wrap: wrap;
   word-break: break-all;
   /* white-space: pre-wrap; */
+  max-height: 80px;
+  overflow-y: scroll;
 }
 
 .comment {

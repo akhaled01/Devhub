@@ -268,7 +268,7 @@ export const PostModal = async (postID) => {
 
 export const Home = async () => {
   const myCookie = getCookie("session_id");
-  if (!sessionStorage.getItem("user_token") && !myCookie) {
+  if (!sessionStorage.getItem("user_token") || !myCookie) {
     window.location.assign("/login");
     return;
   }
@@ -300,7 +300,9 @@ export const Home = async () => {
 
   if (create_post_Btn) {
     create_post_Btn.addEventListener("click", async () => {
-      const post_text = document.getElementById("c-post-textArea").value;
+      const post_text = encodeURIComponent(
+        document.getElementById("c-post-textArea").value
+      );
       const raw_image_file = document.getElementById("c-img-upload").value;
       // stop removing the fix for category value capture
       let post_cat_arr = [];
@@ -308,7 +310,6 @@ export const Home = async () => {
         document.getElementById("c-post-cat-select").value
       );
       post_cat_arr.push(post_category);
-      // end!!!
       const Image_Converstion_wrapper = async () => {
         return await convertImageToBase64(raw_image_file);
       };

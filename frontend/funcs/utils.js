@@ -60,8 +60,8 @@ export const AssemblePosts = (posts_in_json = []) => {
     const liked_img = post_data.liked ? heart : noheart;
     let text = post_data.content + "";
 
-    if (text.length > 255) {
-      text = text.slice(0, 255 - "...".length) + "..."; // truncate
+    if (text.length > 100) {
+      text = text.slice(0, 103 - "...".length) + "..."; // truncate
     }
 
     const postHTML = `
@@ -344,6 +344,7 @@ export const throttle = (func, limit) => {
       clearTimeout(lastFunc);
       lastFunc = setTimeout(function () {
         if (Date.now() - lastRan >= limit) {
+          console.log(lastRan);
           func.apply(context, args);
           lastRan = Date.now();
         }
@@ -364,7 +365,7 @@ export const sendTypingStart = throttle(() => {
       },
     })
   );
-}, 2000);
+}, 1000);
 
 // Throttled function to send the "stop" typing event
 export const sendTypingStop = throttle(() => {
@@ -379,4 +380,4 @@ export const sendTypingStop = throttle(() => {
       },
     })
   );
-}, 3000);
+}, 2000);

@@ -3,6 +3,8 @@ package posts
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"RTF/storage/interfaces/post"
 	"RTF/types"
@@ -41,6 +43,16 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// decode post text from URI
+	decodedPostText, err := url.QueryUnescape(post_creation_request.Post_text)
+	if err != nil {
+		http.Error(w, "Failed to decode post text", http.StatusBadRequest)
+		return
+	}
+	post_creation_request.Post_text = decodedPostText
+
+	post_creation_request.Post_text = strings.ReplaceAll(post_creation_request.Post_text, "\n", "\r\n")
 
 	new_post_object, err := post.ConstructNewPostFromRequest(post_creation_request)
 	if err != nil {

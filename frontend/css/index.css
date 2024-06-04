@@ -524,6 +524,13 @@ h4 {
 
 .p-content {
   margin-bottom: 1em;
+  /* white-space: pre-wrap; */
+}
+
+.p-comment-Stat {
+  font-size: 16px;
+  word-wrap: normal;
+  word-break: normal;
 }
 
 .p-commentCount {
@@ -535,6 +542,8 @@ h4 {
 
 .p-commentCount > img {
   transition: ease-out 0.3s;
+  width: 20px;
+  height: 20px;
 }
 
 .p-commentCount > img:hover {
@@ -987,9 +996,8 @@ transition-duration: .5s;
   width: 100%;
   height: 10%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   gap: 5px;
   color: white;
   font-weight: 700;
@@ -1187,6 +1195,7 @@ transition-duration: .5s;
 #post-content {
   text-wrap: wrap;
   word-break: break-all;
+  /* white-space: pre-wrap; */
 }
 
 .comment {

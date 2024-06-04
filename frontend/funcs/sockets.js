@@ -153,6 +153,14 @@ const OrgChatHTML = (username) => {
     message_input.value = "";
   });
 
+  message_input.addEventListener("focus", () => {
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && event.shiftKey) {
+        document.getElementById("sendTextBtn").click();
+      }
+    });
+  });
+
   const message_Box = document.getElementById("message_space");
   message_Box.addEventListener("scroll", function (e) {
     if (e.target.scrollTop === 0) {

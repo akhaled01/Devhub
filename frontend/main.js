@@ -4,10 +4,7 @@ import {
   AssembleOnlineUsersIndex,
   currentScrollHeight,
 } from "./funcs/sockets";
-import {
-  NewChatMessage,
-  PaginateHistoricalMessage,
-} from "./funcs/utils";
+import { NewChatMessage, PaginateHistoricalMessage } from "./funcs/utils";
 
 // handle websocket connection
 export const ws = new WebSocket("ws://localhost:8080/ws");
@@ -59,7 +56,9 @@ ws.onmessage = (e) => {
     if (document.getElementById("r-profile")) {
       if (
         data.is_typing &&
-        !document.getElementById("r-profile").querySelector(".typing-indicator") &&
+        !document
+          .getElementById("r-profile")
+          .querySelector(".typing-indicator") &&
         data.sender === sessionStorage.getItem("chat_partner")
       ) {
         document.getElementById("r-profile").innerHTML += `
@@ -90,7 +89,7 @@ ws.onmessage = (e) => {
     } else {
       sessionStorage.setItem("begin_id", data.req_Content[0].id);
     }
-    data.req_Content.forEach((m) => {
+    data.req_Content.reverse().forEach((m) => {
       PaginateHistoricalMessage(
         m.msg_content,
         m.sender === sessionStorage.getItem("username"),

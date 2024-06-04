@@ -9,7 +9,7 @@ import { BACKENDURL } from "../funcs/vars";
 import { convertImageToBase64 } from "../funcs/utils";
 import { ws } from "../main";
 import { SetSessionStorageStats } from "../funcs/utils";
-import { creat_comment, fetch_post } from "./post";
+import { creat_comment, fetch_post } from "../funcs/posts";
 import { RedoStats, render_comments } from "../funcs/comments";
 import { RecordPostLikeEvent } from "../funcs/likes";
 

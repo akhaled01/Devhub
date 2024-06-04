@@ -10,14 +10,14 @@ import { Flogin } from "./utils";
  * @returns error string if there is
  */
 const ValidateData = () => {
-  const fname = document.getElementById("fname").value;
-  const lname = document.getElementById("lname").value;
+  const fname = document.getElementById("fname").value.trim();
+  const lname = document.getElementById("lname").value.trim();
   const age = document.getElementById("age").value;
   const gender = document.getElementById("gender").value;
-  const username = document.getElementById("uname").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("pass").value;
-  const confirmPassword = document.getElementById("cpass").value;
+  const username = document.getElementById("uname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("pass").value.trim();
+  const confirmPassword = document.getElementById("cpass").value.trim();
 
   if (
     !fname ||
